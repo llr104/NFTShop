@@ -37,6 +37,7 @@
 		"navigationBarTitleText": "NFT Shop",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8",
+		"navigationStyle":"custom",
 		"app-plus": {
 			"background": "#efeff4"
 		}
