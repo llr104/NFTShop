@@ -7,7 +7,7 @@
 			<text>{{address}}</text>
 		</view>
 		
-		<uni-drawer ref="showRight" mode="left" :mask-click="true" width=250>
+		<uni-drawer ref="showRight" mode="left" :mask-click="true" :width=250>
 			<scroll-view class="left" scroll-y="true">
 				<uni-list class="left">
 					<uni-list-item title="Home" note="" clickable @click="gotoPage('/pages/index/index')"></uni-list-item>
