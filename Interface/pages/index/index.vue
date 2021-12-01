@@ -1,9 +1,20 @@
 <template>
 	<view class="container">
-		<!-- <product-list></product-list> -->
-		<navigation address="aaa"></navigation>
 		
-
+		<navigation address="aaa"></navigation>
+		<!-- <product-list></product-list> -->
+		<!-- 轮播图 -->
+		 <swiper class="swiper" :indicatorDots="true" :autoplay="true" :interval="2000" :duration="500">
+			<swiper-item>
+				<image src="../../static/ad.png" @click="clickAd" mode=""></image>
+			</swiper-item>
+			<swiper-item>
+				<image src="../../static/ad.png" @click="clickAd" mode=""></image>
+			</swiper-item>
+			<swiper-item>
+				<image src="../../static/ad.png" @click="clickAd" mode=""></image>
+			</swiper-item>
+		</swiper>
 	</view>
 </template>
 
@@ -22,7 +33,11 @@
 			}
 		},
 		methods: {
-		
+			clickAd:function(){
+				uni.showToast({
+					title:"功能尚未开放，敬请期待"
+				})
+			}
 		}
 	}
 </script>
@@ -52,9 +67,13 @@
 		}
 	}
 	
-	.left {
-		width: 250rpx;
-		background-color: #303133;
+	.swiper {
+		width: 100%;
+		height: 400rpx;
+		image {
+			width: 100%;
+			height: 100%;
+		}
 	}
 	
 	
