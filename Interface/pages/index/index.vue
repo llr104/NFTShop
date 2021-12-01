@@ -2,7 +2,7 @@
 	<view class="container">
 		
 		<navigation address="aaa"></navigation>
-		<!-- <product-list></product-list> -->
+		
 		<!-- 轮播图 -->
 		 <swiper class="swiper" :indicatorDots="true" :autoplay="true" :interval="2000" :duration="500">
 			<swiper-item>
@@ -15,6 +15,9 @@
 				<image src="../../static/ad.png" @click="clickAd" mode=""></image>
 			</swiper-item>
 		</swiper>
+		
+		<uni-title class="discover" type="h4" title="发现NFT"></uni-title>
+		<product-list></product-list>
 	</view>
 </template>
 
@@ -74,6 +77,15 @@
 			width: 100%;
 			height: 100%;
 		}
+	}
+	
+	.discover {
+		margin-left: 30rpx;
+		margin-top: 20rpx;
+	}
+	
+	.product-list {
+		margin-top: -20rpx;
 	}
 	
 	
