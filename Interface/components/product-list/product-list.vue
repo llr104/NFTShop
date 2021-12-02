@@ -94,16 +94,7 @@
 		        this.renderImage = true;
 		    }, 300);
 		},
-		onPullDownRefresh() {
-		    this.loadData('refresh');
-		    // 实际开发中通常是网络请求，加载完数据后就停止。这里仅做演示，加延迟为了体现出效果。
-		    setTimeout(() => {
-		        uni.stopPullDownRefresh();
-		    }, 2000);
-		},
-		onReachBottom() {
-		    this.loadData();
-		}
+		
 	}
 </script>
 

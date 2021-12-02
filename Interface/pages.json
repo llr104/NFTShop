@@ -9,7 +9,8 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "Market",
-                "enablePullDownRefresh": false
+                "enablePullDownRefresh": false,
+				"onReachBottomDistance": 100
             }
             
         }
