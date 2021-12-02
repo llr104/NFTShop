@@ -2,7 +2,7 @@
 	<view class="product-list">
 	    <view class="product" v-for="(product,index) in productList" :key="index">
 	        <view class="image-view">
-	            <image v-if="renderImage" class="product-image" src="./item.png"></image>
+	            <image v-if="renderImage" class="product-image" :src="product.image"></image>
 	        </view>
 			
 			<view class="product-text">
@@ -22,19 +22,19 @@
 		    return {
 		        title: 'product-list',
 		        productList: [],
-		        renderImage: false
+		        renderImage: false,
 		    };
 		},
 		methods: {
 		    loadData(action = 'add') {
 		        const data = [{
-		                image: "./item.png",
+		                image: "../../static/item.png",
 		                title: 'CyberZodiac',
 		                price: 9999,
 		                displayOwner: "0x1245****1241",
 		            },
 					{
-						image: "./item.png",
+						image: "../../static/item.png",
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
