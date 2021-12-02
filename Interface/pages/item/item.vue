@@ -15,7 +15,7 @@
 				</view>
 				
 				<view class="one">
-					<text class="one-1">拥有者:</text>
+					<text class="one-1">拥有者&nbsp;&nbsp;&nbsp;:</text>
 					<text class="one-2 oAddress">0xaaa....xxx</text>
 					<image class="o-copy" src="../../static/copy-icon.svg" @click="clickOnwerAddress"></image>
 					<text class="home" @click="clickOwnerHome">个人主页</text>
@@ -110,10 +110,11 @@
 				display: inline-block;
 				position: absolute;
 				content: "";
-				width: 40rpx;
-				height: 40rpx;
-				right: 100rpx;
-				background: url(../../static/right-row.svg) 94% 50% no-repeat;
+				width: 30rpx;
+				height: 30rpx;
+				right: 60rpx;
+				margin-top: 10rpx;
+				background: url(../../static/right-row.svg) 50% no-repeat;
 			}
 			
 			.o-copy{
@@ -123,23 +124,21 @@
 			}
 			
 			.home {
-				vertical-align: middle;
 				display: inline-block;
 				float: right;
 				color: #8c9fad;
-				margin-right: 100rpx;
+				margin-right: 60rpx;
 			}
 			
 			.home::after{
 				display: inline-block;
 				position: absolute;
-				vertical-align: middle;
 				content: "";
-				width: 40rpx;
-				height: 40rpx;
-				right: 100rpx;
-				color: #8c9fad;
-				background: url(../../static/right-row.svg) 94% 50% no-repeat;
+				width: 30rpx;
+				height: 30rpx;
+				right: 60rpx;
+				margin-top: 10rpx;
+				background: url(../../static/right-row.svg) 50% no-repeat;
 			}
 		}
 	}

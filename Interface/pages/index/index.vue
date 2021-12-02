@@ -142,6 +142,7 @@
 	}
 	
 	.more {
+		position: relative;
 		width: 260rpx;
 		height: 60rpx;
 		text-align: center;
@@ -150,17 +151,17 @@
 		margin: 20rpx auto;
 		background-color: #e7ebee;
 		border-radius: 25rpx;
-		vertical-align: middle;
 	}
 	
 	.more::after{
 		display: inline-block;
 		position: absolute;
 		content: "";
-		width: 50rpx;
-		height: 60rpx;
-		right: width/2;
-		background: url(../../static/right-row.svg) 94% 50% no-repeat;
+		width: 30rpx;
+		height: 30rpx;
+		margin-top: 15rpx;
+		right: 15rpx;
+		background: url(../../static/right-row.svg) 50% no-repeat;
 	}
 	
 	.one-des {
