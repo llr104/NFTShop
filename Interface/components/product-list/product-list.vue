@@ -8,7 +8,7 @@
 			<view class="product-text">
 				<view class="product-title">{{product.title}}</view>
 				<view class="product-onwer">{{product.displayOwner}}</view>
-				<view class="product-price">{{product.price}}usdt</view>
+				<view class="product-price">{{product.price}}&nbsp;usdt</view>
 			</view>
 			 <view class="right-row"></view>
 	    </view>
@@ -16,6 +16,8 @@
 </template>
 
 <script>
+	import productsMgr from "./productsMgr.js";
+	console.log("productsMgr:", productsMgr);
 	export default {
 		name:"product-list",
 		emits:["clickProduct"],
@@ -28,70 +30,77 @@
 		},
 		methods: {
 		    loadData(action = 'add') {
-		        const data = [
+				productsMgr.putProducts([
 					{
+						id:1,
 		                image: "../../static/item.png",
 		                title: 'CyberZodiac',
 		                price: 9999,
 		                displayOwner: "0x1245****1241",
 		            },
 					{
+						id:2,
 						image: "../../static/item.png",
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
 					},
 					{
+						id:3,
 						image: "../../static/item.png",
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
 					},
 					{
+						id:4,
 						image: "../../static/item.png",
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
 					},
 					{
+						id:5,
 					    image: "../../static/item.png",
 					    title: 'CyberZodiac',
 					    price: 9999,
 					    displayOwner: "0x1245****1241",
 					},
 					{
+						id:6,
 						image: "../../static/item.png",
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
 					},
 					{
+						id:7,
 						image: "../../static/item.png",
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
 					},
 					{
+						id:8,
 						image: "../../static/item.png",
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
 					},
 					
-		        ];
-		
+		        ]);
 		        if (action === 'refresh') {
-		            this.productList = [];
+		            productsMgr.clearProuducts();
 		        }
-		
-		        data.forEach(item => {
-		            this.productList.push(item);
-		        });
+				this.productList = productsMgr.getProuducts();
+				
+				console.log("productList:", this.productList);
 		    },
 			
 			clickProduct:function(product){
 				console.log("clickProduct:", product);
 				this.$emit("clickProduct", product);
+				productsMgr.show();
 			}
 		},
 		mounted() {

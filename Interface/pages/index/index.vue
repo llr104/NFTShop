@@ -87,6 +87,12 @@
 			
 			onClickProduct(product){
 				console.log("onClickProduct:", product);
+				uni.navigateTo({
+					url:"../item/item?id="+product.id,
+					complete:function(r){
+						console.log(r);
+					}
+				})
 			}
 		}
 	}

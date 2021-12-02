@@ -22,9 +22,6 @@
 		},
 		
 		methods:{
-			onClickProduct(product){
-				console.log("onClickProduct:", product);
-			},
 			
 			onReachBottom() {
 				console.log("market onReachBottom");
@@ -36,6 +33,16 @@
 			    setTimeout(() => {
 			        uni.stopPullDownRefresh();
 			    }, 2000);
+			},
+			
+			onClickProduct(product){
+				console.log("onClickProduct:", product);
+				uni.navigateTo({
+					url:"../item/item?id="+product.id,
+					complete:function(r){
+						console.log(r);
+					}
+				})
 			},
 		}
 	}
