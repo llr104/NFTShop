@@ -17,7 +17,7 @@
 		</swiper>
 		
 		<uni-title class="subTitle" type="h3" title="发现NFT"></uni-title>
-		<product-list></product-list>
+		<product-list @clickProduct="onClickProduct"></product-list>
 		<view class="more" @click="clickMore">
 			<text>查看更多</text>
 		</view>
@@ -83,6 +83,10 @@
 						console.log(r);
 					}
 				})
+			},
+			
+			onClickProduct(product){
+				console.log("onClickProduct:", product);
 			}
 		}
 	}

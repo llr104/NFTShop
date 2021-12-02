@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<navigation></navigation>
-		<product-list ref="pl"></product-list>
+		<product-list ref="pl" @clickProduct="onClickProduct"></product-list>
 	</view>
 </template>
 
@@ -22,6 +22,10 @@
 		},
 		
 		methods:{
+			onClickProduct(product){
+				console.log("onClickProduct:", product);
+			},
+			
 			onReachBottom() {
 				console.log("market onReachBottom");
 				this.$refs.pl.loadData();

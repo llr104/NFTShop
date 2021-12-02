@@ -1,6 +1,6 @@
 <template>
 	<view class="product-list">
-	    <view class="product" v-for="(product,index) in productList" :key="index">
+	    <view class="product" v-for="(product,index) in productList" :key="index" @click="clickProduct(product)">
 	        <view class="image-view">
 	            <image v-if="renderImage" class="product-image" :src="product.image"></image>
 	        </view>
@@ -18,6 +18,7 @@
 <script>
 	export default {
 		name:"product-list",
+		emits:["clickProduct"],
 		data() {
 		    return {
 		        title: 'product-list',
@@ -86,7 +87,12 @@
 		        data.forEach(item => {
 		            this.productList.push(item);
 		        });
-		    }
+		    },
+			
+			clickProduct:function(product){
+				console.log("clickProduct:", product);
+				this.$emit("clickProduct", product);
+			}
 		},
 		mounted() {
 		    this.loadData();
