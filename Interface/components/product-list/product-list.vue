@@ -127,6 +127,7 @@
 		border-radius: 30rpx;
 		overflow: hidden;
 		margin-left: 30rpx;
+		margin-bottom: 30rpx;
     }
 
     .image-view {
