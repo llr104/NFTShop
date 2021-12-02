@@ -27,7 +27,8 @@
 		},
 		methods: {
 		    loadData(action = 'add') {
-		        const data = [{
+		        const data = [
+					{
 		                image: "../../static/item.png",
 		                title: 'CyberZodiac',
 		                price: 9999,
@@ -39,6 +40,43 @@
 						price: 9999,
 						displayOwner: "0x1245****1241",
 					},
+					{
+						image: "../../static/item.png",
+						title: 'CyberZodiac',
+						price: 9999,
+						displayOwner: "0x1245****1241",
+					},
+					{
+						image: "../../static/item.png",
+						title: 'CyberZodiac',
+						price: 9999,
+						displayOwner: "0x1245****1241",
+					},
+					{
+					    image: "../../static/item.png",
+					    title: 'CyberZodiac',
+					    price: 9999,
+					    displayOwner: "0x1245****1241",
+					},
+					{
+						image: "../../static/item.png",
+						title: 'CyberZodiac',
+						price: 9999,
+						displayOwner: "0x1245****1241",
+					},
+					{
+						image: "../../static/item.png",
+						title: 'CyberZodiac',
+						price: 9999,
+						displayOwner: "0x1245****1241",
+					},
+					{
+						image: "../../static/item.png",
+						title: 'CyberZodiac',
+						price: 9999,
+						displayOwner: "0x1245****1241",
+					},
+					
 		        ];
 		
 		        if (action === 'refresh') {
@@ -133,7 +171,7 @@
         position: absolute;
         right: 20rpx;
 		bottom: 10rpx;
-        background: url(../../static/right-row.svg) no-repeat center;
+        background: url(./right-row-radius.svg) no-repeat center;
 		background-size: 60rpx;
     }
 </style>

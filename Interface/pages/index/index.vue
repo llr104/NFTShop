@@ -16,8 +16,12 @@
 			</swiper-item>
 		</swiper>
 		
-		<uni-title class="discover" type="h4" title="发现NFT"></uni-title>
+		<uni-title class="subTitle" type="h4" title="发现NFT"></uni-title>
 		<product-list></product-list>
+		<view class="more" @click="clickMore">
+			<text>查看更多</text>
+		</view>
+		<uni-title class="subTitle" type="h4" title="什么是NFT"></uni-title>
 	</view>
 </template>
 
@@ -39,6 +43,15 @@
 			clickAd:function(){
 				uni.showToast({
 					title:"功能尚未开放，敬请期待"
+				})
+			},
+			
+			clickMore:function(){
+				uni.navigateTo({
+					url:"/pages/market/market",
+					complete:function(r){
+						console.log(r);
+					}
 				})
 			}
 		}
@@ -79,7 +92,7 @@
 		}
 	}
 	
-	.discover {
+	.subTitle {
 		margin-left: 30rpx;
 		margin-top: 20rpx;
 	}
@@ -88,5 +101,29 @@
 		margin-top: -20rpx;
 	}
 	
+	.more {
+		width: 260rpx;
+		height: 60rpx;
+		text-align: center;
+		line-height: 60rpx;
+		font-size: 20rpx;
+		margin: 20rpx auto;
+		background-color: #e7ebee;
+		border-radius: 25rpx;
+		vertical-align: middle;
+	}
 	
+	.more::after{
+		display: inline-block;
+		position: absolute;
+		content: "";
+		width: 50rpx;
+		height: 60rpx;
+		right: width/2;
+		background: url(../../static/right-row.svg) 94% 50% no-repeat;
+	}
+	
+	
+
+		
 </style>
