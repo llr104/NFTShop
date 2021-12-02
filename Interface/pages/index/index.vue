@@ -16,12 +16,26 @@
 			</swiper-item>
 		</swiper>
 		
-		<uni-title class="subTitle" type="h4" title="发现NFT"></uni-title>
+		<uni-title class="subTitle" type="h3" title="发现NFT"></uni-title>
 		<product-list></product-list>
 		<view class="more" @click="clickMore">
 			<text>查看更多</text>
 		</view>
-		<uni-title class="subTitle" type="h4" title="什么是NFT"></uni-title>
+		<uni-title class="subTitle" type="h3" title="什么是NFT"></uni-title>
+		
+		<!-- 三个介绍 -->
+		<view class="one-des" v-for="(desItem,index) in desArray" :key="index">
+			<view class="left">
+				<uni-title class="title" :title="desItem.title" type="h4"></uni-title>
+				<text class="content">
+					{{desItem.des}}
+				</text>
+			</view>
+			<image class="desImg" :src="desItem.img"></image>
+		</view>
+		<view class="space">
+			
+		</view>
 	</view>
 </template>
 
@@ -36,7 +50,23 @@
 		
 		data() {
 			return {
-			
+				desArray:[
+					{
+						title:"唯一性",
+						des:"每个NFT都是独一无二的，且具有不同属性，这些属性通常存储在元数据中，且铸造后不可篡改。",
+						img:"../../static/one.png"
+					},
+					{
+						title:"可证明的稀缺性",
+						des:"NFT铸造数量可通过公共区块链网络验证，数量固定，永恒不变，具有可证明性。",
+						img:"../../static/two.png"
+					},
+					{
+						title:"不可分割性",
+						des:"每个NFT都是一个独立的个体，无法拆分，因此不能购买或转让NFT的一部分，因此具有不可分割性。",
+						img:"../../static/three.png"
+					}
+				]
 			}
 		},
 		methods: {
@@ -123,6 +153,46 @@
 		background: url(../../static/right-row.svg) 94% 50% no-repeat;
 	}
 	
+	.one-des {
+		
+		width: 92%;
+		height: 300rpx;
+		border-radius: 30rpx;
+		background-color: #FFFFFF;
+		margin: 0 auto;
+		margin-bottom: 20rpx;
+		
+		.left {
+			
+			float: left;
+			margin-left: 40rpx;
+			width: 60%;
+			height: 100%;
+			
+			.content {	
+				
+				word-break: break-all;
+				display: -webkit-box;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				color: #5e697a;
+				font-size: 20rpx;
+				line-height: 1.5;
+			}
+		}
+		.desImg {
+			float: right;
+			width: 200rpx;
+			height: 240rpx;
+			margin-top: 20rpx;
+		}
+	
+	}
+	
+	.space {
+		width: 100%;
+		height: 20rpx;
+	}
 	
 
 		
