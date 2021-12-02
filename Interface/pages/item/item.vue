@@ -5,15 +5,23 @@
 			<image class="product-image" :src="product.image" mode="widthFix"></image>
 			<uni-title class="product-title" :title=product.title></uni-title>
 			<view class="center-card">
-				<view class="one one-margin">
+				<view class="one one-margin" @click="clickContactAddress">
 					<text class="one-1">合约地址:</text>
-					<text class="one-2">0x0agag....aaaa</text>
+					<text class="one-2 cAddress">0x0agag....aaaa</text>
 				</view>
-				<view class="one">
+				<view class="one one-margin">
 					<text class="one-1">链上标志:</text>
 					<text class="one-2">12345</text>
 				</view>
+				
+				<view class="one">
+					<text class="one-1">拥有者:</text>
+					<text class="one-2 oAddress">0xaaa....xxx</text>
+					<image class="o-copy" src="../../static/copy-icon.svg" @click="clickOnwerAddress"></image>
+					<text class="home" @click="clickOwnerHome">个人主页</text>
+				</view>
 			</view>
+			
 		</view>
 		
 	</view>
@@ -50,7 +58,17 @@
 		},
 				
 		methods: {
+			clickContactAddress:function(){
+				console.log("clickContactAddress");
+			},
 			
+			clickOnwerAddress:function(){
+				console.log("clickOnwerAddress");
+			},
+			
+			clickOwnerHome:function(){
+				console.log("clickOwnerHome");
+			}
 		}
 	}
 </script>
@@ -86,6 +104,42 @@
 			.one-2{
 				margin-left: 20rpx;
 				color: #000000;
+			}
+			
+			.cAddress::after{
+				display: inline-block;
+				position: absolute;
+				content: "";
+				width: 40rpx;
+				height: 40rpx;
+				right: 100rpx;
+				background: url(../../static/right-row.svg) 94% 50% no-repeat;
+			}
+			
+			.o-copy{
+				vertical-align: middle;
+				width: 40rpx;
+				height: 40rpx;
+			}
+			
+			.home {
+				vertical-align: middle;
+				display: inline-block;
+				float: right;
+				color: #8c9fad;
+				margin-right: 100rpx;
+			}
+			
+			.home::after{
+				display: inline-block;
+				position: absolute;
+				vertical-align: middle;
+				content: "";
+				width: 40rpx;
+				height: 40rpx;
+				right: 100rpx;
+				color: #8c9fad;
+				background: url(../../static/right-row.svg) 94% 50% no-repeat;
 			}
 		}
 	}
