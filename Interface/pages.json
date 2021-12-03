@@ -32,6 +32,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/manager/manager",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "Manager",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -13,6 +13,7 @@
 						<uni-list-item title="Home" note="" clickable @click="gotoPage('/pages/index/index')"></uni-list-item>
 						<uni-list-item title="Market" note="" clickable @click="gotoPage('/pages/market/market')"></uni-list-item>
 						<uni-list-item title="My" note="" clickable @click="gotoPage('/pages/my/my')"></uni-list-item>
+						<uni-list-item title="Manager" note="" clickable @click="gotoPage('/pages/manager/manager')"></uni-list-item>
 					</uni-list>
 				</scroll-view>
 			</uni-drawer>
