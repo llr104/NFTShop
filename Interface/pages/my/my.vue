@@ -1,6 +1,7 @@
 <template>
 	<view>
 		<navigation></navigation>
+		
 		<v-tabs v-model="current" :tabs="tabs" :bold="true" 
 		:lineScale="0.8" fontSize="34rpx" @change="changeTab">
 		</v-tabs>
@@ -38,6 +39,10 @@
 </script>
 
 <style lang="scss">
+	
+	.v-tabs {
+		margin-top: 1rpx;
+	}
 	.plist {
 		margin-top: 20rpx;
 	}

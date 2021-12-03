@@ -36,8 +36,15 @@
 					<view class="buy" @click="clickBuy"><text>立即购买</text></view>
 				</view>
 			</view>
-			
 		</view>
+		<uni-popup class="ph" ref="popup" type="bottom">
+			<view class="t">
+				<uni-title class="tt" title="交易记录" type="h2"></uni-title>
+			</view>
+			<scroll-view class="sh" scroll-y="true">
+				<transaction-list></transaction-list>
+			</scroll-view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -78,6 +85,11 @@
 		},
 				
 		methods: {
+			
+			moveStop:function(){
+				console.log("moveStop");
+			},
+			
 			clickContactAddress:function(){
 				console.log("clickContactAddress");
 			},
@@ -96,6 +108,7 @@
 			
 			clickMore:function(){
 				console.log("clickMore");
+				this.$refs.popup.open("bottom");
 			},
 			
 			clickLink:function(url){
@@ -220,6 +233,18 @@
 		
 	}
 	
+	.t {
+		height: 100rpx;
+		width: 100%;
+		background-color: #ffffff;
+		
+		.tt {
+			margin-left: 30rpx;
+		}
+	}
+	
+	
+	
 	.bottom{
 		width: 100%;
 		height: 100rpx;
@@ -228,7 +253,7 @@
 			left: 0;
 			bottom: 0;
 			width: 100%;
-			z-index:999;
+			z-index:1;
 			line-height: 100rpx;
 			background-color: #FFFFFF;
 			
@@ -257,6 +282,19 @@
 				margin: 10rpx 20rpx;
 			}
 		}
+	}
+	
+	.ph {
+		height: 800rpx;
+		z-index: 2;
+		touch-action: none;
+	}
+	
+	.sh {
+		width: 100%;
+		height: 700rpx;
+		background-color: #ffffff;
+
 	}
 	
 </style>
