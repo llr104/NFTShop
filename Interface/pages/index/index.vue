@@ -181,7 +181,6 @@
 			height: 100%;
 			
 			.content {	
-				
 				word-break: break-all;
 				display: -webkit-box;
 				overflow: hidden;

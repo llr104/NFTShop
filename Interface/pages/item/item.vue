@@ -21,16 +21,23 @@
 					<text class="home" @click="clickOwnerHome">个人主页</text>
 				</view>
 			</view>
-			<product-list></product-list>
+			<uni-title class="subTitle" type="h3" title="作品描述"></uni-title>
+			<text class="product-des">{{product.des}}</text>
+			<view class="record">
+				<uni-title class="subTitle saleTitle" type="h3" title="交易记录"></uni-title>
+				<text class="more" @click="clickMore">更多</text>
+			</view>
+			
+			<transaction-list @clickLink="clickLink"></transaction-list>
+			
 			<view class="bottom">
 				<view class="bottom-fixed">
 					<text class="price">{{product.price}}&nbsp;usdt</text>
 					<view class="buy" @click="clickBuy"><text>立即购买</text></view>
 				</view>
 			</view>
+			
 		</view>
-		
-		
 	</view>
 </template>
 
@@ -38,10 +45,15 @@
 	import navigation from "../../components/navigation/navigation.vue";
 	import productsMgr from "../../components/product-list/productsMgr.js";
 	import productList from "../../components/product-list/product-list.vue";
+	import transactionItem from "../../components/transaction/transaction-item.vue";
+	import transactionList from "../../components/transaction/transaction-list.vue";
+	
 	export default {
 		components:{
 			navigation,
-			productList
+			productList,
+			transactionItem,
+			transactionList
 		},
 		
 		data() {
@@ -80,6 +92,14 @@
 			
 			clickBuy:function(){
 				console.log("clickBuy");
+			},
+			
+			clickMore:function(){
+				console.log("clickMore");
+			},
+			
+			clickLink:function(url){
+				window.open(url);
 			}
 		}
 	}
@@ -153,6 +173,51 @@
 				background: url(../../static/right-row.svg) 50% no-repeat;
 			}
 		}
+	}
+	
+	.subTitle {
+		margin-left: 30rpx;
+		margin-top: 20rpx;
+	}
+	
+	.product-des {
+		margin: -20rpx 30rpx 20rpx 30rpx;
+		word-break: break-all;
+		display: -webkit-box;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: #5e697a;
+		font-size: 28rpx;
+		line-height: 1.5;
+	}
+	
+	.record{
+		vertical-align: middle;
+		.saleTitle {
+			display: inline-block;
+		}
+		.more {
+			display: inline-block;
+			position: relative;
+			height: 100%;
+			float: right;
+			right: 50rpx;
+			top: 50rpx;
+			font-size: 30rpx;
+			color: #5e697a;
+		}
+		
+		.more::after{
+			display: inline-block;
+			position: absolute;
+			content: "";
+			width: 30rpx;
+			height: 30rpx;
+			margin-top: 10rpx;
+			right: -30rpx;
+			background: url(../../static/right-row.svg) 50% no-repeat;
+		}
+		
 	}
 	
 	.bottom{

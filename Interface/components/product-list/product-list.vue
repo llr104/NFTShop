@@ -37,6 +37,7 @@
 		                title: 'CyberZodiac',
 		                price: 9999,
 		                displayOwner: "0x1245****1241",
+						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
 		            },
 					{
 						id:2,
@@ -44,6 +45,7 @@
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
+						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
 					},
 					{
 						id:3,
@@ -51,6 +53,7 @@
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
+						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
 					},
 					{
 						id:4,
@@ -58,6 +61,7 @@
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
+						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
 					},
 					{
 						id:5,
@@ -65,6 +69,7 @@
 					    title: 'CyberZodiac',
 					    price: 9999,
 					    displayOwner: "0x1245****1241",
+						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
 					},
 					{
 						id:6,
@@ -72,6 +77,7 @@
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
+						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
 					},
 					{
 						id:7,
@@ -79,6 +85,7 @@
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
+						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
 					},
 					{
 						id:8,
@@ -86,6 +93,7 @@
 						title: 'CyberZodiac',
 						price: 9999,
 						displayOwner: "0x1245****1241",
+						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
 					},
 					
 		        ]);
