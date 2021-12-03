@@ -21,8 +21,15 @@
 					<text class="home" @click="clickOwnerHome">个人主页</text>
 				</view>
 			</view>
-			
+			<product-list></product-list>
+			<view class="bottom">
+				<view class="bottom-fixed">
+					<text class="price">{{product.price}}&nbsp;usdt</text>
+					<view class="buy" @click="clickBuy"><text>立即购买</text></view>
+				</view>
+			</view>
 		</view>
+		
 		
 	</view>
 </template>
@@ -30,10 +37,11 @@
 <script>
 	import navigation from "../../components/navigation/navigation.vue";
 	import productsMgr from "../../components/product-list/productsMgr.js";
-	
+	import productList from "../../components/product-list/product-list.vue";
 	export default {
 		components:{
-			navigation
+			navigation,
+			productList
 		},
 		
 		data() {
@@ -68,6 +76,10 @@
 			
 			clickOwnerHome:function(){
 				console.log("clickOwnerHome");
+			},
+			
+			clickBuy:function(){
+				console.log("clickBuy");
 			}
 		}
 	}
@@ -142,4 +154,44 @@
 			}
 		}
 	}
+	
+	.bottom{
+		width: 100%;
+		height: 100rpx;
+		.bottom-fixed {
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			z-index:999;
+			line-height: 100rpx;
+			background-color: #FFFFFF;
+			
+			.price{
+				float: left;
+				display: inline-block;
+				margin-left: 50rpx;
+				font-weight: bolder;
+				font-size: 40rpx;
+				color: #ff56a7;
+			}
+			
+			.buy{
+				float: right;
+				display: inline-block;
+				vertical-align: middle;
+				width: 250rpx;
+				height: 80rpx;
+				background-color: #000000;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 80rpx;
+				text {
+					color: #FFFFFF;
+				}
+				margin: 10rpx 20rpx;
+			}
+		}
+	}
+	
 </style>
