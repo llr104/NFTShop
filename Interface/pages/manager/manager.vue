@@ -60,7 +60,7 @@
 	import vtab from "../../components/v-tabs/v-tabs.vue";
 	
 	var abi = require('@/static/json/abi.json');
-	var provider = require('../../script/eth.js');
+	import {provider, caddress} from '../../script/eth.js';
 	
 	console.log("abi: " + JSON.stringify(abi));
 	
@@ -96,26 +96,34 @@
 		},
 		
 		methods:{
+			
+			test() {
+				provider.eth.getAccounts((error, result) =>{
+					if (!error){
+						if(result.length>0){
+							provider.eth.getTransactionCount(result[0], (err, txCount) => {
+								const txObject = {
+								  nonce:    provider.utils.toHex(txCount),
+								  gasLimit: provider.utils.toHex(800000),
+								  gasPrice: provider.utils.toHex(provider.utils.toWei('10', 'gwei')),
+								  to: caddress,
+								}
+								
+								const contract = new provider.eth.Contract(abi, caddress);
+								contract.methods.name().call((err, result) => { console.log("data:", result) })
+							});
+						}
+					}
+				});
+			},
+			
 			changeTab(index) {
 				console.log('当前选中的项：' + index)
 			},
 			
 			cllickPTDZ:function(){
 				console.log("cllickPTDZ:", this.ptdzData);
-				
-				var caddress = "0xc25Af90c6AE3ec827936a3AD214e1D1491DFafB1";
-				console.log("provider.eth:", provider.eth);
-				provider.eth.getTransactionCount("0xB501879444f197eb6a7fDDE3B749488D769ABb2e", (err, txCount) => {
-					const txObject = {
-					  nonce:    provider.utils.toHex(txCount),
-					  gasLimit: provider.utils.toHex(800000),
-					  gasPrice: provider.utils.toHex(provider.utils.toWei('10', 'gwei')),
-					  to: caddress,
-					}
-					
-					const contract = new provider.eth.Contract(abi, caddress);
-					contract.methods.name().call((err, result) => { console.log("data:", result) })
-				});
+				this.test();
 			},
 			
 			cllickMHDZ:function(){

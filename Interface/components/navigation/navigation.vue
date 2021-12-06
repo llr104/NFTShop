@@ -24,8 +24,8 @@
 </template>
 
 <script>
-	var provider = require('../../script/eth.js');
-	
+	import {provider} from '../../script/eth.js';
+
 	export default {
 		name:"navigation",
 		emits: ['clickWallet'],
