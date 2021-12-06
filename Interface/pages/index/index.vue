@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		
-		<navigation address="aaa"></navigation>
+		<navigation></navigation>
 		
 		<!-- 轮播图 -->
 		 <swiper class="swiper" :indicatorDots="true" :autoplay="true" :interval="2000" :duration="500">

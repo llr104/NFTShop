@@ -5,7 +5,7 @@
 			<view class="navigation-logo" mode=""></view>
 			<view v-if="address.length==0" class="navigation-wallet" mode="" @click="onClickWallet"></view>
 			<view v-else class="navigation-address">
-				<text>{{address}}</text>
+				<text>{{calcAddressShow(address)}}</text>
 			</view>
 			<uni-drawer ref="showRight" mode="left" :mask-click="true" :width=250>
 				<scroll-view class="left" scroll-y="true">
@@ -24,36 +24,57 @@
 </template>
 
 <script>
+	var provider = require('../../script/eth.js');
+	
 	export default {
 		name:"navigation",
 		emits: ['clickWallet'],
 		
-		props: {
-			address: {
-				type: String,
-				default: ''
-			},
-			
-		},
+		
 		data() {
 			return {
-			
-			};
+				address:"",
+			}
 		},
 		
 		created() {
+			this.connect();
 			console.log("created:", this.address);
+			
+			//0xc25Af90c6AE3ec827936a3AD214e1D1491DFafB1
 		},
 		
 		methods:{
+			
+			connect(){
+				
+				provider.eth.getAccounts((error, result) =>{
+					if (!error){
+						console.log(result)//授权成功后result能正常获取到账号了
+						if(result.length>0){
+							this.address = result[0];
+						}
+					}
+				});
+			},
+			
 			onClickNavCtrl:function(){
 				console.log("onClickNavCtrl");
 				this.showDrawer();
 			},
 			
+			
 			onClickWallet(){
-				console.log("onClickWallet")
+				console.log("onClickWallet");
+				this.connect();
 			},
+			
+			calcAddressShow:function(address){
+				var b = address.substring(0,6);
+				var a = address.substring(address.length-4);
+				return b + "****" + a;
+			},
+			
 			
 			showDrawer() {
 			    this.$refs.showRight.open();
@@ -119,7 +140,7 @@
 			
 			.navigation-address {
 				float: right;
-				width: 180rpx;
+				width: 250rpx;
 				margin: 20rpx 10rpx 20rpx 0;
 				height: 50rpx;
 				line-height: 50rpx;
