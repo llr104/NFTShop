@@ -62,7 +62,8 @@
 	var abi = require('@/static/json/abi.json');
 	import {provider, caddress} from '../../script/eth.js';
 	
-	console.log("abi: " + JSON.stringify(abi));
+	var Eth = require('../../script/ethjs-query.js');
+	var EthContract = require('../../script/ethjs-contract.js');
 	
 	export default {
 		comments:{
@@ -123,7 +124,42 @@
 			
 			cllickPTDZ:function(){
 				console.log("cllickPTDZ:", this.ptdzData);
-				this.test();
+				// this.test();
+				
+				if (typeof web3 !== 'undefined') {
+					var eth = new Eth(web3.currentProvider);
+				
+					console.log("eth:", eth);
+				    var contract = new EthContract(eth);
+					var NFTContract = contract(abi);
+					var nft = NFTContract.at(caddress);
+					console.log("nft:", nft);
+					// nft.name(function(error, result){
+					// 	console.log("error:", error);
+					// 	console.log("result:", result);
+					// });
+					
+					eth.accounts(function(error, result){
+						console.log("accounts:", error, result);
+						if(!error && result.length != 0){
+							
+							let _to = result[0];
+							let _from = result[0];
+							let _uri = "https://www.ibox.fan/file/oss/nft/image/nft-goods/821aecc4c6eb4327be81fdea9fabbc98.png?style=st6"
+							let _type = 1;
+							let _count = 2;
+							let _isGroup = true;
+							
+							nft.mint(_to, _uri, _type, _count, _isGroup, {from: _from}, function(error, result){
+								console.log("mint error:", error);
+								console.log("mint result:", result);
+							});
+						}
+					});
+					
+				} else {
+				    alert("No currentProvider for web3");
+				}
 			},
 			
 			cllickMHDZ:function(){

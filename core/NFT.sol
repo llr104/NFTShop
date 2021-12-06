@@ -9,8 +9,8 @@ contract NFTBox is NFTMdata, Ownable{
         nftSymbol = _symbol;
     }
 
-    function mint(address _to, string calldata _uri, NFTType _type, uint32 count, bool _isGroup) external onlyManager{
-        super._mint(_to, _uri, _type, count, _isGroup);
+    function mint(address _to, string calldata _uri, NFTType _type, uint32 _count, bool _isGroup) external onlyManager{
+        super._mint(_to, _uri, _type, _count, _isGroup);
     }
     
     function burn(uint256 _tokenId) external onlyManager {

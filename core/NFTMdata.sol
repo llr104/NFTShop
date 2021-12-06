@@ -53,12 +53,12 @@ contract NFTMdata is NFToken {
         return ownerToIds[_owner][_index];
     }
     
-    function _mint(address _to, string memory _uri, NFTType _type, uint32 count, bool _isGroup) internal {
+    function _mint(address _to, string memory _uri, NFTType _type, uint32 _count, bool _isGroup) internal {
         if(_isGroup){
             groupId++;
         }
 
-        for (uint256 i = 0; i < count; i++) {
+        for (uint256 i = 0; i < _count; i++) {
             uint256 _tokenId = super._mint(_to);
            
             tokens.push(_tokenId);
