@@ -169,10 +169,24 @@
 			
 			cllickXH:function(){
 				console.log("cllickXH:", this.xhData);
+				
+				
+				
 			},
 			
 			cllickCH:function(){
 				console.log("cllickCH:", this.cxData);
+				
+				var eth = new Eth(web3.currentProvider);
+				console.log("eth:", eth);
+				var contract = new EthContract(eth);
+				var NFTContract = contract(abi);
+				var nft = NFTContract.at(caddress);
+				
+				nft.cAttributes(1, function(error, result){
+					console.log("error:", error);
+					console.log("result:", result);
+				});
 			}
 		}
 	}
