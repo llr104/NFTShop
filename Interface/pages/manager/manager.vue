@@ -13,6 +13,9 @@
 				<uni-forms-item required name="des" label="NFT描述">
 					<uni-easyinput type="text" v-model="ptdzData.des" placeholder="请输入NFT描述" />
 				</uni-forms-item>
+				<uni-forms-item required name="uri" label="NFT URI">
+					<uni-easyinput type="text" v-model="ptdzData.uri" placeholder="请输入NFT URI" />
+				</uni-forms-item>
 				<uni-forms-item required name="count" label="NFT数量">
 					<uni-easyinput type="number" v-model="ptdzData.count" placeholder="请输入NFT数量" />
 				</uni-forms-item>
@@ -20,13 +23,33 @@
 			<button @click="cllickPTDZ">普通锻造</button>
 		</view>
 		<view class="mhdz" v-if="current==1">
-			<text>盲盒锻造</text>
+			<uni-forms :modelValue="ptdzData">
+				<uni-forms-item required name="name" label="盲盒名字">
+					<uni-easyinput type="text" v-model="ptdzData.name" placeholder="请输入盲盒名字" />
+				</uni-forms-item>
+				<uni-forms-item required name="des" label="盲盒描述">
+					<uni-easyinput type="text" v-model="ptdzData.des" placeholder="请输入盲盒描述" />
+				</uni-forms-item>
+				<uni-forms-item required name="uri" label="盲盒 URI">
+					<uni-easyinput type="text" v-model="ptdzData.uri" placeholder="请输入盲盒 URI" />
+				</uni-forms-item>
+				<uni-forms-item required name="count" label="盲盒数量">
+					<uni-easyinput type="number" v-model="ptdzData.count" placeholder="请输入盲盒数量" />
+				</uni-forms-item>
+			</uni-forms>
+			<button @click="cllickMHDZ">盲盒锻造</button>
 		</view>
 		<view class="xh" v-if="current==2">
-			销毁
+			<uni-forms-item required name="tokenId" label="tokenId">
+				<uni-easyinput type="number" v-model="xhData.tokenId" placeholder="请输入需要销毁的tokenId" />
+			</uni-forms-item>
+			<button @click="cllickXH">销毁</button>
 		</view>
 		<view class="cx" v-if="current==3">
-			查询
+			<uni-forms-item required name="tokenId" label="tokenId">
+				<uni-easyinput type="number" v-model="cxData.tokenId" placeholder="请输入需要查询的tokenId" />
+			</uni-forms-item>
+			<button @click="cllickCH">查询</button>
 		</view>
 
 	</view>
@@ -49,7 +72,20 @@
 				ptdzData:{
 					name: "",
 					des: "",
-					count: 0
+					count: 0,
+					uri: ""
+				},
+				mhdzData:{
+					name: "",
+					des: "",
+					count: 0,
+					uri: ""
+				},
+				xhData:{
+					tokenId:"",
+				},
+				cxData: {
+					tokenId:"",
 				}
 			};
 		},
@@ -61,6 +97,19 @@
 			
 			cllickPTDZ:function(){
 				console.log("cllickPTDZ:", this.ptdzData);
+			},
+			
+			cllickMHDZ:function(){
+				console.log("cllickMHDZ:", this.mhdzData);
+			},
+			
+			
+			cllickXH:function(){
+				console.log("cllickXH:", this.xhData);
+			},
+			
+			cllickCH:function(){
+				console.log("cllickCH:", this.cxData);
 			}
 		}
 	}
@@ -72,4 +121,23 @@
 		padding: 50rpx;
 		background-color: #FFFFFF;
 	}
+	
+	.mhdz {
+		margin-top: 2rpx;
+		padding: 50rpx;
+		background-color: #FFFFFF;
+	}
+	
+	.xh {
+		margin-top: 2rpx;
+		padding: 50rpx;
+		background-color: #FFFFFF;
+	}
+	
+	.cx {
+		margin-top: 2rpx;
+		padding: 50rpx;
+		background-color: #FFFFFF;
+	}
+	
 </style>
