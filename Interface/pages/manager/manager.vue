@@ -51,6 +51,18 @@
 			</uni-forms-item>
 			<button @click="cllickCH">查询</button>
 		</view>
+		<view class="gs" v-if="current==4">
+			<uni-forms-item required name="tokenId" label="tokenId">
+				<uni-easyinput type="number" v-model="gsData.tokenId" placeholder="请输入tokenId" />
+			</uni-forms-item>
+			<uni-forms-item required name="price" label="价格">
+				<uni-easyinput type="number" v-model="gsData.price" placeholder="请输入挂售金额" />
+			</uni-forms-item>
+			<uni-forms-item required name="onSale" label="是否挂售">
+				<switch ref="gsSwitch" v-model="gsData.onSale"/>
+			</uni-forms-item>
+			<button @click="cllickGS">提交</button>
+		</view>
 
 	</view>
 </template>
@@ -70,7 +82,7 @@
 		data() {
 			return {
 				current: 0,
-				tabs: ['普通锻造', "盲盒锻造",'销毁', '查询'],
+				tabs: ['普通锻造', "盲盒锻造",'销毁', '查询', "挂售"],
 				ptdzData:{
 					name: "",
 					des: "",
@@ -88,6 +100,10 @@
 				},
 				cxData: {
 					tokenId:"",
+				},
+				gsData: {
+					tokenId:"",
+					price:0,
 				}
 			};
 		},
@@ -145,7 +161,7 @@
 							let _isGroup = true;
 							let _type = 1;
 							
-							nftc.mint(_to, _name, _uri, _type, _count, _isGroup, {from: _from}, function(error, result){
+							nftc.mint(_to, _name, _uri, _type, _count, _isGroup, {from: _from}, (error, result)=>{
 								console.log("mint error:", error);
 								console.log("mint result:", result);
 								if(!error){
@@ -183,6 +199,35 @@
 			cllickCH:function(){
 				console.log("cllickCH:", this.cxData);
 				tokens.queryAllToken();
+			},
+			
+			cllickGS:function(){
+				console.log("cllickGS:", this.gsData);
+				let onSale = this.$refs.gsSwitch.switchChecked;
+				
+				let nftc = tokens.getNFTC();
+				let eth = tokens.getETH();
+				
+				if(this.gsData.tokenId){
+					
+					eth.accounts((error, result)=>{
+						let _from = result[0];
+						let tokenId = Number(this.gsData.tokenId);
+						if(this.gsData.price){
+							let price = Number(this.gsData.price);
+							nftc.setTokenPriceAndSale(tokenId, price, onSale, {from: _from}, (error, result)=>{
+								if(error){
+									uni.showToast({
+										title:"修改失败"
+									})
+								}
+								console.log("setTokenPriceAndSale:", error, result);
+							});
+						}
+						
+					});
+					
+				}
 			}
 		}
 	}
@@ -208,6 +253,12 @@
 	}
 	
 	.cx {
+		margin-top: 2rpx;
+		padding: 50rpx;
+		background-color: #FFFFFF;
+	}
+	
+	.gs {
 		margin-top: 2rpx;
 		padding: 50rpx;
 		background-color: #FFFFFF;

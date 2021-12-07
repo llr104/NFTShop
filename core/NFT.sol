@@ -38,6 +38,11 @@ contract NFTBox is NFTMdata, Ownable{
         super._setTokenPrice(_tokenId, _price);
     }
 
+    function setTokenPriceAndSale(uint256 _tokenId, uint256 _price, bool _onSale) external canOperate(_tokenId){
+        super._setTokenPrice(_tokenId, _price);
+        super._setTokenOnSale(_tokenId, _onSale);
+    }
+
     function setTokenOnSale(uint256 _tokenId, bool _onSale) external canOperate(_tokenId){
         super._setTokenOnSale(_tokenId, _onSale);
     }

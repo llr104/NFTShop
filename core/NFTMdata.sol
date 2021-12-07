@@ -167,11 +167,16 @@ contract NFTMdata is NFToken {
     }
 
     function _setTokenPrice(uint256 _tokenId, uint256 _price) internal validNFToken(_tokenId){
-        cAttributes[_tokenId].price = _price;
+        if(_price != cAttributes[_tokenId].price){
+             cAttributes[_tokenId].price = _price;
+        }
+       
     }
 
     function _setTokenOnSale(uint256 _tokenId, bool _onSale) internal validNFToken(_tokenId){
-        cAttributes[_tokenId].onSale = _onSale;
+        if(_onSale != cAttributes[_tokenId].onSale){
+            cAttributes[_tokenId].onSale = _onSale;
+        }
     }
     
     function _setTokenAttributes(uint256 _tokenId, uint256 _index,uint256 _tvalue) internal validNFToken(_tokenId){
