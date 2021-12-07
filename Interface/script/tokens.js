@@ -43,26 +43,31 @@
 						let ids = result[0];
 						console.log("totalTokens ids:", ids);
 						for (let i = 0; i < ids.length; i++) {
-							let id = ids[i];
+							let id = ids[i].toNumber();
 							this.NFTC.cAttributes(id, (error, result)=>{
 								if(!error){
 									console.log("cAttributes:", result);
-								
+									
 									let token = {};
 									token.id = id;
-									console.log("aaaaa");
-									
 									token.describe = result.describe;
 									token.groupId = result.groupId.toNumber();
 									token.nftType = result.nftType.toNumber();
 									token.onSale = result.onSale;
 									token.price = result.price.toNumber();
 									token.uri = result.uri;
-									token.name = "";
+									token.name = "这里是名字";
 									token.ownerAddress = "";
-									this.tokenMap.set(id, token);
-									console.log("this.tokenMap:", this.tokenMap);
-									uni.$emit("TokensUpdate", this.tokenMap);
+									
+									this.NFTC.ownerOf(id, (error, result)=>{
+										if(!error){
+											token.ownerAddress = result[0];
+											this.tokenMap.set(id, token);
+											console.log("this.tokenMap:", this.tokenMap);
+											uni.$emit("TokensUpdate", this.tokenMap);
+										}
+									});
+									
 								}
 							});
 						}
