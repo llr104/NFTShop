@@ -2,27 +2,27 @@
 	<view>
 		<navigation></navigation>
 		<view v-if="isFound">
-			<image class="product-image" :src="product.image" mode="widthFix"></image>
-			<uni-title class="product-title" :title=product.title></uni-title>
+			<image class="product-image" :src="product.uri" mode="widthFix"></image>
+			<uni-title class="product-title" :title=product.name></uni-title>
 			<view class="center-card">
 				<view class="one one-margin" @click="clickContactAddress">
 					<text class="one-1">合约地址:</text>
-					<text class="one-2 cAddress">0x0agag....aaaa</text>
+					<text class="one-2 cAddress">{{addressShow(caddress)}}</text>
 				</view>
 				<view class="one one-margin">
 					<text class="one-1">链上标志:</text>
-					<text class="one-2">12345</text>
+					<text class="one-2">{{product.id}}</text>
 				</view>
 				
 				<view class="one">
 					<text class="one-1">拥有者&nbsp;&nbsp;&nbsp;:</text>
-					<text class="one-2 oAddress">0xaaa....xxx</text>
+					<text class="one-2 oAddress">{{addressShow(product.ownerAddress)}}</text>
 					<image class="o-copy" src="../../static/copy-icon.svg" @click="clickOnwerAddress"></image>
 					<text class="home" @click="clickOwnerHome">个人主页</text>
 				</view>
 			</view>
 			<uni-title class="subTitle" type="h3" title="作品描述"></uni-title>
-			<text class="product-des">{{product.des}}</text>
+			<text class="product-des">{{product.describe}}</text>
 			<view class="record">
 				<uni-title class="subTitle saleTitle" type="h3" title="交易记录"></uni-title>
 				<text class="more" @click="clickMore">更多</text>
@@ -49,11 +49,14 @@
 </template>
 
 <script>
+	import {addressShow} from "../../lib/utils";
 	import navigation from "../../components/navigation/navigation.vue";
 	import productsMgr from "../../components/product-list/productsMgr.js";
 	import productList from "../../components/product-list/product-list.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
+	
+	import {caddress} from '../../script/eth.js';
 	
 	export default {
 		components:{
@@ -66,12 +69,14 @@
 		data() {
 			return {
 				isFound:false,
+				caddress:caddress,
 				product:{}
 			}
 		},
 		
 		onLoad(options) {
 			console.log("options:", options);
+			this.addressShow = addressShow;
 			if(options.id){
 				this.product = productsMgr.getProuductById(options.id);
 				if(this.product){
@@ -83,7 +88,7 @@
 			
 			console.log("this.product:", this.product);
 		},
-				
+			
 		methods: {
 			
 			moveStop:function(){

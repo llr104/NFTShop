@@ -40,8 +40,6 @@
 		created() {
 			this.connect();
 			console.log("created:", this.address);
-			
-			//0xc25Af90c6AE3ec827936a3AD214e1D1491DFafB1
 		},
 		
 		methods:{

@@ -17,7 +17,7 @@
 		</swiper>
 		
 		<uni-title class="subTitle" type="h3" title="发现NFT"></uni-title>
-		<product-list @clickProduct="onClickProduct"></product-list>
+		<product-list ref="pl" @clickProduct="onClickProduct"></product-list>
 		<view class="more" @click="clickMore">
 			<text>查看更多</text>
 		</view>
@@ -42,7 +42,7 @@
 <script>
 	import productList from "../../components/product-list/product-list.vue";
 	import navigation from "../../components/navigation/navigation.vue";
-	
+	var tokens = require('../../script/tokens.js');
 	export default {
 		components:{
 			productList
@@ -69,6 +69,12 @@
 				]
 			}
 		},
+		
+		onLoad() {
+			console.log("onLoad");
+			tokens.queryAllToken();
+		},
+		
 		methods: {
 			clickAd:function(){
 				uni.showToast({

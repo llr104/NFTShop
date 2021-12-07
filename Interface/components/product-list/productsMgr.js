@@ -4,7 +4,9 @@ const productsMgr = (function () {
         this.name = 'productsMgr'
 		this.plMap = new Map();
 		uni.$on("TokensUpdate", (ref)=>{
+			console.log("TokensUpdate");
 			this.putProducts(ref);
+			uni.$emit("ProductUpdate", ref);
 		})
 		
 		this.show = ()=>{

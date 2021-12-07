@@ -167,15 +167,11 @@
 			
 			cllickXH:function(){
 				console.log("cllickXH:", this.xhData);
-				
-				
-				
 			},
 			
 			cllickCH:function(){
 				console.log("cllickCH:", this.cxData);
 				tokens.queryAllToken();
-				
 			}
 		}
 	}

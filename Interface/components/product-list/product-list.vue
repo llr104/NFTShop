@@ -7,7 +7,7 @@
 			
 			<view class="product-text">
 				<view class="product-title">{{product.name}}</view>
-				<view class="product-onwer">{{calcAddressShow(product.ownerAddress)}}</view>
+				<view class="product-onwer">{{addressShow(product.ownerAddress)}}</view>
 				<view class="product-price">{{product.price}}&nbsp;usdt</view>
 			</view>
 			 <view class="right-row"></view>
@@ -18,10 +18,19 @@
 <script>
 	import productsMgr from "./productsMgr.js";
 	import tokens from "../../script/tokens.js";
+	import {addressShow} from "../../lib/utils";
 	
 	export default {
 		name:"product-list",
 		emits:["clickProduct"],
+		
+		props: {
+			filter: {
+				type: String,
+				default: ''
+			},
+		},
+		
 		data() {
 		    return {
 		        title: 'product-list',
@@ -31,27 +40,26 @@
 		},
 		methods: {
 			
-			calcAddressShow:function(address){
-				var b = address.substring(0,6);
-				var a = address.substring(address.length-4);
-				return b + "****" + a;
-			},
-			
-		    loadData(action = 'add') {
-				
-				let all = tokens.getAllToken(); 
-				
-				console.log("all:", all);
+		    loadData() {
+				let all = tokens.getAllToken();
 				let ts = [...all.values()];
-				productsMgr.putProducts(ts);
 				
-		        if (action === 'refresh') {
-		            productsMgr.clearProuducts();
-		        }
+				if(!this.filter){
+					productsMgr.putProducts(ts);
+				}else{
+					for (var i = 0; i < ts.length; i++) {
+						var t = ts[i];
+						if(t.onwerAddress == this.filter){
+							productsMgr.putProducts(t);
+						}
+					}
+				}
 				this.productList = productsMgr.getProuducts();
-				
-				console.log("productList:", this.productList);
 		    },
+			
+			clear(){
+				productsMgr.clearProuducts();
+			},
 			
 			clickProduct:function(product){
 				console.log("clickProduct:", product);
@@ -59,11 +67,20 @@
 				productsMgr.show();
 			}
 		},
+		
 		mounted() {
+			console.log("mounted");
+			this.addressShow = addressShow;
 		    this.loadData();
+			
 		    setTimeout(() => {
 		        this.renderImage = true;
 		    }, 300);
+			
+			uni.$on("ProductUpdate", ()=>{
+				console.log("ProductUpdate");
+				this.loadData();
+			})
 		},
 		
 	}
