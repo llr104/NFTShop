@@ -304,6 +304,11 @@
 				"type": "uint256"
 			},
 			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
 				"internalType": "bool",
 				"name": "onSale",
 				"type": "bool"
@@ -554,6 +559,11 @@
 				"internalType": "address",
 				"name": "_to",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -844,6 +854,26 @@
 				"type": "uint256"
 			},
 			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "setTokenName",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
 				"internalType": "bool",
 				"name": "_onSale",
 				"type": "bool"
@@ -883,27 +913,6 @@
 			{
 				"internalType": "string",
 				"name": "_symbol",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "tokenUri",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "_uri",
 				"type": "string"
 			}
 		],

@@ -27,6 +27,7 @@ contract NFTMdata is NFToken {
         string      uri;
         string      describe;   //描述
         uint256     price;      //价格
+        string      name;
         bool        onSale;     //是否在售      
         uint256[]   atterbutes; //一些属性
     }
@@ -51,7 +52,7 @@ contract NFTMdata is NFToken {
         return ownerToIds[_owner];
     }
 
-    function _mint(address _to, string memory _uri, NFTType _type, uint32 _count, bool _isGroup) internal {
+    function _mint(address _to, string memory _name, string memory _uri, NFTType _type, uint32 _count, bool _isGroup) internal {
         if(_isGroup){
             groupId++;
         }
@@ -71,6 +72,7 @@ contract NFTMdata is NFToken {
             }
             _setTokenUri(_tokenId, _uri);
             _setNFTType(_tokenId, _type);
+            _setTokenName(_tokenId, _name);
         }
     
     }
@@ -143,8 +145,8 @@ contract NFTMdata is NFToken {
         // cAttributes[_newTokenId] = cattr;
     }
 
-    function tokenUri(uint256 _tokenId) public view returns(string memory _uri){
-        _uri = cAttributes[_tokenId].uri;
+    function _setTokenName(uint256 _tokenId, string memory _name) internal validNFToken(_tokenId) {
+        cAttributes[_tokenId].name = _name;    
     }
 
     function _setTokenUri(uint256 _tokenId, string memory _uri) internal validNFToken(_tokenId) {

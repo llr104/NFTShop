@@ -9,8 +9,8 @@ contract NFTBox is NFTMdata, Ownable{
         nftSymbol = _symbol;
     }
 
-    function mint(address _to, string calldata _uri, NFTType _type, uint32 _count, bool _isGroup) external onlyManager{
-        super._mint(_to, _uri, _type, _count, _isGroup);
+    function mint(address _to, string calldata _name, string calldata _uri, NFTType _type, uint32 _count, bool _isGroup) external onlyManager{
+        super._mint(_to, _name, _uri, _type, _count, _isGroup);
     }
     
     function burn(uint256 _tokenId) external onlyManager {
@@ -20,6 +20,11 @@ contract NFTBox is NFTMdata, Ownable{
     function openBlindBox(uint256 _tokenId) external canOperate(_tokenId) {
         super._openBlindBox(_tokenId);
     }
+
+    
+    function setTokenName(uint256 _tokenId, string calldata _name) external onlyManager{
+        super._setTokenName(_tokenId, _name);
+    }
     
     function setTokenDescribe(uint256 _tokenId, string calldata _des) external onlyManager{
         super._setTokenDescribe(_tokenId, _des);
@@ -28,7 +33,6 @@ contract NFTBox is NFTMdata, Ownable{
     function setNFTType(uint256 _tokenId, NFTType _type) external onlyManager{
         super._setNFTType(_tokenId, _type);
     }
-
 
     function setTokenPrice(uint256 _tokenId, uint256 _price) external canOperate(_tokenId){
         super._setTokenPrice(_tokenId, _price);

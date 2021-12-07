@@ -120,38 +120,49 @@
 			
 			cllickPTDZ:function(){
 				console.log("cllickPTDZ:", this.ptdzData);
-				// this.test();
 				
 				if (typeof web3 !== 'undefined') {
-					var eth = new Eth(web3.currentProvider);
-				
-					console.log("eth:", eth);
-				    var contract = new EthContract(eth);
-					var NFTContract = contract(abi);
-					var nft = NFTContract.at(caddress);
-					console.log("nft:", nft);
-					// nft.name(function(error, result){
-					// 	console.log("error:", error);
-					// 	console.log("result:", result);
-					// });
+					let nftc = tokens.getNFTC();
+					let eth = tokens.getETH();
 					
-					eth.accounts(function(error, result){
+					uni.showLoading({
+						title:"锻造中",
+					});
+					eth.accounts((error, result)=>{
 						console.log("accounts:", error, result);
+						
 						if(!error && result.length != 0){
 							
+							let name = "生肖头像";
+							let des = "漂亮的NFT";
+							let count = 1;
+							let uri ="https://www.ibox.fan/file/oss/nft/image/nft-goods/821aecc4c6eb4327be81fdea9fabbc98.png?style=st6";
 							let _to = result[0];
 							let _from = result[0];
-							let _uri = "https://www.ibox.fan/file/oss/nft/image/nft-goods/821aecc4c6eb4327be81fdea9fabbc98.png?style=st6"
-							let _type = 1;
-							let _count = 2;
+							let _name = this.ptdzData.name ? this.ptdzData.name.length : name;
+							let _uri = this.ptdzData.uri ? this.ptdzData.uri.length : uri
+							let _count = this.ptdzData.count ? this.ptdzData.count : count;
 							let _isGroup = true;
+							let _type = 1;
 							
-							nft.mint(_to, _uri, _type, _count, _isGroup, {from: _from}, function(error, result){
+							nftc.mint(_to, _name, _uri, _type, _count, _isGroup, {from: _from}, function(error, result){
 								console.log("mint error:", error);
 								console.log("mint result:", result);
+								if(!error){
+									uni.showToast({
+										title:"锻造成功"
+									});
+								}else{
+									uni.showToast({
+										title:"锻造失败"
+									});
+								}
 							});
-							
-							
+						}else{
+							uni.hideLoading();
+							uni.showToast({
+								title:"锻造失败"
+							});
 						}
 					});
 					

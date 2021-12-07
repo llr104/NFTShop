@@ -12,6 +12,7 @@
 			var contract = new EthContract(eth);
 			var NFTContract = contract(abi);
 			this.NFTC = NFTContract.at(caddress);
+			this.ETH = eth;
 			
 			this.show = ()=>{
 				console.log("show:", this.name);
@@ -56,7 +57,7 @@
 									token.onSale = result.onSale;
 									token.price = result.price.toNumber();
 									token.uri = result.uri;
-									token.name = "这里是名字";
+									token.name = result.name;
 									token.ownerAddress = "";
 									
 									this.NFTC.ownerOf(id, (error, result)=>{
@@ -77,6 +78,14 @@
 			
 			this.getAllToken = ()=>{
 				return this.tokenMap;
+			}
+			
+			this.getNFTC = ()=> {
+				return this.NFTC;
+			}
+			
+			this.getETH = ()=> {
+				return this.ETH;
 			}
 		}
 		
