@@ -33,7 +33,8 @@
 			<view class="bottom">
 				<view class="bottom-fixed">
 					<text class="price">{{product.price}}&nbsp;usdt</text>
-					<view class="buy" @click="clickBuy"><text>立即购买</text></view>
+					<view v-if="product.onSale==true" class="buy" @click="clickBuy"><text>立即购买</text></view>
+					<view v-if="product.onSale==false" class="sellOut" @click="clickBuy"><text>已售罄</text></view>
 				</view>
 			</view>
 		</view>
@@ -281,6 +282,24 @@
 				border-radius: 30rpx;
 				text-align: center;
 				line-height: 80rpx;
+				font-weight: bold;
+				text {
+					color: #FFFFFF;
+				}
+				margin: 10rpx 20rpx;
+			}
+			
+			.sellOut {
+				float: right;
+				display: inline-block;
+				vertical-align: middle;
+				width: 250rpx;
+				height: 80rpx;
+				background-color: #e7e7e7;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 80rpx;
+				font-weight: bold;
 				text {
 					color: #FFFFFF;
 				}
@@ -299,7 +318,6 @@
 		width: 100%;
 		height: 700rpx;
 		background-color: #ffffff;
-
 	}
 	
 </style>
