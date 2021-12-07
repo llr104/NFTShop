@@ -43,16 +43,14 @@ contract NFTMdata is NFToken {
         return tokens.length;
     }
 
-    function tokenByIndex(uint256 _index) external view returns (uint256){
-        require(_index < tokens.length, INVALID_INDEX);
-        return tokens[_index];
+    function totalTokens() external view returns (uint256[] memory) {
+        return tokens;
     }
 
-    function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256){
-        require(_index < ownerToIds[_owner].length, INVALID_INDEX);
-        return ownerToIds[_owner][_index];
+    function ownerTokens(address _owner) external view returns (uint256[] memory) {
+        return ownerToIds[_owner];
     }
-    
+
     function _mint(address _to, string memory _uri, NFTType _type, uint32 _count, bool _isGroup) internal {
         if(_isGroup){
             groupId++;

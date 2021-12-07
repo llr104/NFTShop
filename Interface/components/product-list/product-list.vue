@@ -2,12 +2,12 @@
 	<view class="product-list">
 	    <view class="product" v-for="(product,index) in productList" :key="index" @click="clickProduct(product)">
 	        <view class="image-view">
-	            <image v-if="renderImage" class="product-image" :src="product.image"></image>
+	            <image v-if="renderImage" class="product-image" :src="product.uri"></image>
 	        </view>
 			
 			<view class="product-text">
-				<view class="product-title">{{product.title}}</view>
-				<view class="product-onwer">{{product.displayOwner}}</view>
+				<view class="product-title">{{product.name}}</view>
+				<view class="product-onwer">{{calcAddressShow(product.ownerAddress)}}</view>
 				<view class="product-price">{{product.price}}&nbsp;usdt</view>
 			</view>
 			 <view class="right-row"></view>
@@ -17,7 +17,8 @@
 
 <script>
 	import productsMgr from "./productsMgr.js";
-	console.log("productsMgr:", productsMgr);
+	import tokens from "../../script/tokens.js";
+	
 	export default {
 		name:"product-list",
 		emits:["clickProduct"],
@@ -29,74 +30,21 @@
 		    };
 		},
 		methods: {
+			
+			calcAddressShow:function(address){
+				var b = address.substring(0,6);
+				var a = address.substring(address.length-4);
+				return b + "****" + a;
+			},
+			
 		    loadData(action = 'add') {
-				productsMgr.putProducts([
-					{
-						id:1,
-		                image: "../../static/item.png",
-		                title: 'CyberZodiac',
-		                price: 9999,
-		                displayOwner: "0x1245****1241",
-						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
-		            },
-					{
-						id:2,
-						image: "../../static/item.png",
-						title: 'CyberZodiac',
-						price: 9999,
-						displayOwner: "0x1245****1241",
-						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
-					},
-					{
-						id:3,
-						image: "../../static/item.png",
-						title: 'CyberZodiac',
-						price: 9999,
-						displayOwner: "0x1245****1241",
-						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
-					},
-					{
-						id:4,
-						image: "../../static/item.png",
-						title: 'CyberZodiac',
-						price: 9999,
-						displayOwner: "0x1245****1241",
-						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
-					},
-					{
-						id:5,
-					    image: "../../static/item.png",
-					    title: 'CyberZodiac',
-					    price: 9999,
-					    displayOwner: "0x1245****1241",
-						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
-					},
-					{
-						id:6,
-						image: "../../static/item.png",
-						title: 'CyberZodiac',
-						price: 9999,
-						displayOwner: "0x1245****1241",
-						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
-					},
-					{
-						id:7,
-						image: "../../static/item.png",
-						title: 'CyberZodiac',
-						price: 9999,
-						displayOwner: "0x1245****1241",
-						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
-					},
-					{
-						id:8,
-						image: "../../static/item.png",
-						title: 'CyberZodiac',
-						price: 9999,
-						displayOwner: "0x1245****1241",
-						des: "这里是作品描述，这里是作品描述，这里是作品描述， 这里是作品描述"
-					},
-					
-		        ]);
+				
+				let all = tokens.getAllToken(); 
+				
+				console.log("all:", all);
+				let ts = [...all.values()];
+				productsMgr.putProducts(ts);
+				
 		        if (action === 'refresh') {
 		            productsMgr.clearProuducts();
 		        }

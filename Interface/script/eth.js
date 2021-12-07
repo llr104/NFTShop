@@ -20,7 +20,7 @@ if (window.ethereum) {
 	web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
 }
 var provider = new Web3(web3Provider);//web3js就是你需要的web3实例
-var caddress = "0xc25Af90c6AE3ec827936a3AD214e1D1491DFafB1";
+var caddress = "0x9f2c1Ad433726A6B95D21bdA5B554dcd72b9d980";
 
 module.exports = {
 	"provider": provider,

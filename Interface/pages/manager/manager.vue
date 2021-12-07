@@ -59,11 +59,7 @@
 	import navigation from "../../components/navigation/navigation.vue";
 	import vtab from "../../components/v-tabs/v-tabs.vue";
 	
-	var abi = require('@/static/json/abi.json');
-	import {provider, caddress} from '../../script/eth.js';
-	
-	var Eth = require('../../script/ethjs-query.js');
-	var EthContract = require('../../script/ethjs-contract.js');
+	var tokens = require('../../script/tokens.js');
 	
 	export default {
 		comments:{
@@ -154,6 +150,8 @@
 								console.log("mint error:", error);
 								console.log("mint result:", result);
 							});
+							
+							
 						}
 					});
 					
@@ -176,17 +174,8 @@
 			
 			cllickCH:function(){
 				console.log("cllickCH:", this.cxData);
+				tokens.queryAllToken();
 				
-				var eth = new Eth(web3.currentProvider);
-				console.log("eth:", eth);
-				var contract = new EthContract(eth);
-				var NFTContract = contract(abi);
-				var nft = NFTContract.at(caddress);
-				
-				nft.cAttributes(1, function(error, result){
-					console.log("error:", error);
-					console.log("result:", result);
-				});
 			}
 		}
 	}

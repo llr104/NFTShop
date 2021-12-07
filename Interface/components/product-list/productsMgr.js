@@ -3,6 +3,10 @@ const productsMgr = (function () {
     function _mgr() {
         this.name = 'productsMgr'
 		this.plMap = new Map();
+		uni.$on("TokensUpdate", (ref)=>{
+			this.putProducts(ref);
+		})
+		
 		this.show = ()=>{
 			console.log("show:", this.name);
 		}
