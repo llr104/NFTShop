@@ -87,6 +87,11 @@
 				return this.tokenMap;
 			}
 			
+			this.updateToken = (t)=>{
+				this.tokenMap.set(t.id, t);
+				uni.$emit("TokensUpdate", this.tokenMap);
+			}
+			
 			this.getNFTC = ()=> {
 				return this.NFTC;
 			}

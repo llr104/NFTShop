@@ -44,7 +44,6 @@
 					<view v-else-if="product.onSale==false" class="sellOut" @click="clickBuy"><text>已售罄</text></view>
 				</view>
 				<view class="space">
-					
 				</view>
 			</view>
 			
@@ -172,6 +171,12 @@
 			
 			clickUpSell:function(){
 				console.log("clickUpSell");
+				uni.navigateTo({
+					url:"../resell/resell?id="+this.product.id,
+					complete:function(r){
+						console.log(r);
+					}
+				})
 			},
 			
 			clickDownSell:function(){
