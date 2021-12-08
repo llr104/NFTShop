@@ -33,12 +33,28 @@
 			<view class="bottom">
 				<view class="bottom-fixed">
 					<text class="price">{{product.price}}&nbsp;usdt</text>
-					<view v-if="product.onSale==true" class="buy" @click="clickBuy"><text>立即购买</text></view>
-					<view v-if="product.onSale==false" class="sellOut" @click="clickBuy"><text>已售罄</text></view>
+					
+					<view v-if="product.onSale==false && myAddress==product.ownerAddress"
+					class="upSell" @click="clickUpSell"><text>立即挂售</text></view>
+					
+					<view v-else-if="product.onSale==true && myAddress==product.ownerAddress"
+					class="downSell" @click="clickDownSell"><text>取消挂售</text></view>
+					
+					<view v-else-if="product.onSale==true" class="buy" @click="clickBuy"><text>立即购买</text></view>
+					<view v-else-if="product.onSale==false" class="sellOut" @click="clickBuy"><text>已售罄</text></view>
 				</view>
 			</view>
+			
+			<uni-popup class="downSale_popup" ref="downSale_popup" type="top">
+				<view class="c">
+					<uni-title class="t" title="您确定取消挂售吗？" type="h1"></uni-title>
+					<button class="downSaleBtnLeft" type="default" @click="downSaleCancle">取消</button>
+					<button class="downSaleBtnRight" type="default" @click="downSaleOK">确定</button>
+				</view>
+				
+			</uni-popup>
 		</view>
-		<uni-popup class="ph" ref="popup" type="bottom">
+		<uni-popup class="ph" ref="ph_popup" type="bottom">
 			<view class="t">
 				<uni-title class="tt" title="交易记录" type="h2"></uni-title>
 			</view>
@@ -59,6 +75,8 @@
 	
 	import {caddress} from '../../script/eth.js';
 	var tokens = require('../../script/tokens.js');
+	let nftc = tokens.getNFTC();
+	let eth = tokens.getETH();
 	
 	export default {
 		components:{
@@ -72,6 +90,7 @@
 			return {
 				isFound:false,
 				caddress:caddress,
+				myAddress:"",
 				product:{}
 			}
 		},
@@ -80,6 +99,12 @@
 			console.log("options:", options);
 		
 			this.addressShow = addressShow;
+			eth.accounts((error, result)=>{
+				if(!error && result.length != 0){
+					this.myAddress = result[0];
+				}
+			});
+			
 			if(options.id){
 				
 				uni.$on("TokensUpdate", (ref)=>{
@@ -117,7 +142,6 @@
 			
 			clickOnwerAddress:function(){
 				console.log("clickOnwerAddress");
-				
 			},
 			
 			clickOwnerHome:function(){
@@ -136,12 +160,47 @@
 			
 			clickMore:function(){
 				console.log("clickMore");
-				this.$refs.popup.open("bottom");
+				this.$refs.ph_popup.open("bottom");
 			},
 			
 			clickLink:function(url){
 				window.open(url);
+			},
+			
+			clickUpSell:function(){
+				console.log("clickUpSell");
+			},
+			
+			clickDownSell:function(){
+				console.log("clickDownSell");
+				this.$refs.downSale_popup.open("bottom");
+			},
+			
+			downSaleCancle:function(){
+				console.log("downSaleCancle");
+				this.$refs.downSale_popup.close();
+			},
+			
+			downSaleOK:function(){
+				console.log("downSaleOK");
+				this.$refs.downSale_popup.close();
+				
+				nftc.setTokenOnSale(this.product.id, false, {from: this.myAddress}, (error, result)=>{
+					if(error){
+						uni.showToast({
+							title:"取消挂售失败"
+						})
+					}else{
+						uni.showToast({
+							title:"取消挂售成功"
+						})
+						
+						this.product.onSale = false;
+					}
+					console.log("setTokenOnSale:", error, result);
+				});
 			}
+			
 		}
 	}
 </script>
@@ -294,6 +353,40 @@
 				color: #ff56a7;
 			}
 			
+			.upSell{
+				float: right;
+				display: inline-block;
+				vertical-align: middle;
+				width: 250rpx;
+				height: 80rpx;
+				background-color: #000000;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 80rpx;
+				font-weight: bold;
+				text {
+					color: #FFFFFF;
+				}
+				margin: 10rpx 20rpx;
+			}
+			
+			.downSell{
+				float: right;
+				display: inline-block;
+				vertical-align: middle;
+				width: 250rpx;
+				height: 80rpx;
+				background-color: #000000;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 80rpx;
+				font-weight: bold;
+				text {
+					color: #FFFFFF;
+				}
+				margin: 10rpx 20rpx;
+			}
+			
 			.buy{
 				float: right;
 				display: inline-block;
@@ -340,6 +433,36 @@
 		width: 100%;
 		height: 700rpx;
 		background-color: #ffffff;
+	}
+	
+	.downSale_popup {
+		
+		.c {
+			width: 100%;
+			height: 280rpx;
+			background-color: #ffffff;
+			
+			.t {
+				margin-left: 50rpx;
+			}
+			
+			.downSaleBtnLeft{
+				float: left;
+				margin-left: 50rpx;
+				width: 35%;
+				border-radius: 20rpx;
+			}
+			
+			.downSaleBtnRight{
+				float: right;
+				margin-right: 50rpx;
+				width: 35%;
+				background-color: #000000;
+				color: #FFFFFF;
+				border-radius: 20rpx;
+			}
+		}
+	
 	}
 	
 </style>
