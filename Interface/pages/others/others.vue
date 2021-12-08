@@ -32,16 +32,12 @@
 			return {
 				current: 0,
 				address: "",
-				tabs: ['我拥有的', '我卖出的']
+				tabs: ['他拥有的', '他卖出的']
 			};
 		},
 		
-		onLoad() {
-			eth.accounts((error, result)=>{
-				if(!error && result.length != 0){
-					this.address = result[0];
-				}
-			});
+		onLoad(options) {
+			this.address = options.address;
 		},
 		
 		methods:{

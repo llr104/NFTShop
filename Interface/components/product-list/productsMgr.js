@@ -3,11 +3,7 @@ const productsMgr = (function () {
     function _mgr() {
         this.name = 'productsMgr'
 		this.plMap = new Map();
-		uni.$on("TokensUpdate", (ref)=>{
-			console.log("TokensUpdate");
-			this.putProducts(ref);
-			uni.$emit("ProductUpdate", ref);
-		})
+		
 		
 		this.show = ()=>{
 			console.log("show:", this.name);
@@ -16,7 +12,7 @@ const productsMgr = (function () {
 		this.putProducts = (products)=>{
 			for (var i = 0; i < products.length; i++) {
 				let p = products[i];
-				this.plMap.set(p.id, p);
+				this.plMap.set(Number(p.id), p);
 			}
 		}
 		

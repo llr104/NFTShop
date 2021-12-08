@@ -88,8 +88,8 @@
 		        this.renderImage = true;
 		    }, 300);
 			
-			uni.$on("ProductUpdate", ()=>{
-				console.log("ProductUpdate");
+			uni.$on("TokensUpdate", ()=>{
+				console.log("TokensUpdate");
 				this.loadData();
 			})
 		},

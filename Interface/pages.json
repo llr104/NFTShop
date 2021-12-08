@@ -41,6 +41,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/others/others",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -2,6 +2,7 @@
 	var abi = require('@/static/json/abi.json');
 	var Eth = require('./ethjs-query.js');
 	var EthContract = require('./ethjs-contract.js');
+	import productsMgr from "../components/product-list/productsMgr.js";
 	
 	const tokens= (function () {
 	    function _mgr() {
@@ -45,35 +46,41 @@
 						console.log("totalTokens ids:", ids);
 						for (let i = 0; i < ids.length; i++) {
 							let id = ids[i].toNumber();
-							this.NFTC.cAttributes(id, (error, result)=>{
-								if(!error){
-									console.log("cAttributes:", result);
-									
-									let token = {};
-									token.id = id;
-									token.describe = result.describe;
-									token.groupId = result.groupId.toNumber();
-									token.nftType = result.nftType.toNumber();
-									token.onSale = result.onSale;
-									token.price = result.price.toNumber();
-									token.uri = result.uri;
-									token.name = result.name;
-									token.ownerAddress = "";
-									
-									this.NFTC.ownerOf(id, (error, result)=>{
-										if(!error){
-											token.ownerAddress = result[0];
-											this.tokenMap.set(id, token);
-											console.log("this.tokenMap:", this.tokenMap);
-											uni.$emit("TokensUpdate", this.tokenMap);
-										}
-									});
-									
-								}
-							});
+							this.queryToken(id);
 						}
 					}
 				})
+			}
+			
+			this.queryToken = (id)=>{
+				this.NFTC.cAttributes(id, (error, result)=>{
+					if(!error){
+						console.log("cAttributes:", result);
+						
+						let token = {};
+						token.id = id;
+						token.describe = result.describe;
+						token.groupId = result.groupId.toNumber();
+						token.nftType = result.nftType.toNumber();
+						token.onSale = result.onSale;
+						token.price = result.price.toNumber();
+						token.uri = result.uri;
+						token.name = result.name;
+						token.ownerAddress = "";
+						
+						this.NFTC.ownerOf(id, (error, result)=>{
+							if(!error){
+								token.ownerAddress = result[0];
+								this.tokenMap.set(id, token);
+								
+								let ts = [...this.tokenMap.values()];
+								productsMgr.putProducts(ts);
+								uni.$emit("TokensUpdate", this.tokenMap);
+							}
+						});
+						
+					}
+				});
 			}
 			
 			this.getAllToken = ()=>{

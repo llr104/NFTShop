@@ -58,6 +58,7 @@
 	import transactionList from "../../components/transaction/transaction-list.vue";
 	
 	import {caddress} from '../../script/eth.js';
+	var tokens = require('../../script/tokens.js');
 	
 	export default {
 		components:{
@@ -77,13 +78,18 @@
 		
 		onLoad(options) {
 			console.log("options:", options);
+		
 			this.addressShow = addressShow;
 			if(options.id){
-				this.product = productsMgr.getProuductById(options.id);
-				if(this.product){
-					this.isFound = true;
-				}else{
-					this.isFound = false;
+				
+				uni.$on("TokensUpdate", (ref)=>{
+					console.log("TokensUpdate updateItem");
+					this.updateItem(options.id);
+				});
+				
+				this.updateItem(options.id);
+				if(!this.isFound){
+					tokens.queryToken(options.id);
 				}
 			}
 			
@@ -91,6 +97,15 @@
 		},
 			
 		methods: {
+			updateItem:function(id){
+				this.product = productsMgr.getProuductById(id);
+				console.log("this.product:", this.product, productsMgr.getProuducts());
+				if(this.product){
+					this.isFound = true;
+				}else{
+					this.isFound = false;
+				}
+			},
 			
 			moveStop:function(){
 				console.log("moveStop");
@@ -102,10 +117,17 @@
 			
 			clickOnwerAddress:function(){
 				console.log("clickOnwerAddress");
+				
 			},
 			
 			clickOwnerHome:function(){
 				console.log("clickOwnerHome");
+				uni.navigateTo({
+					url:"../others/others?address="+this.product.ownerAddress,
+					complete:function(r){
+						console.log(r);
+					}
+				})
 			},
 			
 			clickBuy:function(){
