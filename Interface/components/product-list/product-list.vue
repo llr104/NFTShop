@@ -41,20 +41,27 @@
 		methods: {
 			
 		    loadData() {
+				console.log("filter:", this.filter);
+				
 				let all = tokens.getAllToken();
 				let ts = [...all.values()];
+				productsMgr.putProducts(ts);
 				
 				if(!this.filter){
-					productsMgr.putProducts(ts);
+					console.log("no filter");
+					this.productList = ts;
 				}else{
+					console.log("has filter");
+					let filters = [];
 					for (var i = 0; i < ts.length; i++) {
 						var t = ts[i];
-						if(t.onwerAddress == this.filter){
-							productsMgr.putProducts(t);
+						if(t.ownerAddress == this.filter){
+							filters.push(t);
 						}
 					}
+					this.productList = filters;
 				}
-				this.productList = productsMgr.getProuducts();
+				
 		    },
 			
 			clear(){
@@ -66,6 +73,10 @@
 				this.$emit("clickProduct", product);
 				productsMgr.show();
 			}
+		},
+		
+		created() {
+			console.log("created");
 		},
 		
 		mounted() {
