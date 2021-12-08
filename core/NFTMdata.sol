@@ -20,6 +20,8 @@ contract NFTMdata is NFToken {
     mapping(uint256 => cAttributesStruct) public cAttributes;
     mapping(uint256 => uint256[]) public groupToIds;    //组id对应的tokenIds
     mapping(uint256 => uint256) public groupToIndex;
+
+    event SetOnSale(address indexed _from, uint256 indexed _tokenId, bool _onSale, uint256 _price);
     
     struct cAttributesStruct{
         NFTType     nftType;
@@ -170,12 +172,12 @@ contract NFTMdata is NFToken {
         if(_price != cAttributes[_tokenId].price){
              cAttributes[_tokenId].price = _price;
         }
-       
     }
 
     function _setTokenOnSale(uint256 _tokenId, bool _onSale) internal validNFToken(_tokenId){
         if(_onSale != cAttributes[_tokenId].onSale){
             cAttributes[_tokenId].onSale = _onSale;
+            emit SetOnSale(msg.sender, _tokenId, _onSale, cAttributes[_tokenId].price);
         }
     }
     
