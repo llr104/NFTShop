@@ -34,7 +34,6 @@
 <script>
 	import {addressShow} from "../../lib/utils";
 	import navigation from "../../components/navigation/navigation.vue";
-	import productsMgr from "../../components/product-list/productsMgr.js";
 	import productList from "../../components/product-list/product-list.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
@@ -63,12 +62,11 @@
 			});
 			
 			if(options.id){
-				
 				uni.$on("TokensUpdate", (ref)=>{
 					console.log("TokensUpdate updateItem");
 					this.updateItem(options.id);
 				});
-				
+				console.log("aaaaaaa");
 				this.updateItem(options.id);
 				if(!this.isFound){
 					tokens.queryToken(options.id);
@@ -80,8 +78,9 @@
 		
 		methods:{
 			updateItem:function(id){
-				this.product = productsMgr.getProuductById(id);
-				console.log("this.product:", this.product, productsMgr.getProuducts());
+				console.log("updateItem id:", id);
+				this.product = tokens.getTokenById(id);
+				console.log("this.product:", this.product, tokens.getAllToken());
 				if(this.product){
 					this.isFound = true;
 				}else{

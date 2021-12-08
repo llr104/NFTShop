@@ -16,7 +16,6 @@
 </template>
 
 <script>
-	import productsMgr from "./productsMgr.js";
 	import tokens from "../../script/tokens.js";
 	import {addressShow} from "../../lib/utils";
 	
@@ -45,7 +44,6 @@
 				
 				let all = tokens.getAllToken();
 				let ts = [...all.values()];
-				productsMgr.putProducts(ts);
 				
 				if(!this.filter){
 					console.log("no filter");
@@ -65,13 +63,12 @@
 		    },
 			
 			clear(){
-				productsMgr.clearProuducts();
+				this.productList = [];
 			},
 			
 			clickProduct:function(product){
 				console.log("clickProduct:", product);
 				this.$emit("clickProduct", product);
-				productsMgr.show();
 			}
 		},
 		

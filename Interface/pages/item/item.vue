@@ -70,7 +70,6 @@
 <script>
 	import {addressShow} from "../../lib/utils";
 	import navigation from "../../components/navigation/navigation.vue";
-	import productsMgr from "../../components/product-list/productsMgr.js";
 	import productList from "../../components/product-list/product-list.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
@@ -99,7 +98,6 @@
 		
 		onLoad(options) {
 			console.log("options:", options);
-		
 			this.addressShow = addressShow;
 			eth.accounts((error, result)=>{
 				if(!error && result.length != 0){
@@ -110,7 +108,7 @@
 			if(options.id){
 				
 				uni.$on("TokensUpdate", (ref)=>{
-					console.log("TokensUpdate updateItem");
+					console.log("TokensUpdate updateItem:", ref);
 					this.updateItem(options.id);
 				});
 				
@@ -125,8 +123,7 @@
 			
 		methods: {
 			updateItem:function(id){
-				this.product = productsMgr.getProuductById(id);
-				console.log("this.product:", this.product, productsMgr.getProuducts());
+				this.product = tokens.getTokenById(id);
 				if(this.product){
 					this.isFound = true;
 				}else{

@@ -2,7 +2,7 @@
 	var abi = require('@/static/json/abi.json');
 	var Eth = require('./ethjs-query.js');
 	var EthContract = require('./ethjs-contract.js');
-	import productsMgr from "../components/product-list/productsMgr.js";
+
 	
 	const tokens= (function () {
 	    function _mgr() {
@@ -71,10 +71,8 @@
 						this.NFTC.ownerOf(id, (error, result)=>{
 							if(!error){
 								token.ownerAddress = result[0];
-								this.tokenMap.set(id, token);
+								this.tokenMap.set(Number(id), token);
 								
-								let ts = [...this.tokenMap.values()];
-								productsMgr.putProducts(ts);
 								uni.$emit("TokensUpdate", this.tokenMap);
 							}
 						});
@@ -88,8 +86,12 @@
 			}
 			
 			this.updateToken = (t)=>{
-				this.tokenMap.set(t.id, t);
+				this.tokenMap.set(Number(t.id), t);
 				uni.$emit("TokensUpdate", this.tokenMap);
+			}
+			
+			this.getTokenById = (id)=>{
+				return this.tokenMap.get(Number(id));
 			}
 			
 			this.getNFTC = ()=> {
