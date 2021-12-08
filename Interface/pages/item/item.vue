@@ -32,7 +32,7 @@
 			
 			<view class="bottom">
 				<view class="bottom-fixed">
-					<text class="price">{{product.price}}&nbsp;usdt</text>
+					<text v-if="product.onSale==true" class="price">{{product.price}}&nbsp;usdt</text>
 					
 					<view v-if="product.onSale==false && myAddress==product.ownerAddress"
 					class="upSell" @click="clickUpSell"><text>立即挂售</text></view>
@@ -42,6 +42,9 @@
 					
 					<view v-else-if="product.onSale==true" class="buy" @click="clickBuy"><text>立即购买</text></view>
 					<view v-else-if="product.onSale==false" class="sellOut" @click="clickBuy"><text>已售罄</text></view>
+				</view>
+				<view class="space">
+					
 				</view>
 			</view>
 			
@@ -335,6 +338,13 @@
 	.bottom{
 		width: 100%;
 		height: 100rpx;
+		background-color: #FFFFFF;
+		
+		.space {
+			width: 100%;
+			height: 100rpx;
+		}
+		
 		.bottom-fixed {
 			position: fixed;
 			left: 0;
@@ -343,7 +353,6 @@
 			z-index:1;
 			line-height: 100rpx;
 			background-color: #FFFFFF;
-			
 			.price{
 				float: left;
 				display: inline-block;
@@ -354,10 +363,7 @@
 			}
 			
 			.upSell{
-				float: right;
-				display: inline-block;
-				vertical-align: middle;
-				width: 250rpx;
+				width: 80%;
 				height: 80rpx;
 				background-color: #000000;
 				border-radius: 30rpx;
@@ -367,7 +373,7 @@
 				text {
 					color: #FFFFFF;
 				}
-				margin: 10rpx 20rpx;
+				margin: 10rpx auto;
 			}
 			
 			.downSell{
