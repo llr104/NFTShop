@@ -21,8 +21,7 @@ contract NFTMdata is NFToken {
     mapping(uint256 => uint256[]) public groupToIds;    //组id对应的tokenIds
     mapping(uint256 => uint256) public groupToIndex;
 
-    event SetOnSale(address indexed _from, uint256 indexed _tokenId, bool _onSale, uint256 _price);
-    
+   
     struct cAttributesStruct{
         NFTType     nftType;
         uint256     groupId;    //组id
@@ -177,7 +176,6 @@ contract NFTMdata is NFToken {
     function _setTokenOnSale(uint256 _tokenId, bool _onSale) internal validNFToken(_tokenId){
         if(_onSale != cAttributes[_tokenId].onSale){
             cAttributes[_tokenId].onSale = _onSale;
-            emit SetOnSale(msg.sender, _tokenId, _onSale, cAttributes[_tokenId].price);
         }
     }
     
@@ -189,12 +187,16 @@ contract NFTMdata is NFToken {
         cAttributes[_tokenId].atterbutes.push(_tvalue);
     }
     
-    function getAttributesLength(uint256 _tokenId) public view returns(uint256){
+    function getAttributesLength(uint256 _tokenId) public view validNFToken(_tokenId) returns(uint256){
         return cAttributes[_tokenId].atterbutes.length;
     }
     
-    function getAttributesValuebyIndex(uint256 _tokenId, uint256 _index) public view returns(uint256){
+    function getAttributesValuebyIndex(uint256 _tokenId, uint256 _index) public view validNFToken(_tokenId) returns(uint256){
         return cAttributes[_tokenId].atterbutes[_index];
+    }
+
+    function getTokenPriceAndSale(uint256 _tokenId) external view validNFToken(_tokenId) returns(uint256, bool){
+        return (cAttributes[_tokenId].price, cAttributes[_tokenId].onSale);
     }
     
 }

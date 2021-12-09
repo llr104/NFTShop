@@ -4,10 +4,13 @@ import "./NFTMdata.sol";
 
 contract NFTBox is NFTMdata, Ownable{
    
+    event SetOnSalePrice(address indexed _from, uint256 indexed _tokenId, bool _onSale, uint256 _price);
+    
     constructor(string memory _name, string memory _symbol) public {
         nftName = _name;
         nftSymbol = _symbol;
     }
+
 
     function mint(address _to, string calldata _name, string calldata _uri, NFTType _type, uint32 _count, bool _isGroup) external onlyManager{
         super._mint(_to, _name, _uri, _type, _count, _isGroup);
@@ -15,6 +18,11 @@ contract NFTBox is NFTMdata, Ownable{
     
     function burn(uint256 _tokenId) external onlyManager {
         super._burn(_tokenId);
+    }
+
+    function sale(address _from, address _to, uint256 _tokenId) external{
+        this.setTokenOnSale(_tokenId, false);
+        this.transferFrom(_from, _to, _tokenId);
     }
 
     function openBlindBox(uint256 _tokenId) external canOperate(_tokenId) {
@@ -38,9 +46,11 @@ contract NFTBox is NFTMdata, Ownable{
         super._setTokenPrice(_tokenId, _price);
     }
 
-    function setTokenPriceAndSale(uint256 _tokenId, uint256 _price, bool _onSale) external canOperate(_tokenId){
+    function setTokenSaleAndPrice(uint256 _tokenId, uint256 _price, bool _onSale) external canOperate(_tokenId){
         super._setTokenPrice(_tokenId, _price);
         super._setTokenOnSale(_tokenId, _onSale);
+
+        emit SetOnSalePrice(msg.sender, _tokenId, _onSale, cAttributes[_tokenId].price);
     }
 
     function setTokenOnSale(uint256 _tokenId, bool _onSale) external canOperate(_tokenId){
