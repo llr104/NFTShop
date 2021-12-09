@@ -20,9 +20,9 @@ contract NFTBox is NFTMdata, Ownable{
         super._burn(_tokenId);
     }
 
-    function sale(address _from, address _to, uint256 _tokenId) external{
-        this.setTokenOnSale(_tokenId, false);
-        this.transferFrom(_from, _to, _tokenId);
+    function sale(address _to, uint256 _tokenId) canOperate(_tokenId) external{
+        _setTokenOnSale(_tokenId, false);
+        _transfer(_to, _tokenId);
     }
 
     function openBlindBox(uint256 _tokenId) external canOperate(_tokenId) {
