@@ -65,15 +65,16 @@ contract NFTMdata is NFToken {
             idToIndex[_tokenId] = tokens.length - 1;
 
             if(_isGroup){
-                _setTokenGroupId(_tokenId, groupId);
+                cAttributes[_tokenId].groupId = groupId;   
                 groupToIds[_tokenId].push(_tokenId);
                 groupToIndex[_tokenId] = groupToIds[_tokenId].length - 1;
             }else{
-                _setTokenGroupId(_tokenId, NO_GROUP);
+                cAttributes[_tokenId].groupId = NO_GROUP;   
             }
-            _setTokenUri(_tokenId, _uri);
-            _setNFTType(_tokenId, _type);
-            _setTokenName(_tokenId, _name);
+            
+            cAttributes[_tokenId].uri = _uri;   
+            cAttributes[_tokenId].nftType = _type;
+            cAttributes[_tokenId].name = _name;
         }
     
     }
@@ -144,22 +145,6 @@ contract NFTMdata is NFToken {
         // uint256 _newTokenId = _mint(_to);
         // cattr.nftType = NFTType.Normal;
         // cAttributes[_newTokenId] = cattr;
-    }
-
-    function _setTokenName(uint256 _tokenId, string memory _name) internal validNFToken(_tokenId) {
-        cAttributes[_tokenId].name = _name;    
-    }
-
-    function _setTokenUri(uint256 _tokenId, string memory _uri) internal validNFToken(_tokenId) {
-        cAttributes[_tokenId].uri = _uri;    
-    }
-    
-    function _setNFTType(uint256 _tokenId, NFTType _type) internal validNFToken(_tokenId){
-        cAttributes[_tokenId].nftType = _type;   
-    }
-
-    function _setTokenGroupId(uint256 _tokenId, uint256 _groupId) internal validNFToken(_tokenId) {
-        cAttributes[_tokenId].groupId = _groupId;    
     }
     
 

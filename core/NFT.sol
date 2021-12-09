@@ -29,21 +29,8 @@ contract NFTBox is NFTMdata, Ownable{
         super._openBlindBox(_tokenId);
     }
 
-    
-    function setTokenName(uint256 _tokenId, string calldata _name) external onlyManager{
-        super._setTokenName(_tokenId, _name);
-    }
-    
     function setTokenDescribe(uint256 _tokenId, string calldata _des) external onlyManager{
         super._setTokenDescribe(_tokenId, _des);
-    }
-
-    function setNFTType(uint256 _tokenId, NFTType _type) external onlyManager{
-        super._setNFTType(_tokenId, _type);
-    }
-
-    function setTokenPrice(uint256 _tokenId, uint256 _price) external canOperate(_tokenId){
-        super._setTokenPrice(_tokenId, _price);
     }
 
     function setTokenSaleAndPrice(uint256 _tokenId, uint256 _price, bool _onSale) external canOperate(_tokenId){
