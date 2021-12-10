@@ -5,7 +5,7 @@
 			<view class="navigation-logo" mode=""></view>
 			<view v-if="address.length==0" class="navigation-wallet" mode="" @click="onClickWallet"></view>
 			<view v-else class="navigation-address">
-				<text>{{calcAddressShow(address)}}</text>
+				<text>{{addressShow(address)}}</text>
 			</view>
 			<uni-drawer ref="showRight" mode="left" :mask-click="true" :width=250>
 				<scroll-view class="left" scroll-y="true">
@@ -67,7 +67,7 @@
 				this.connect();
 			},
 			
-			calcAddressShow:function(address){
+			addressShow:function(address){
 				var b = address.substring(0,6);
 				var a = address.substring(address.length-4);
 				return b + "****" + a;

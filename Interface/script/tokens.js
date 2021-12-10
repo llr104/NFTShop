@@ -1,5 +1,5 @@
-	import {provider, caddress} from './eth.js';
-	var abi = require('@/static/json/abi.json');
+	import {provider, nftAddress} from './eth.js';
+	var abi = require('@/static/json/nft-abi.json');
 	var Eth = require('./ethjs-query.js');
 	var EthContract = require('./ethjs-contract.js');
 
@@ -12,7 +12,7 @@
 			var eth = new Eth(web3.currentProvider);
 			var contract = new EthContract(eth);
 			var NFTContract = contract(abi);
-			this.NFTC = NFTContract.at(caddress);
+			this.NFTC = NFTContract.at(nftAddress);
 			this.ETH = eth;
 			
 			this.show = ()=>{
@@ -62,7 +62,6 @@
 						token.describe = result.describe;
 						token.groupId = result.groupId.toNumber();
 						token.nftType = result.nftType.toNumber();
-						token.onSale = result.onSale;
 						token.price = result.price.toNumber();
 						token.uri = result.uri;
 						token.name = result.name;

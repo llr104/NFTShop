@@ -38,7 +38,7 @@
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
 	
-	import {caddress} from '../../script/eth.js';
+	import {nftAddress} from '../../script/eth.js';
 	var tokens = require('../../script/tokens.js');
 	let nftc = tokens.getNFTC();
 	let eth = tokens.getETH();
@@ -115,7 +115,7 @@
 					return
 				}
 				
-				nftc.setTokenPriceAndSale(tokenId, price, true, {from: this.myAddress}, (error, result)=>{
+				nftc.setTokenPrice(tokenId, price, {from: this.myAddress}, (error, result)=>{
 					if(error){
 						uni.showToast({
 							title:"挂售失败"
@@ -125,7 +125,6 @@
 							title:"挂售成功"
 						});
 						
-						this.product.onSale = true;
 						this.product.price = price;
 						tokens.updateToken(this.product);
 					}

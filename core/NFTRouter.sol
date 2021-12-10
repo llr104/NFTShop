@@ -2,11 +2,8 @@ pragma solidity ^0.5.0;
 import "./IERC.sol";
 
 interface INFT{
-    function getTokenPriceAndSale(uint256 _tokenId) external view  returns(uint256, bool);
+    function getTokenPrice(uint256 _tokenId) external view  returns(uint256);
     function sale(address _to, uint256 _tokenId) external;
-    // function setTokenOnSale(uint256 _tokenId, bool _onSale) external;
-    // function test1(uint256 _tokenId) external view  returns(address, address);
-    // function test2(uint256 _tokenId) external view returns(address, address);
 }
 
 contract NFTRouter {
@@ -28,16 +25,12 @@ contract NFTRouter {
         address _to = ERC721(nftAddress).ownerOf(_tokenId);
         require(_to != address(0), NFT_INVALID);
 
-        uint256 price;
-        bool onSale;
         address _from = msg.sender;
+        require(_to != _from, NFT_SAME_ADDRESS);
 
-         require(_to != _from, NFT_SAME_ADDRESS);
+        uint256 price = INFT(nftAddress).getTokenPrice(_tokenId);
+        require(price != 0, NFT_NOT_ONSALE);
 
-        (price, onSale) = INFT(nftAddress).getTokenPriceAndSale(_tokenId);
-        require(onSale, NFT_NOT_ONSALE);
-
-       
         uint256 b = IERC20(brokerAddress).balanceOf(_from);
         require(b >= price, BANLANCE_NOT_ENOUGH);
 
@@ -47,63 +40,5 @@ contract NFTRouter {
         return (b, price);
 
     }
-
-    // function buy1(uint256 _tokenId) public returns(uint256, uint256) {
-   
-    //     address _to = ERC721(nftAddress).ownerOf(_tokenId);
-    //     require(_to != address(0), NFT_INVALID);
-
-    //     uint256 price;
-    //     bool onSale;
-    //     address _from = msg.sender;
-
-    //      require(_to != _from, NFT_SAME_ADDRESS);
-
-    //     (price, onSale) = INFT(nftAddress).getTokenPriceAndSale(_tokenId);
-    //     require(onSale, NFT_NOT_ONSALE);
-
-       
-    //     uint256 b = IERC20(brokerAddress).balanceOf(_from);
-    //     require(b >= price, BANLANCE_NOT_ENOUGH);
-
-    //     IERC20(brokerAddress).transferFrom(_from, _to, price);
-    //     ERC721(nftAddress).transferFrom(_to, _from, _tokenId);
-        
-    //     return (b, price);
-
-    // }
-
-    // function buy2(uint256 _tokenId) public returns(uint256, uint256) {
-   
-    //     address _to = ERC721(nftAddress).ownerOf(_tokenId);
-    //     require(_to != address(0), NFT_INVALID);
-
-    //     uint256 price;
-    //     bool onSale;
-    //     address _from = msg.sender;
-
-    //      require(_to != _from, NFT_SAME_ADDRESS);
-
-    //     (price, onSale) = INFT(nftAddress).getTokenPriceAndSale(_tokenId);
-    //     require(onSale, NFT_NOT_ONSALE);
-
-       
-    //     uint256 b = IERC20(brokerAddress).balanceOf(_from);
-    //     require(b >= price, BANLANCE_NOT_ENOUGH);
-
-    //     IERC20(brokerAddress).transferFrom(_from, _to, price);
-    //     INFT(nftAddress).setTokenOnSale(_tokenId, false);
-        
-    //     return (b, price);
-
-    // }
-
-    // function testhere1(uint256 _tokenId) external view returns(address, address){
-    //     return INFT(nftAddress).test1(_tokenId);
-    // }
-
-    // function testhere2(uint256 _tokenId) external view returns(address, address){
-    //     return INFT(nftAddress).test2(_tokenId);
-    // }
 
 }

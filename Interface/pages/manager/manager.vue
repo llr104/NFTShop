@@ -56,10 +56,7 @@
 				<uni-easyinput type="number" v-model="gsData.tokenId" placeholder="请输入tokenId" />
 			</uni-forms-item>
 			<uni-forms-item required name="price" label="价格">
-				<uni-easyinput type="number" v-model="gsData.price" placeholder="请输入挂售金额" />
-			</uni-forms-item>
-			<uni-forms-item required name="onSale" label="是否挂售">
-				<switch ref="gsSwitch" v-model="gsData.onSale"/>
+				<uni-easyinput type="number" v-model="gsData.price" placeholder="请输入挂售金额,金额为0即为取消挂售" />
 			</uni-forms-item>
 			<button @click="cllickGS">提交</button>
 		</view>
@@ -119,10 +116,10 @@
 								  nonce:    provider.utils.toHex(txCount),
 								  gasLimit: provider.utils.toHex(800000),
 								  gasPrice: provider.utils.toHex(provider.utils.toWei('10', 'gwei')),
-								  to: caddress,
+								  to: nftAddress,
 								}
 								
-								const contract = new provider.eth.Contract(abi, caddress);
+								const contract = new provider.eth.Contract(abi, nftAddress);
 								contract.methods.name().call((err, result) => { console.log("data:", result) })
 							});
 						}
@@ -155,13 +152,14 @@
 							let uri ="https://www.ibox.fan/file/oss/nft/image/nft-goods/821aecc4c6eb4327be81fdea9fabbc98.png?style=st6";
 							let _to = result[0];
 							let _from = result[0];
-							let _name = this.ptdzData.name ? this.ptdzData.name.length : name;
-							let _uri = this.ptdzData.uri ? this.ptdzData.uri.length : uri
+							let _name = this.ptdzData.name ? this.ptdzData.name : name;
+							let _uri = this.ptdzData.uri ? this.ptdzData.uri : uri
 							let _count = this.ptdzData.count ? this.ptdzData.count : count;
+							let _des = this.ptdzData.des ? this.ptdzData.des : des;
 							let _isGroup = true;
 							let _type = 1;
 							
-							nftc.mint(_to, _name, _uri, _type, _count, _isGroup, {from: _from}, (error, result)=>{
+							nftc.mint(_to, _name, _uri, _des, _type, _count, _isGroup, {from: _from}, (error, result)=>{
 								console.log("mint error:", error);
 								console.log("mint result:", result);
 								if(!error){
@@ -203,7 +201,6 @@
 			
 			cllickGS:function(){
 				console.log("cllickGS:", this.gsData);
-				let onSale = this.$refs.gsSwitch.switchChecked;
 				
 				let nftc = tokens.getNFTC();
 				let eth = tokens.getETH();
@@ -215,13 +212,13 @@
 						let tokenId = Number(this.gsData.tokenId);
 						if(this.gsData.price){
 							let price = Number(this.gsData.price);
-							nftc.setTokenPriceAndSale(tokenId, price, onSale, {from: _from}, (error, result)=>{
+							nftc.setTokenPrice(tokenId, price, {from: _from}, (error, result)=>{
 								if(error){
 									uni.showToast({
 										title:"修改失败"
 									})
 								}
-								console.log("setTokenPriceAndSale:", error, result);
+								console.log("setTokenPrice:", error, result);
 							});
 						}
 						

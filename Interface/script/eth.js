@@ -20,9 +20,14 @@ if (window.ethereum) {
 	web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
 }
 var provider = new Web3(web3Provider);//web3js就是你需要的web3实例
-var caddress = "0xb882D3C9C4AA3941235693470fF91f70854F8A92";
+var nftAddress = "0x5ABACd50139fbB8aBaCB886b5ABF20146D1A4d91";
+var tokenAddress = "0x66a5a5ec3453C56a15d4ff65e0FFF85ac3A4F321";
+var routerAddress = "0x643B9b296B1d25DC2A9e39d13e52a883C8C6235c";
 
 module.exports = {
 	"provider": provider,
-	"caddress": caddress,
+	"nftAddress": nftAddress,
+	"tokenAddress": tokenAddress,
+	"routerAddress": routerAddress,
+	
 };

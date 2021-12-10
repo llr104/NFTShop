@@ -7,7 +7,7 @@
 			<view class="center-card">
 				<view class="one one-margin" @click="clickContactAddress">
 					<text class="one-1">合约地址:</text>
-					<text class="one-2 cAddress">{{addressShow(caddress)}}</text>
+					<text class="one-2 nftAddress">{{addressShow(nftAddress)}}</text>
 				</view>
 				<view class="one one-margin">
 					<text class="one-1">链上标志:</text>
@@ -32,16 +32,16 @@
 			
 			<view class="bottom">
 				<view class="bottom-fixed">
-					<text v-if="product.onSale==true" class="price">{{product.price}}&nbsp;usdt</text>
+					<text v-if="product.price" class="price">{{product.price}}&nbsp;usdt</text>
 					
-					<view v-if="product.onSale==false && myAddress==product.ownerAddress"
+					<view v-if="!product.price && myAddress==product.ownerAddress"
 					class="upSell" @click="clickUpSell"><text>立即挂售</text></view>
 					
-					<view v-else-if="product.onSale==true && myAddress==product.ownerAddress"
+					<view v-else-if="product.price && myAddress==product.ownerAddress"
 					class="downSell" @click="clickDownSell"><text>取消挂售</text></view>
 					
-					<view v-else-if="product.onSale==true" class="buy" @click="clickBuy"><text>立即购买</text></view>
-					<view v-else-if="product.onSale==false" class="sellOut" @click="clickBuy"><text>已售罄</text></view>
+					<view v-else-if="product.price" class="buy" @click="clickBuy"><text>立即购买</text></view>
+					<view v-else-if="!product.price" class="sellOut" @click="clickBuy"><text>已售罄</text></view>
 				</view>
 				<view class="space">
 				</view>
@@ -74,7 +74,7 @@
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
 	
-	import {caddress} from '../../script/eth.js';
+	import {nftAddress} from '../../script/eth.js';
 	var tokens = require('../../script/tokens.js');
 	let nftc = tokens.getNFTC();
 	let eth = tokens.getETH();
@@ -90,7 +90,7 @@
 		data() {
 			return {
 				isFound:false,
-				caddress:caddress,
+				nftAddress:nftAddress,
 				myAddress:"",
 				product:{}
 			}
@@ -190,7 +190,7 @@
 				console.log("downSaleOK");
 				this.$refs.downSale_popup.close();
 				
-				nftc.setTokenOnSale(this.product.id, false, {from: this.myAddress}, (error, result)=>{
+				nftc.setTokenPrice(this.product.id, 0, {from: this.myAddress}, (error, result)=>{
 					if(error){
 						uni.showToast({
 							title:"取消挂售失败"
@@ -200,9 +200,9 @@
 							title:"取消挂售成功"
 						})
 						
-						this.product.onSale = false;
+						this.product.price = 0;
 					}
-					console.log("setTokenOnSale:", error, result);
+					console.log("setTokenPrice:", error, result);
 				});
 			}
 			
@@ -243,7 +243,7 @@
 				color: #000000;
 			}
 			
-			.cAddress::after{
+			.nftAddress::after{
 				display: inline-block;
 				position: absolute;
 				content: "";

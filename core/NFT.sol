@@ -12,8 +12,8 @@ contract NFTBox is NFTMdata, Ownable{
     }
 
 
-    function mint(address _to, string calldata _name, string calldata _uri, NFTType _type, uint32 _count, bool _isGroup) external onlyManager{
-        super._mint(_to, _name, _uri, _type, _count, _isGroup);
+    function mint(address _to, string calldata _name, string calldata _uri, string calldata _des, NFTType _type,  uint32 _count, bool _isGroup) external onlyManager{
+        super._mint(_to, _name, _uri, _des, _type, _count, _isGroup);
     }
     
     function burn(uint256 _tokenId) external onlyManager {
@@ -21,7 +21,7 @@ contract NFTBox is NFTMdata, Ownable{
     }
 
     function sale(address _to, uint256 _tokenId) canOperate(_tokenId) external{
-        _setTokenOnSale(_tokenId, false);
+
         _transfer(_to, _tokenId);
     }
 
@@ -33,15 +33,8 @@ contract NFTBox is NFTMdata, Ownable{
         super._setTokenDescribe(_tokenId, _des);
     }
 
-    function setTokenSaleAndPrice(uint256 _tokenId, uint256 _price, bool _onSale) external canOperate(_tokenId){
+    function setTokenPrice(uint256 _tokenId, uint256 _price) external onlyManager{
         super._setTokenPrice(_tokenId, _price);
-        super._setTokenOnSale(_tokenId, _onSale);
-
-        emit SetOnSalePrice(msg.sender, _tokenId, _onSale, cAttributes[_tokenId].price);
-    }
-
-    function setTokenOnSale(uint256 _tokenId, bool _onSale) external canOperate(_tokenId){
-        super._setTokenOnSale(_tokenId, _onSale);
     }
 
     function setAttribute(uint256 _tokenId, uint256 _index, uint256 _tvalue) external onlyManager{
