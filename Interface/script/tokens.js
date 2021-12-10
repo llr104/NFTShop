@@ -1,5 +1,6 @@
-	import {provider, nftAddress} from './eth.js';
-	var abi = require('@/static/json/nft-abi.json');
+	import {provider, nftAddress, routerAddress} from './eth.js';
+	var nftAbi = require('@/static/json/nft-abi.json');
+	var routerAbi = require('@/static/json/router-abi.json');
 	var Eth = require('./ethjs-query.js');
 	var EthContract = require('./ethjs-contract.js');
 
@@ -11,9 +12,13 @@
 			
 			var eth = new Eth(web3.currentProvider);
 			var contract = new EthContract(eth);
-			var NFTContract = contract(abi);
-			this.NFTC = NFTContract.at(nftAddress);
+			var NFTContract = contract(nftAbi);
+			this.NFT = NFTContract.at(nftAddress);
 			this.ETH = eth;
+			
+			contract = new EthContract(eth);
+			var RouterContract = contract(routerAbi);
+			this.Router = RouterContract.at(routerAddress);
 			
 			this.show = ()=>{
 				console.log("show:", this.name);
@@ -21,26 +26,26 @@
 			
 			this.test = ()=>{
 				console.log("this.NFTC:", this.NFTC, _mgr.instance);
-				this.NFTC.cAttributes(1, function(error, result){
+				this.NFT.cAttributes(1, function(error, result){
 					console.log("error:", error);
 					console.log("result:", result, result.nftType.toNumber());
 				});
 				
 				eth.accounts((error, result)=>{
-					this.NFTC.ownerTokens(result[0], function(error, result){
+					this.NFT.ownerTokens(result[0], function(error, result){
 						console.log("ownerTokens error:", error);
 						console.log("ownerTokens result:", result);
 					})
 				});
 				
-				this.NFTC.totalTokens((error, result)=>{
+				this.NFT.totalTokens((error, result)=>{
 					console.log("totalTokens error:", error);
 					console.log("totalTokens result:", result);
 				})
 			}
 			
 			this.queryAllToken = ()=>{
-				this.NFTC.totalTokens((error, result)=>{
+				this.NFT.totalTokens((error, result)=>{
 					if(!error){
 						let ids = result[0];
 						console.log("totalTokens ids:", ids);
@@ -53,7 +58,7 @@
 			}
 			
 			this.queryToken = (id, cb)=>{
-				this.NFTC.cAttributes(id, (error, result)=>{
+				this.NFT.cAttributes(id, (error, result)=>{
 					if(!error){
 						console.log("cAttributes:", result);
 						
@@ -67,7 +72,7 @@
 						token.name = result.name;
 						token.ownerAddress = "";
 						
-						this.NFTC.ownerOf(id, (error, result)=>{
+						this.NFT.ownerOf(id, (error, result)=>{
 							if(!error){
 								token.ownerAddress = result[0];
 								this.tokenMap.set(Number(id), token);
@@ -104,12 +109,16 @@
 				return this.tokenMap.get(Number(id));
 			}
 			
-			this.getNFTC = ()=> {
-				return this.NFTC;
+			this.getNFT = ()=> {
+				return this.NFT;
 			}
 			
 			this.getETH = ()=> {
 				return this.ETH;
+			}
+			
+			this.getRouter = ()=>{
+				return this.Router;
 			}
 		}
 		

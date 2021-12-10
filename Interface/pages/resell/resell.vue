@@ -40,7 +40,7 @@
 	
 	import {nftAddress} from '../../script/eth.js';
 	var tokens = require('../../script/tokens.js');
-	let nftc = tokens.getNFTC();
+	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	
 	export default {
@@ -115,7 +115,7 @@
 					return
 				}
 				
-				nftc.setTokenPrice(tokenId, price, {from: this.myAddress}, (error, result)=>{
+				nft.setTokenPrice(tokenId, price, {from: this.myAddress}, (error, result)=>{
 					if(error){
 						uni.showToast({
 							title:"挂售失败"

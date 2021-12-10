@@ -135,7 +135,7 @@
 				console.log("cllickPTDZ:", this.ptdzData);
 				
 				if (typeof web3 !== 'undefined') {
-					let nftc = tokens.getNFTC();
+					let nft = tokens.getNFT();
 					let eth = tokens.getETH();
 					
 					uni.showLoading({
@@ -159,7 +159,7 @@
 							let _isGroup = true;
 							let _type = 1;
 							
-							nftc.mint(_to, _name, _uri, _des, _type, _count, _isGroup, {from: _from}, (error, result)=>{
+							nft.mint(_to, _name, _uri, _des, _type, _count, _isGroup, {from: _from}, (error, result)=>{
 								console.log("mint error:", error);
 								console.log("mint result:", result);
 								if(!error){
@@ -202,7 +202,7 @@
 			cllickGS:function(){
 				console.log("cllickGS:", this.gsData);
 				
-				let nftc = tokens.getNFTC();
+				let nft = tokens.getNFT();
 				let eth = tokens.getETH();
 				
 				if(this.gsData.tokenId){
@@ -212,7 +212,7 @@
 						let tokenId = Number(this.gsData.tokenId);
 						if(this.gsData.price){
 							let price = Number(this.gsData.price);
-							nftc.setTokenPrice(tokenId, price, {from: _from}, (error, result)=>{
+							nft.setTokenPrice(tokenId, price, {from: _from}, (error, result)=>{
 								if(error){
 									uni.showToast({
 										title:"修改失败"

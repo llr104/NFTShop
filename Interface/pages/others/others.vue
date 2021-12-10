@@ -18,7 +18,7 @@
 	import productList from "../../components/product-list/product-list.vue";
 	
 	var tokens = require('../../script/tokens.js');
-	let nftc = tokens.getNFTC();
+	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	
 	export default {

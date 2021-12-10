@@ -55,6 +55,29 @@
 				</view>
 				
 			</uni-popup>
+			
+			<uni-popup class="buy_confirm" ref="buy_confirm">
+				<view class="c">
+					<uni-title class="t" title="订单信息" type="h2"></uni-title>
+					<view class="uri">
+						<image class="uri" :src="product.uri" mode=""></image>
+					</view>
+					
+					<view class="l">
+						<view class="l1">
+							<text>{{product.name}}</text>
+						</view>
+						<view class="l1">
+							<text>链上标识:{{product.id}}</text>
+						</view>
+						<view class="l2">
+							<text>价格:{{product.price}}</text>
+						</view>
+					</view>
+					<button type="default" class="pay" @click="clickPay">支付</button>
+					
+				</view>
+			</uni-popup>
 		</view>
 		<uni-popup class="ph" ref="ph_popup" type="bottom">
 			<view class="t">
@@ -76,8 +99,9 @@
 	
 	import {nftAddress} from '../../script/eth.js';
 	var tokens = require('../../script/tokens.js');
-	let nftc = tokens.getNFTC();
+	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
+	let router = tokens.getRouter();
 	
 	export default {
 		components:{
@@ -153,6 +177,7 @@
 			
 			clickBuy:function(){
 				console.log("clickBuy");
+				this.$refs.buy_confirm.open("bottom");
 			},
 			
 			clickMore:function(){
@@ -188,7 +213,7 @@
 				console.log("downSaleOK");
 				this.$refs.downSale_popup.close();
 				
-				nftc.setTokenPrice(this.product.id, 0, {from: this.myAddress}, (error, result)=>{
+				nft.setTokenPrice(this.product.id, 0, {from: this.myAddress}, (error, result)=>{
 					if(error){
 						uni.showToast({
 							title:"取消挂售失败"
@@ -201,6 +226,13 @@
 						this.product.price = 0;
 					}
 					console.log("setTokenPrice:", error, result);
+				});
+			},
+			
+			clickPay:function(){
+				console.log("clickPay", router);
+				router.buy(this.product.id,(error, result)=>{
+					console.log("buy:", error, result);
 				});
 			}
 			
@@ -469,6 +501,54 @@
 			}
 		}
 	
+	}
+	
+	.buy_confirm {
+		.c {
+			width: 100%;
+			height: 300rpx;
+			background-color: #ffffff;
+			
+			.t {
+				margin-left: 80rpx;
+			}
+			
+			.uri {
+				float: left;
+				width: 140rpx;
+				height: 140rpx;
+				border-radius: 20rpx;
+				margin-left: 40rpx;
+				display: inline-block;
+			}
+			
+			.l {
+				float: left;
+				margin-top: 10rpx;
+				margin-left: 50rpx;
+			}
+			
+			.l1 {
+				color: #8c9fad;
+				font-size: 28rpx;
+				line-height: 1.5;
+			}
+			
+			.l2 {
+				color: #ff0000;
+				font-size: 28rpx;
+				line-height: 1.5;
+			}
+			
+			.pay {
+				width: 200rpx;
+				background-color: #000000;
+				color: #FFFFFF;
+				font-weight: bold;
+				margin-top: 10rpx;
+			}
+		}
+		
 	}
 	
 </style>

@@ -29,5 +29,4 @@ module.exports = {
 	"nftAddress": nftAddress,
 	"tokenAddress": tokenAddress,
 	"routerAddress": routerAddress,
-	
 };
