@@ -1,22 +1,31 @@
 pragma solidity ^0.5.0;
 import "./IERC.sol";
+import "./Ownable.sol";
 
 interface INFT{
     function getTokenPrice(uint256 _tokenId) external view  returns(uint256);
     function sale(address _to, uint256 _tokenId) external;
 }
 
-contract NFTRouter {
+contract NFTRouter is Ownable {
     address public brokerAddress;
     address public nftAddress;
 
     string constant NFT_NOT_ONSALE = "001001";
-    string constant NFT_INVALID = "001003";
+    string constant NFT_INVALID = "001002";
     string constant NFT_SAME_ADDRESS = "001003";
     string constant BANLANCE_NOT_ENOUGH = "001004";
 
     constructor(address _brokerAddress, address _nftAddress) public{
         brokerAddress = _brokerAddress;
+        nftAddress = _nftAddress;
+    }
+
+    function setBrokerAddress(address _brokerAddress) public onlyManager {
+        brokerAddress = _brokerAddress;
+    }
+
+    function setNFTAddress(address _nftAddress) public onlyManager {
         nftAddress = _nftAddress;
     }
 

@@ -250,6 +250,13 @@
 							title:"支付成功"
 						});
 						this.$refs.buy_confirm.close();
+						
+						uni.navigateTo({
+							url:"../buy-result/buy-result",
+							complete:function(r){
+								console.log(r);
+							}
+						})
 					}
 				});
 			}

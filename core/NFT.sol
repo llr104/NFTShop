@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 import "./NFTMdata.sol";
-
+import "./Ownable.sol";
 
 contract NFTBox is NFTMdata, Ownable{
    
@@ -33,7 +33,7 @@ contract NFTBox is NFTMdata, Ownable{
         super._setTokenDescribe(_tokenId, _des);
     }
 
-    function setTokenPrice(uint256 _tokenId, uint256 _price) external onlyManager{
+    function setTokenPrice(uint256 _tokenId, uint256 _price) external canOperate(_tokenId){
         super._setTokenPrice(_tokenId, _price);
         emit SetOnSalePrice(msg.sender, _tokenId, _price);
     }

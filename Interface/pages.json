@@ -68,6 +68,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/buy-result/buy-result",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

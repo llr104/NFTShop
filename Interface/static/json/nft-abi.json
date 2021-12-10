@@ -102,12 +102,6 @@
 			},
 			{
 				"indexed": false,
-				"internalType": "bool",
-				"name": "_onSale",
-				"type": "bool"
-			},
-			{
-				"indexed": false,
 				"internalType": "uint256",
 				"name": "_price",
 				"type": "uint256"

@@ -147,7 +147,7 @@
 			}
 			
 			this.approveToken = (from, value, cb)=>{
-				this.Token.approve(tokenAddress, value, {from:from}, (error, result)=>{
+				this.Token.approve(routerAddress, value, {from:from}, (error, result)=>{
 					if(cb){
 						cb(value, cb);
 					}
@@ -155,7 +155,7 @@
 			}
 			
 			this.isApproveToken = (from, cb)=>{
-				this.Token.allowance(from, tokenAddress, (error, result)=>{
+				this.Token.allowance(from, routerAddress, (error, result)=>{
 					if(cb){
 						if(!error){
 							cb(error, result[0].toNumber());
