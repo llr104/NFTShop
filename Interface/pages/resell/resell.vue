@@ -20,9 +20,10 @@
 		<view class="card2">
 			<uni-title class="t" title="出售单价" type="h1"></uni-title>
 			<uni-easyinput class="pinput" type="number" trim="all" v-model="price" placeholder="请输入挂售的价格" />
-			<view class="bottom">
+			<view class="approve" v-if="isApprove"  @click="clickApprove"><text>授权NFT挂售到平台</text></view>
+			<view class="bottom" v-if="!isApprove">
 				<view class="bottom-fixed">
-					<view class="upSell" @click="clickUpSell"><text>确认挂售</text></view>
+					<view class="upSell"  @click="clickUpSell"><text>确认挂售</text></view>
 				</view>
 				<view class="space">
 				</view>
@@ -34,11 +35,8 @@
 <script>
 	import {addressShow} from "../../lib/utils";
 	import navigation from "../../components/navigation/navigation.vue";
-	import productList from "../../components/product-list/product-list.vue";
-	import transactionItem from "../../components/transaction/transaction-item.vue";
-	import transactionList from "../../components/transaction/transaction-list.vue";
+
 	
-	import {nftAddress} from '../../script/eth.js';
 	var tokens = require('../../script/tokens.js');
 	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
@@ -48,44 +46,58 @@
 			return {
 				product:{},
 				price:"",
-				isFound:false
+				isFound:false,
+				isApprove:true,
 			};
 		},
 		
 		onLoad(options) {
 			console.log("options:", options);
-		
+			this.addressShow = addressShow;
 			eth.accounts((error, result)=>{
 				if(!error && result.length != 0){
 					this.myAddress = result[0];
+					this.checkApprove();
 				}
 			});
 			
 			if(options.id){
-				uni.$on("TokensUpdate", (ref)=>{
-					console.log("TokensUpdate updateItem");
-					this.updateItem(options.id);
+				tokens.queryToken(options.id, (error, t)=>{
+					console.log("queryToken", error, t);
+					if(!error){
+						this.isFound = true;
+						this.product = t;
+						this.checkApprove();
+					}else{
+						this.isFound = false;
+					}
 				});
-				console.log("aaaaaaa");
-				this.updateItem(options.id);
-				if(!this.isFound){
-					tokens.queryToken(options.id);
-				}
 			}
 			
 			console.log("this.product:", this.product);
 		},
 		
 		methods:{
-			updateItem:function(id){
-				console.log("updateItem id:", id);
-				this.product = tokens.getTokenById(id);
-				console.log("this.product:", this.product, tokens.getAllToken());
-				if(this.product){
-					this.isFound = true;
-				}else{
-					this.isFound = false;
+			
+			checkApprove:function(){
+				if(this.myAddress && this.isFound){
+					tokens.isApproveNFT( this.product.id, (error, r)=>{
+						if(!error && r){
+							this.isApprove = false;
+						}else{
+							this.isApprove = true;
+						}
+					});
 				}
+			},
+			
+			clickApprove:function(){
+				console.log("clickApprove");
+				tokens.approveNFT(this.myAddress, this.product.id, (error, result)=>{
+					if(!error){
+						this.isApprove = false;
+					}
+				});
 			},
 			
 			clickUpSell:function(){
@@ -192,6 +204,19 @@
 		}
 	}
 	
+	.approve{
+		width: 80%;
+		height: 80rpx;
+		background-color: #000000;
+		border-radius: 30rpx;
+		text-align: center;
+		line-height: 80rpx;
+		font-weight: bold;
+		text {
+			color: #FFFFFF;
+		}
+		margin: 20rpx auto;
+	}
 	.bottom{
 		width: 100%;
 		height: 100rpx;
@@ -224,6 +249,7 @@
 				}
 				margin: 10rpx auto;
 			}
+			
 		}
 	}
 </style>

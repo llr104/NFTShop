@@ -146,15 +146,37 @@
 				return this.Token;
 			}
 			
-			this.approve = (from, value)=>{
-				this.Token.approve(tokenAddress, value, {from:from});
+			this.approveToken = (from, value, cb)=>{
+				this.Token.approve(tokenAddress, value, {from:from}, (error, result)=>{
+					if(cb){
+						cb(value, cb);
+					}
+				});
 			}
 			
-			this.isApprove = (from, cb)=>{
+			this.isApproveToken = (from, cb)=>{
 				this.Token.allowance(from, tokenAddress, (error, result)=>{
 					if(cb){
 						if(!error){
 							cb(error, result[0].toNumber());
+						}else{
+							cb(error, result);
+						}
+					}
+				})
+			}
+			
+			this.approveNFT = (from, id)=>{
+				this.NFT.approve(routerAddress, id, {from:from});
+			}
+			
+			this.isApproveNFT = (from, cb)=>{
+				console.log("isApproveNFT");
+				this.NFT.getApproved(from, (error, result)=>{
+					console.log("getApproved:", error, result);
+					if(cb){
+						if(!error){
+							cb(error, result[0].toString().toLowerCase() == routerAddress.toString().toLowerCase());
 						}else{
 							cb(error, result);
 						}

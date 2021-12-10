@@ -147,15 +147,8 @@
 		},
 			
 		methods: {
-			updateItem:function(id){
-				this.product = tokens.getTokenById(id);
-				if(this.product){
-					this.isFound = true;
-				}else{
-					this.isFound = false;
-				}
-			},
 			
+		
 			moveStop:function(){
 				console.log("moveStop");
 			},
@@ -181,7 +174,7 @@
 			clickBuy:function(){
 				console.log("clickBuy");
 				this.$refs.buy_confirm.open("bottom");
-				tokens.isApprove(this.myAddress, (error, v)=>{
+				tokens.isApproveToken(this.myAddress, (error, v)=>{
 					console.log("isApprove:", v, error, this.product.price);
 					if(!error && v >= this.product.price){
 						console.log("isApprove false");
@@ -244,7 +237,7 @@
 			
 			clickApprove:function(){
 				console.log("clickApprove");
-				tokens.approve(this.myAddress, this.product.price);
+				tokens.approveToken(this.myAddress, this.product.price);
 				
 			},
 			
