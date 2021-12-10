@@ -70,42 +70,51 @@
 			}
 			
 			this.queryToken = (id, cb)=>{
-				this.NFT.cAttributes(id, (error, result)=>{
-					if(!error){
-						console.log("cAttributes:", result);
-						
-						let token = {};
-						token.id = id;
-						token.describe = result.describe;
-						token.groupId = result.groupId.toNumber();
-						token.nftType = result.nftType.toNumber();
-						token.price = result.price.toNumber();
-						token.uri = result.uri;
-						token.name = result.name;
-						token.ownerAddress = "";
-						
-						this.NFT.ownerOf(id, (error, result)=>{
-							if(!error){
-								token.ownerAddress = result[0];
-								this.tokenMap.set(Number(id), token);
-								uni.$emit("TokensUpdate", this.tokenMap);
-								
-								if(cb){
-									cb(error, token);
-								}
-							}else{
-								if(cb){
-									cb(error, null);
-								}
-							}
-						});
-					}else{
+				this.NFT.idToIndex(id, (error, result)=>{
+					if(error){
 						if(cb){
-							cb(error, null);
+							cb(error, result);
 						}
+						return;
 					}
-					
-				});
+					let index = result[0].toNumber();
+					console.log("index:", index);
+					this.NFT.cAttributes(index, (error, result)=>{
+						if(!error){
+							console.log("cAttributes:", result);
+							
+							let token = {};
+							token.id = id;
+							token.describe = result.describe;
+							token.groupId = result.groupId.toNumber();
+							token.nftType = result.nftType.toNumber();
+							token.price = result.price.toNumber();
+							token.uri = result.uri;
+							token.name = result.name;
+							token.ownerAddress = "";
+							
+							this.NFT.ownerOf(id, (error, result)=>{
+								if(!error){
+									token.ownerAddress = result[0];
+									this.tokenMap.set(Number(id), token);
+									uni.$emit("TokensUpdate", this.tokenMap);
+									
+									if(cb){
+										cb(error, token);
+									}
+								}else{
+									if(cb){
+										cb(error, null);
+									}
+								}
+							});
+						}else{
+							if(cb){
+								cb(error, null);
+							}
+						}
+					});
+				})
 			}
 			
 			this.getAllToken = ()=>{

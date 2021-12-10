@@ -14,10 +14,10 @@ contract NFTMdata is NFToken {
     uint256 public groupId;
 
     uint256[] public tokens;
+    cAttributesStruct[] public cAttributes;
     mapping(uint256 => uint256) public idToIndex;
     mapping(address => uint256[]) public ownerToIds;
     mapping(uint256 => uint256) public idToOwnerIndex;
-    mapping(uint256 => cAttributesStruct) public cAttributes;
     mapping(uint256 => uint256[]) public groupToIds;    //组id对应的tokenIds
     mapping(uint256 => uint256) public groupToIndex;
 
@@ -63,20 +63,21 @@ contract NFTMdata is NFToken {
            
             tokens.push(_tokenId);
             idToIndex[_tokenId] = tokens.length - 1;
-
+            
+            cAttributesStruct memory attr;
             if(_isGroup){
-                cAttributes[_tokenId].groupId = groupId;   
+                attr.groupId = groupId;   
                 groupToIds[_tokenId].push(_tokenId);
                 groupToIndex[_tokenId] = groupToIds[_tokenId].length - 1;
             }else{
-                cAttributes[_tokenId].groupId = NO_GROUP;   
+                attr.groupId = NO_GROUP;   
             }
             
-            cAttributes[_tokenId].uri = _uri;   
-            cAttributes[_tokenId].nftType = _type;
-            cAttributes[_tokenId].name = _name;
-            cAttributes[_tokenId].describe = _des;
-            
+            attr.uri = _uri;   
+            attr.nftType = _type;
+            attr.name = _name;
+            attr.describe = _des;
+            cAttributes.push(attr);
         }
     
     }
@@ -95,17 +96,21 @@ contract NFTMdata is NFToken {
         idToIndex[lastToken] = tokenIndex;
         idToIndex[_tokenId] = 0;
 
-        if(cAttributes[_tokenId].groupId != NO_GROUP){
-            lastTokenIndex = groupToIds[_tokenId].length - 1;
-            tokenIndex = groupToIndex[_tokenId];
+        
+        if(cAttributes[tokenIndex].groupId != NO_GROUP){
+            uint256 lIndex = groupToIds[_tokenId].length - 1;
+            uint256 index = groupToIndex[_tokenId];
 
-            lastToken = groupToIds[_tokenId][lastTokenIndex];
-            groupToIds[_tokenId][tokenIndex] = lastToken;
+            uint256 lt = groupToIds[_tokenId][lIndex];
+            groupToIds[_tokenId][index] = lt;
             groupToIds[_tokenId].pop();
 
-            groupToIndex[lastToken] = tokenIndex;
+            groupToIndex[lt] = index;
             groupToIndex[_tokenId] = 0;
         }
+
+        cAttributesStruct memory lastAttr = cAttributes[lastTokenIndex];
+        cAttributes[tokenIndex] = lastAttr;
         
     }
 
@@ -139,46 +144,46 @@ contract NFTMdata is NFToken {
     }
 
     function _openBlindBox(uint256 _tokenId) internal validNFToken(_tokenId){
-        // address _to = idToOwner[_tokenId];
-        // cAttributesStruct memory cattr = cAttributes[_tokenId];
-        // require(cattr.nftType == NFTType.BlindBox, INVALID_BLINKBOX);
-        // _burn(_tokenId);
-
-        // uint256 _newTokenId = _mint(_to);
-        // cattr.nftType = NFTType.Normal;
-        // cAttributes[_newTokenId] = cattr;
+       
     }
     
 
     function _setTokenDescribe(uint256 _tokenId, string memory _des) internal validNFToken(_tokenId){
-        cAttributes[_tokenId].describe = _des;
+        uint256 tokenIndex = idToIndex[_tokenId];
+        cAttributes[tokenIndex].describe = _des;
     }
 
     function _setTokenPrice(uint256 _tokenId, uint256 _price) internal validNFToken(_tokenId){
-        if(_price != cAttributes[_tokenId].price){
-             cAttributes[_tokenId].price = _price;
+        uint256 tokenIndex = idToIndex[_tokenId];
+        if(_price != cAttributes[tokenIndex].price){
+             cAttributes[tokenIndex].price = _price;
         }
     }
 
     
     function _setTokenAttributes(uint256 _tokenId, uint256 _index,uint256 _tvalue) internal validNFToken(_tokenId){
-        cAttributes[_tokenId].atterbutes[_index] = _tvalue;
+        uint256 tokenIndex = idToIndex[_tokenId];
+        cAttributes[tokenIndex].atterbutes[_index] = _tvalue;
     }
     
     function _addTokenAttributes(uint256 _tokenId, uint256 _tvalue) internal validNFToken(_tokenId){
-        cAttributes[_tokenId].atterbutes.push(_tvalue);
+        uint256 tokenIndex = idToIndex[_tokenId];
+        cAttributes[tokenIndex].atterbutes.push(_tvalue);
     }
     
     function getAttributesLength(uint256 _tokenId) public view validNFToken(_tokenId) returns(uint256){
-        return cAttributes[_tokenId].atterbutes.length;
+        uint256 tokenIndex = idToIndex[_tokenId];
+        return cAttributes[tokenIndex].atterbutes.length;
     }
     
     function getAttributesValuebyIndex(uint256 _tokenId, uint256 _index) public view validNFToken(_tokenId) returns(uint256){
-        return cAttributes[_tokenId].atterbutes[_index];
+        uint256 tokenIndex = idToIndex[_tokenId];
+        return cAttributes[tokenIndex].atterbutes[_index];
     }
 
     function getTokenPrice(uint256 _tokenId) external view validNFToken(_tokenId) returns(uint256){
-        cAttributes[_tokenId].price;
+        uint256 tokenIndex = idToIndex[_tokenId];
+        return cAttributes[tokenIndex].price;
     }
     
 }
