@@ -58,6 +58,10 @@
 			<uni-forms-item required name="price" label="价格">
 				<uni-easyinput type="number" v-model="gsData.price" placeholder="请输入挂售金额,金额为0即为取消挂售" />
 			</uni-forms-item>
+			
+			<uni-forms-item label="授权" name="approve">
+				<view class="approve" v-if="isApprove"  @click="clickApprove"><text>授权NFT挂售到平台</text></view>
+			</uni-forms-item>
 			<button @click="cllickGS">提交</button>
 		</view>
 
@@ -69,6 +73,8 @@
 	import vtab from "../../components/v-tabs/v-tabs.vue";
 	
 	var tokens = require('../../script/tokens.js');
+	let nft = tokens.getNFT();
+	let eth = tokens.getETH();
 	
 	export default {
 		comments:{
@@ -78,6 +84,7 @@
 		
 		data() {
 			return {
+				isApprove:true,
 				current: 0,
 				tabs: ['普通锻造', "盲盒锻造",'销毁', '查询', "挂售"],
 				ptdzData:{
@@ -107,26 +114,7 @@
 		
 		methods:{
 			
-			test() {
-				provider.eth.getAccounts((error, result) =>{
-					if (!error){
-						if(result.length>0){
-							provider.eth.getTransactionCount(result[0], (err, txCount) => {
-								const txObject = {
-								  nonce:    provider.utils.toHex(txCount),
-								  gasLimit: provider.utils.toHex(800000),
-								  gasPrice: provider.utils.toHex(provider.utils.toWei('10', 'gwei')),
-								  to: nftAddress,
-								}
-								
-								const contract = new provider.eth.Contract(abi, nftAddress);
-								contract.methods.name().call((err, result) => { console.log("data:", result) })
-							});
-						}
-					}
-				});
-			},
-			
+
 			changeTab(index) {
 				console.log('当前选中的项：' + index)
 			},
@@ -135,8 +123,6 @@
 				console.log("cllickPTDZ:", this.ptdzData);
 				
 				if (typeof web3 !== 'undefined') {
-					let nft = tokens.getNFT();
-					let eth = tokens.getETH();
 					
 					uni.showLoading({
 						title:"锻造中",
@@ -181,7 +167,7 @@
 					});
 					
 				} else {
-				    alert("No currentProvider for web3");
+				    
 				}
 			},
 			
@@ -192,6 +178,26 @@
 			
 			cllickXH:function(){
 				console.log("cllickXH:", this.xhData);
+				eth.accounts((error, result)=>{
+					if(error){
+						return;
+					}
+					let _from = result[0];
+					nft.burn(this.xhData.tokenId, {from: _from}, (error, result)=>{
+						console.log("burn:", error, result);
+						if(!error){
+							uni.showToast({
+								title:"销毁成功"
+							});
+						}else{
+							uni.showToast({
+								title:"销毁失败"
+							});
+							
+						}
+					});
+				});
+				
 			},
 			
 			cllickCH:function(){
@@ -202,12 +208,15 @@
 			cllickGS:function(){
 				console.log("cllickGS:", this.gsData);
 				
-				let nft = tokens.getNFT();
-				let eth = tokens.getETH();
+				
 				
 				if(this.gsData.tokenId){
 					
 					eth.accounts((error, result)=>{
+						if(error){
+							return;
+						}
+						
 						let _from = result[0];
 						let tokenId = Number(this.gsData.tokenId);
 						if(this.gsData.price){
@@ -225,7 +234,42 @@
 					});
 					
 				}
-			}
+			},
+			
+			checkApprove:function(){
+				
+				eth.accounts((error, result)=>{
+					if(!error){
+						tokens.isApproveNFT( this.gsData.tokenId, (error, r)=>{
+							if(!error && r){
+								this.isApprove = false;
+							}else{
+								this.isApprove = true;
+							}
+						});
+					}
+				});
+			
+			},
+			
+			clickApprove:function(){
+				console.log("clickApprove");
+				if(Number(this.gsData.tokenId) <=0){
+					return;
+				}
+				
+				eth.accounts((error, result)=>{
+					if(!error){
+						tokens.approveNFT(result[0], this.gsData.tokenId, (error, result)=>{
+							if(!error){
+								this.isApprove = false;
+							}
+						});
+					}
+				});
+				
+			},
+			
 		}
 	}
 </script>
@@ -259,6 +303,19 @@
 		margin-top: 2rpx;
 		padding: 50rpx;
 		background-color: #FFFFFF;
+		
+		.approve{
+			
+			height: 80rpx;
+			background-color: #000000;
+			border-radius: 30rpx;
+			text-align: center;
+			line-height: 80rpx;
+			font-weight: bold;
+			text {
+				color: #FFFFFF;
+			}
+		}
 	}
 	
 </style>
