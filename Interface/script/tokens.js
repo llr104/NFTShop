@@ -52,7 +52,7 @@
 				})
 			}
 			
-			this.queryToken = (id)=>{
+			this.queryToken = (id, cb)=>{
 				this.NFTC.cAttributes(id, (error, result)=>{
 					if(!error){
 						console.log("cAttributes:", result);
@@ -71,12 +71,23 @@
 							if(!error){
 								token.ownerAddress = result[0];
 								this.tokenMap.set(Number(id), token);
-								
 								uni.$emit("TokensUpdate", this.tokenMap);
+								
+								if(cb){
+									cb(error, token);
+								}
+							}else{
+								if(cb){
+									cb(error, null);
+								}
 							}
 						});
-						
+					}else{
+						if(cb){
+							cb(error, null);
+						}
 					}
+					
 				});
 			}
 			

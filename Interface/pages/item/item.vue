@@ -106,16 +106,14 @@
 			});
 			
 			if(options.id){
-				
-				uni.$on("TokensUpdate", (ref)=>{
-					console.log("TokensUpdate updateItem:", ref);
-					this.updateItem(options.id);
+				tokens.queryToken(options.id, (error, t)=>{
+					if(!error){
+						this.isFound = true;
+						this.product = t;
+					}else{
+						this.isFound = false;
+					}
 				});
-				
-				this.updateItem(options.id);
-				if(!this.isFound){
-					tokens.queryToken(options.id);
-				}
 			}
 			
 			console.log("this.product:", this.product);
