@@ -173,7 +173,7 @@
 					complete:function(r){
 						console.log(r);
 					}
-				})
+				});
 			},
 			
 			clickDownSell:function(){

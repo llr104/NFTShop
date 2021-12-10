@@ -127,6 +127,13 @@
 						
 						this.product.price = price;
 						tokens.updateToken(this.product);
+						
+						uni.navigateTo({
+							url:"../resell-result/resell-result?id="+this.product.id,
+							complete:function(r){
+								console.log(r);
+							}
+						})
 					}
 					console.log("setTokenPriceAndSale:", error, result);
 				});

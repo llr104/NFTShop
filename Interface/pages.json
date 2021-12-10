@@ -59,6 +59,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/resell-result/resell-result",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
