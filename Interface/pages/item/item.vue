@@ -41,7 +41,7 @@
 					class="downSell" @click="clickDownSell"><text>取消挂售</text></view>
 					
 					<view v-else-if="product.price" class="buy" @click="clickBuy"><text>立即购买</text></view>
-					<view v-else-if="!product.price" class="sellOut" @click="clickBuy"><text>已售罄</text></view>
+					<view v-else-if="!product.price" class="sellOut"><text>已售罄</text></view>
 				</view>
 				<view class="space">
 				</view>
@@ -74,7 +74,8 @@
 							<text>价格:{{product.price}}</text>
 						</view>
 					</view>
-					<button type="default" class="pay" @click="clickPay">支付</button>
+					<button type="default" v-if="isApprove" class="approve" @click="clickApprove">授权</button>
+					<button type="default" v-else class="pay" @click="clickPay">支付</button>
 					
 				</view>
 			</uni-popup>
@@ -102,7 +103,7 @@
 	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	let router = tokens.getRouter();
-	
+
 	export default {
 		components:{
 			navigation,
@@ -116,6 +117,7 @@
 				isFound:false,
 				nftAddress:nftAddress,
 				myAddress:"",
+				isApprove: true,
 				product:{}
 			}
 		},
@@ -139,6 +141,7 @@
 					}
 				});
 			}
+			
 			
 			console.log("this.product:", this.product);
 		},
@@ -178,6 +181,16 @@
 			clickBuy:function(){
 				console.log("clickBuy");
 				this.$refs.buy_confirm.open("bottom");
+				tokens.isApprove(this.myAddress, (error, v)=>{
+					console.log("isApprove:", v, error, this.product.price);
+					if(!error && v >= this.product.price){
+						console.log("isApprove false");
+						this.isApprove = false;
+					}else{
+						console.log("isApprove true");
+						this.isApprove = true;
+					}
+				});
 			},
 			
 			clickMore:function(){
@@ -229,10 +242,22 @@
 				});
 			},
 			
+			clickApprove:function(){
+				console.log("clickApprove");
+				tokens.approve(this.myAddress, this.product.price);
+				
+			},
+			
 			clickPay:function(){
-				console.log("clickPay", router);
-				router.buy(this.product.id,(error, result)=>{
+				console.log("clickPay", this.product.id, this.myAddress);
+				router.buy(this.product.id, {from: this.myAddress}, (error, result)=>{
 					console.log("buy:", error, result);
+					if(!error){
+						uni.showToast({
+							title:"支付成功"
+						});
+						this.$refs.buy_confirm.close();
+					}
 				});
 			}
 			
@@ -540,7 +565,15 @@
 				line-height: 1.5;
 			}
 			
-			.pay {
+			.pay{
+				width: 200rpx;
+				background-color: #000000;
+				color: #FFFFFF;
+				font-weight: bold;
+				margin-top: 10rpx;
+			}
+			
+			.approve{
 				width: 200rpx;
 				background-color: #000000;
 				color: #FFFFFF;

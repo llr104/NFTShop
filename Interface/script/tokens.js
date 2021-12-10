@@ -1,6 +1,7 @@
-	import {provider, nftAddress, routerAddress} from './eth.js';
+	import {provider, nftAddress, routerAddress, tokenAddress} from './eth.js';
 	var nftAbi = require('@/static/json/nft-abi.json');
 	var routerAbi = require('@/static/json/router-abi.json');
+	var tokenAbi = require('@/static/json/token-abi.json');
 	var Eth = require('./ethjs-query.js');
 	var EthContract = require('./ethjs-contract.js');
 
@@ -19,6 +20,17 @@
 			contract = new EthContract(eth);
 			var RouterContract = contract(routerAbi);
 			this.Router = RouterContract.at(routerAddress);
+			
+			contract = new EthContract(eth);
+			var TokenContract = contract(tokenAbi);
+			this.Token = TokenContract.at(tokenAddress);
+			this.TokenDecimals = 1;
+			this.Token.decimals((error, result)=>{
+				if(!error){
+					console.log("decimals:", result[0].toNumber());
+					this.TokenDecimals = result[0].toNumber();
+				}
+			})
 			
 			this.show = ()=>{
 				console.log("show:", this.name);
@@ -119,6 +131,26 @@
 			
 			this.getRouter = ()=>{
 				return this.Router;
+			}
+			
+			this.getToken = ()=>{
+				return this.Token;
+			}
+			
+			this.approve = (from, value)=>{
+				this.Token.approve(tokenAddress, value, {from:from});
+			}
+			
+			this.isApprove = (from, cb)=>{
+				this.Token.allowance(from, tokenAddress, (error, result)=>{
+					if(cb){
+						if(!error){
+							cb(error, result[0].toNumber());
+						}else{
+							cb(error, result);
+						}
+					}
+				})
 			}
 		}
 		
