@@ -2,6 +2,7 @@
 // #ifndef VUE3
 import Vue from 'vue'
 import App from './App'
+require("./script/init.js");
 
 Vue.config.productionTip = false
 

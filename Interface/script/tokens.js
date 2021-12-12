@@ -5,8 +5,7 @@
 	var Eth = require('./ethjs-query.js');
 	var EthContract = require('./ethjs-contract.js');
 
-	
-	const tokens= (function () {
+	const tokens = (function () {
 	    function _mgr() {
 	        this.name = 'tokens';
 			this.tokenMap = new Map();
@@ -16,7 +15,8 @@
 			var NFTContract = contract(nftAbi);
 			this.NFT = NFTContract.at(nftAddress);
 			this.ETH = eth;
-			
+
+		
 			contract = new EthContract(eth);
 			var RouterContract = contract(routerAbi);
 			this.Router = RouterContract.at(routerAddress);

@@ -73,6 +73,8 @@
 	import vtab from "../../components/v-tabs/v-tabs.vue";
 	
 	var tokens = require('../../script/tokens.js');
+	var storage = require("../../script/storage.js");
+
 	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	
@@ -122,9 +124,7 @@
 			cllickPTDZ:function(){
 				console.log("cllickPTDZ:", this.ptdzData);
 				
-				if (typeof web3 !== 'undefined') {
-					
-					uni.showLoading({
+				uni.showLoading({
 						title:"锻造中",
 					});
 					eth.accounts((error, result)=>{
@@ -144,7 +144,7 @@
 							let _des = this.ptdzData.des ? this.ptdzData.des : des;
 							let _isGroup = true;
 							let _type = 1;
-							
+							console.log(nft.mint);
 							nft.mint(_to, _name, _uri, _des, _type, _count, _isGroup, {from: _from}, (error, result)=>{
 								console.log("mint error:", error);
 								console.log("mint result:", result);
@@ -157,18 +157,19 @@
 										title:"锻造失败"
 									});
 								}
+							})
+							/*
+							.on('transactionHash', function(hash){
+								console.log("transactionHash:", hash);
 							});
+							*/
 						}else{
 							uni.hideLoading();
 							uni.showToast({
 								title:"锻造失败"
 							});
 						}
-					});
-					
-				} else {
-				    
-				}
+					})
 			},
 			
 			cllickMHDZ:function(){
@@ -202,16 +203,15 @@
 			
 			cllickCH:function(){
 				console.log("cllickCH:", this.cxData);
-				tokens.queryAllToken();
+				if(this.cxData.tokenId && Number(this.cxData.tokenId)>0)
+				tokens.queryToken(this.cxData.tokenId);
 			},
 			
 			cllickGS:function(){
 				console.log("cllickGS:", this.gsData);
 				
-				
-				
 				if(this.gsData.tokenId){
-					
+
 					eth.accounts((error, result)=>{
 						if(error){
 							return;
@@ -226,9 +226,11 @@
 									uni.showToast({
 										title:"修改失败"
 									})
+								}else{
+									storage.setTransactionPennding(tokenId, result);
 								}
 								console.log("setTokenPrice:", error, result);
-							});
+							})
 						}
 						
 					});
