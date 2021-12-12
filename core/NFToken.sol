@@ -166,7 +166,7 @@ contract NFToken is ERC721 {
     function _removeNFToken(address _from, uint256 _tokenId) internal{
         require(idToOwner[_tokenId] == _from, NOT_OWNER);
         ownerToNFTokenCount[_from] = ownerToNFTokenCount[_from] - 1;
-        delete idToOwner[_tokenId];
+        delete idToOwner[_tokenId]; 
     }
 
     function _addNFToken(address _to,uint256 _tokenId) internal{

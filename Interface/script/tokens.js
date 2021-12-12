@@ -43,52 +43,56 @@
 			
 			this.queryToken = (id, cb)=>{
 				id = Number(id);
-				this.NFT.methods.idToIndex(id).call((error, result)=>{
+				this.NFT.methods.ownerOf(id).call((error, result)=>{
+					console.log("queryToken ownerOf:", result);
 					if(error){
 						if(cb){
 							cb(error, result);
 						}
 						return;
 					}
-					console.log("queryToken result:", result);
-					let index = result;
-					
-					this.NFT.methods.cAttributes(index).call((error, result)=>{
-						if(!error){
-							console.log("cAttributes:", result);
-							
-							let token = {};
-							token.id = id;
-							token.describe = result.describe;
-							token.groupId = Number(result.groupId)
-							token.nftType = Number(result.nftType);
-							token.price = Number(result.price);
-							token.uri = result.uri;
-							token.name = result.name;
-							token.ownerAddress = "";
-							
-							this.NFT.methods.ownerOf(id).call((error, result)=>{
-								if(!error){
-									token.ownerAddress = result;
-									this.tokenMap.set(Number(id), token);
-									uni.$emit("TokensUpdate", this.tokenMap);
-									
-									if(cb){
-										cb(error, token);
-									}
-								}else{
-									if(cb){
-										cb(error, null);
-									}
-								}
-							});
-						}else{
+					let ownerAddress = result;
+					this.NFT.methods.idToIndex(id).call((error, result)=>{
+						console.log("queryToken idToIndex:", result);
+						if(error){
 							if(cb){
-								cb(error, null);
+								cb(error, result);
 							}
+							return;
 						}
-					});
-				})
+	
+						let index = result;
+						this.NFT.methods.cAttributes(index).call((error, result)=>{
+							if(!error){
+								console.log("queryToken cAttributes:", result);
+								
+								let token = {};
+								token.id = id;
+								token.describe = result.describe;
+								token.groupId = Number(result.groupId)
+								token.nftType = Number(result.nftType);
+								token.price = Number(result.price);
+								token.uri = result.uri;
+								token.name = result.name;
+								token.ownerAddress = ownerAddress;
+								
+								token.ownerAddress = result;
+								this.tokenMap.set(Number(id), token);
+								uni.$emit("TokensUpdate", this.tokenMap);
+								
+								if(cb){
+									cb(error, token);
+								}
+								
+							}else{
+								if(cb){
+									cb(error, null);
+								}
+							}
+						});
+					})
+				});
+				
 			}
 			
 			this.getAllToken = ()=>{

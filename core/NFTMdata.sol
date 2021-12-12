@@ -111,6 +111,7 @@ contract NFTMdata is NFToken {
 
         cAttributesStruct memory lastAttr = cAttributes[lastTokenIndex];
         cAttributes[tokenIndex] = lastAttr;
+        cAttributes.pop();
         
     }
 
