@@ -127,7 +127,7 @@
 				uni.showLoading({
 						title:"锻造中",
 					});
-					eth.accounts((error, result)=>{
+					eth.getAccounts((error, result)=>{
 						console.log("accounts:", error, result);
 						
 						if(!error && result.length != 0){
@@ -145,7 +145,7 @@
 							let _isGroup = true;
 							let _type = 1;
 							console.log(nft.mint);
-							nft.mint(_to, _name, _uri, _des, _type, _count, _isGroup, {from: _from}, (error, result)=>{
+							nft.methods.mint(_to, _name, _uri, _des, _type, _count, _isGroup).send({from: _from}, (error, result)=>{
 								console.log("mint error:", error);
 								console.log("mint result:", result);
 								if(!error){
@@ -173,38 +173,59 @@
 			},
 			
 			cllickMHDZ:function(){
-				console.log("cllickMHDZ:", this.mhdzData);
+
+				eth.getAccounts((error, result)=>{
+					if(error){
+						return;
+					}
+					let test = tokens.getTestNFT();
+					test.methods.setTokenPrice(2, 10).send({from: result[0]}).on('transactionHash', function(hash){
+						console.log("transactionHash:", hash);
+					}).on('confirmation', function(confirmationNumber, receipt){
+						console.log("confirmation:", confirmationNumber, receipt);
+					}).on('receipt', function(receipt){
+						console.log("receipt:", receipt);
+					}).on('error', function(error){
+						console.log("error:", error);
+					}); 
+				});
+				
 			},
 			
 			
 			cllickXH:function(){
 				console.log("cllickXH:", this.xhData);
-				eth.accounts((error, result)=>{
-					if(error){
-						return;
-					}
-					let _from = result[0];
-					nft.burn(this.xhData.tokenId, {from: _from}, (error, result)=>{
-						console.log("burn:", error, result);
-						if(!error){
-							uni.showToast({
-								title:"销毁成功"
-							});
-						}else{
-							uni.showToast({
-								title:"销毁失败"
-							});
-							
+				if(this.xhData.tokenId && Number(this.xhData.tokenId)){
+					eth.getAccounts((error, result)=>{
+						if(error){
+							return;
 						}
+						let _from = result[0];
+						nft.methods.burn(this.xhData.tokenId).send({from: _from}, (error, result)=>{
+							console.log("burn:", error, result);
+							if(!error){
+								uni.showToast({
+									title:"销毁成功"
+								});
+							}else{
+								uni.showToast({
+									title:"销毁失败"
+								});
+								
+							}
+						});
 					});
-				});
+					
+				}
 				
 			},
 			
 			cllickCH:function(){
 				console.log("cllickCH:", this.cxData);
-				if(this.cxData.tokenId && Number(this.cxData.tokenId)>0)
-				tokens.queryToken(this.cxData.tokenId);
+				if(this.cxData.tokenId && Number(this.cxData.tokenId)){
+					tokens.queryToken(this.cxData.tokenId);
+				}
+				
 			},
 			
 			cllickGS:function(){
@@ -212,7 +233,7 @@
 				
 				if(this.gsData.tokenId){
 
-					eth.accounts((error, result)=>{
+					eth.getAccounts((error, result)=>{
 						if(error){
 							return;
 						}
@@ -221,7 +242,7 @@
 						let tokenId = Number(this.gsData.tokenId);
 						if(this.gsData.price){
 							let price = Number(this.gsData.price);
-							nft.setTokenPrice(tokenId, price, {from: _from}, (error, result)=>{
+							nft.methods.setTokenPrice(tokenId, price).send({from: _from}, (error, result)=>{
 								if(error){
 									uni.showToast({
 										title:"修改失败"
@@ -240,7 +261,7 @@
 			
 			checkApprove:function(){
 				
-				eth.accounts((error, result)=>{
+				eth.getAccounts((error, result)=>{
 					if(!error){
 						tokens.isApproveNFT( this.gsData.tokenId, (error, r)=>{
 							if(!error && r){
@@ -260,7 +281,7 @@
 					return;
 				}
 				
-				eth.accounts((error, result)=>{
+				eth.getAccounts((error, result)=>{
 					if(!error){
 						tokens.approveNFT(result[0], this.gsData.tokenId, (error, result)=>{
 							if(!error){

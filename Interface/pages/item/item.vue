@@ -125,7 +125,7 @@
 		onLoad(options) {
 			console.log("options:", options);
 			this.addressShow = addressShow;
-			eth.accounts((error, result)=>{
+			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
 					this.myAddress = result[0];
 				}
@@ -219,7 +219,7 @@
 				console.log("downSaleOK");
 				this.$refs.downSale_popup.close();
 				
-				nft.setTokenPrice(this.product.id, 0, {from: this.myAddress}, (error, result)=>{
+				nft.methods.setTokenPrice(this.product.id, 0).send({from: this.myAddress}, (error, result)=>{
 					if(error){
 						uni.showToast({
 							title:"取消挂售失败"
@@ -243,7 +243,7 @@
 			
 			clickPay:function(){
 				console.log("clickPay", this.product.id, this.myAddress);
-				router.buy(this.product.id, {from: this.myAddress}, (error, result)=>{
+				router.methods.buy(this.product.id).send({from: this.myAddress}, (error, result)=>{
 					console.log("buy:", error, result);
 					if(!error){
 						uni.showToast({

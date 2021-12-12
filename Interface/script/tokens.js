@@ -2,33 +2,24 @@
 	var nftAbi = require('@/static/json/nft-abi.json');
 	var routerAbi = require('@/static/json/router-abi.json');
 	var tokenAbi = require('@/static/json/token-abi.json');
-	var Eth = require('./ethjs-query.js');
-	var EthContract = require('./ethjs-contract.js');
+
 
 	const tokens = (function () {
 	    function _mgr() {
 	        this.name = 'tokens';
 			this.tokenMap = new Map();
 			
-			var eth = new Eth(web3.currentProvider);
-			var contract = new EthContract(eth);
-			var NFTContract = contract(nftAbi);
-			this.NFT = NFTContract.at(nftAddress);
-			this.ETH = eth;
-
-		
-			contract = new EthContract(eth);
-			var RouterContract = contract(routerAbi);
-			this.Router = RouterContract.at(routerAddress);
 			
-			contract = new EthContract(eth);
-			var TokenContract = contract(tokenAbi);
-			this.Token = TokenContract.at(tokenAddress);
+			this.ETH = provider.eth;
+			this.NFT = new provider.eth.Contract(nftAbi, nftAddress);
+			this.Router = new provider.eth.Contract(routerAbi, routerAddress);
+			this.Token = new provider.eth.Contract(tokenAbi, tokenAddress);
+			
 			this.TokenDecimals = 1;
-			this.Token.decimals((error, result)=>{
+			this.Token.methods.decimals().call((error, result)=>{
 				if(!error){
-					console.log("decimals:", result[0].toNumber());
-					this.TokenDecimals = result[0].toNumber();
+					console.log("decimals:", result);
+					this.TokenDecimals = Number(result);
 				}
 			})
 			
@@ -36,66 +27,49 @@
 				console.log("show:", this.name);
 			}
 			
-			this.test = ()=>{
-				console.log("this.NFTC:", this.NFTC, _mgr.instance);
-				this.NFT.cAttributes(1, function(error, result){
-					console.log("error:", error);
-					console.log("result:", result, result.nftType.toNumber());
-				});
-				
-				eth.accounts((error, result)=>{
-					this.NFT.ownerTokens(result[0], function(error, result){
-						console.log("ownerTokens error:", error);
-						console.log("ownerTokens result:", result);
-					})
-				});
-				
-				this.NFT.totalTokens((error, result)=>{
-					console.log("totalTokens error:", error);
-					console.log("totalTokens result:", result);
-				})
-			}
 			
 			this.queryAllToken = ()=>{
-				this.NFT.totalTokens((error, result)=>{
+				this.NFT.methods.totalTokens().call((error, result)=>{
 					if(!error){
-						let ids = result[0];
+						let ids = result;
 						console.log("totalTokens ids:", ids);
 						for (let i = 0; i < ids.length; i++) {
-							let id = ids[i].toNumber();
+							let id = Number(ids[i]);
 							this.queryToken(id);
 						}
 					}
-				})
+				});
 			}
 			
 			this.queryToken = (id, cb)=>{
-				this.NFT.idToIndex(id, (error, result)=>{
+				id = Number(id);
+				this.NFT.methods.idToIndex(id).call((error, result)=>{
 					if(error){
 						if(cb){
 							cb(error, result);
 						}
 						return;
 					}
-					let index = result[0].toNumber();
-					console.log("index:", index);
-					this.NFT.cAttributes(index, (error, result)=>{
+					console.log("queryToken result:", result);
+					let index = result;
+					
+					this.NFT.methods.cAttributes(index).call((error, result)=>{
 						if(!error){
 							console.log("cAttributes:", result);
 							
 							let token = {};
 							token.id = id;
 							token.describe = result.describe;
-							token.groupId = result.groupId.toNumber();
-							token.nftType = result.nftType.toNumber();
-							token.price = result.price.toNumber();
+							token.groupId = Number(result.groupId)
+							token.nftType = Number(result.nftType);
+							token.price = Number(result.price);
 							token.uri = result.uri;
 							token.name = result.name;
 							token.ownerAddress = "";
 							
-							this.NFT.ownerOf(id, (error, result)=>{
+							this.NFT.methods.ownerOf(id).call((error, result)=>{
 								if(!error){
-									token.ownerAddress = result[0];
+									token.ownerAddress = result;
 									this.tokenMap.set(Number(id), token);
 									uni.$emit("TokensUpdate", this.tokenMap);
 									
@@ -147,7 +121,7 @@
 			}
 			
 			this.approveToken = (from, value, cb)=>{
-				this.Token.approve(routerAddress, value, {from:from}, (error, result)=>{
+				this.Token.methods.approve(routerAddress, value).send({from:from}, (error, result)=>{
 					if(cb){
 						cb(value, cb);
 					}
@@ -155,33 +129,33 @@
 			}
 			
 			this.isApproveToken = (from, cb)=>{
-				this.Token.allowance(from, routerAddress, (error, result)=>{
+				this.Token.methods.allowance(from, routerAddress).call((error, result)=>{
 					if(cb){
-						if(!error){
-							cb(error, result[0].toNumber());
-						}else{
-							cb(error, result);
-						}
+						cb(error, Number(result));
 					}
 				})
 			}
 			
 			this.approveNFT = (from, id)=>{
-				this.NFT.approve(routerAddress, id, {from:from});
+				this.NFT.methods.approve(routerAddress, id).send({from:from});
 			}
 			
 			this.isApproveNFT = (from, cb)=>{
 				console.log("isApproveNFT");
-				this.NFT.getApproved(from, (error, result)=>{
+				this.NFT.methods.getApproved(from).call((error, result)=>{
 					console.log("getApproved:", error, result);
 					if(cb){
 						if(!error){
-							cb(error, result[0].toString().toLowerCase() == routerAddress.toString().toLowerCase());
+							cb(error, result.toString().toLowerCase() == routerAddress.toString().toLowerCase());
 						}else{
 							cb(error, result);
 						}
 					}
 				})
+			}
+
+			this.getTestNFT = ()=>{
+				return this.testNFT;
 			}
 		}
 		

@@ -54,7 +54,7 @@
 		onLoad(options) {
 			console.log("options:", options);
 			this.addressShow = addressShow;
-			eth.accounts((error, result)=>{
+			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
 					this.myAddress = result[0];
 					this.checkApprove();
@@ -127,7 +127,7 @@
 					return
 				}
 				
-				nft.setTokenPrice(tokenId, price, {from: this.myAddress}, (error, result)=>{
+				nft.methods.setTokenPrice(tokenId, price).send({from: this.myAddress}, (error, result)=>{
 					if(error){
 						uni.showToast({
 							title:"挂售失败"

@@ -37,7 +37,7 @@
 		},
 		
 		onLoad() {
-			eth.accounts((error, result)=>{
+			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
 					this.address = result[0];
 				}

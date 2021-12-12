@@ -2,8 +2,8 @@ var Web3 = require('./web3.min.js');
 
 async function asyncFun() {
 	try {
-		// await window.ethereum.enable();
-		await window.eth_requestAccounts
+		await window.ethereum.enable();
+		//eth_requestAccounts;
 	} catch (err) {
 		console.error("User denied account access")
 	}
