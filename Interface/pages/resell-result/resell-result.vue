@@ -7,11 +7,11 @@
 			</view>
 		</view>
 		
-		<view class="text">
+		<view class="text" v-if="finsh">
 			<text>您挂售的商品已成功上架【市场】，供全站用户购买。</text>
 		</view>
 		
-		<view class="text red">
+		<view class="text red" v-if="!finsh">
 			<text>商品上链中...需要几秒确认时间，请不要重新提交</text>
 		</view>
 		
@@ -23,8 +23,20 @@
 	export default {
 		data() {
 			return {
-				
+				finsh:false,
 			};
+		},
+		
+		onLoad(options) {
+			let h = options.hash;
+			let tokenId = options.id;
+			
+			uni.$on("receiptHash", (hash)=>{
+				if(hash.toString().toLowerCase() == h.toString().toLowerCase()){
+					console.log("receiptHash:", hash);
+					this.finsh = true;
+				}
+			});
 		},
 		
 		methods:{

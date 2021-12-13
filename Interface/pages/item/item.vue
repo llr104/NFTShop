@@ -32,16 +32,27 @@
 			
 			<view class="bottom">
 				<view class="bottom-fixed">
-					<text v-if="product.price" class="price">{{product.price}}&nbsp;usdt</text>
+					<view v-if="product.price" class="price">{{product.price}}&nbsp;usdt</view> 
 					
-					<view v-if="!product.price && myAddress==product.ownerAddress"
-					class="upSell" @click="clickUpSell"><text>立即挂售</text></view>
+					<!-- 按钮 -->
+					<button type="default" v-if="downSaling"
+					class="downSaling" loading="true">正在下架...</button>
 					
-					<view v-else-if="product.price && myAddress==product.ownerAddress"
-					class="downSell" @click="clickDownSell"><text>取消挂售</text></view>
+					<button type="default" v-else-if="upSaling"
+					class="upSaling" loading="true">正在上架...</button>
 					
-					<view v-else-if="product.price" class="buy" @click="clickBuy"><text>立即购买</text></view>
-					<view v-else-if="!product.price" class="sellOut"><text>已售罄</text></view>
+					<button type="default" v-else-if="buying"
+					class="buying" loading="true">购买中...</button>
+					
+					<button type="default" v-else-if="!product.price && myAddress==product.ownerAddress"
+					class="upSale" @click="clickUpSale">立即挂售</button>
+					
+					<button type="default" v-else-if="product.price && myAddress==product.ownerAddress"
+					class="downSale" @click="clickDownSale">取消挂售</button>
+					
+					<button type="default" v-else-if="product.price" class="buy" @click="clickBuy">立即购买</button>
+					
+					<button type="default" v-else-if="!product.price" class="SaleOut">已售罄</button>
 				</view>
 				<view class="space">
 				</view>
@@ -100,6 +111,8 @@
 	
 	import {nftAddress} from '../../script/eth.js';
 	var tokens = require('../../script/tokens.js');
+	var storage = require("../../script/storage.js");
+	
 	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	let router = tokens.getRouter();
@@ -118,6 +131,8 @@
 				nftAddress:nftAddress,
 				myAddress:"",
 				isApprove: true,
+				downSaling:false,
+				upSaling:false,
 				product:{}
 			}
 		},
@@ -195,8 +210,8 @@
 				window.open(url);
 			},
 			
-			clickUpSell:function(){
-				console.log("clickUpSell");
+			clickUpSale:function(){
+				console.log("clickUpSale");
 				uni.navigateTo({
 					url:"../resell/resell?id="+this.product.id,
 					complete:function(r){
@@ -205,8 +220,8 @@
 				});
 			},
 			
-			clickDownSell:function(){
-				console.log("clickDownSell");
+			clickDownSale:function(){
+				console.log("clickDownSale");
 				this.$refs.downSale_popup.open("bottom");
 			},
 			
@@ -219,46 +234,55 @@
 				console.log("downSaleOK");
 				this.$refs.downSale_popup.close();
 				
-				nft.methods.setTokenPrice(this.product.id, 0).send({from: this.myAddress}, (error, result)=>{
-					if(error){
-						uni.showToast({
-							title:"取消挂售失败"
-						})
-					}else{
+				nft.methods.setTokenPrice(this.product.id, 0).send({from: this.myAddress}).on('transactionHash', (hash)=>{
+					this.downSaling = true;
+				}).on('receipt', (receipt)=>{
+					console.log("receipt:", receipt);
+					this.downSaling = false;
+					if(receipt.status){
 						uni.showToast({
 							title:"取消挂售成功"
-						})
-						
+						});
 						this.product.price = 0;
+					}else{
+						uni.showToast({
+							title:"取消挂售失败"
+						});
 					}
-					console.log("setTokenPrice:", error, result);
-				});
+					
+				}).on('error', (error)=>{
+					this.downSaling = false;
+					uni.showToast({
+						title:"取消挂售失败"
+					});
+				}); 
 			},
 			
 			clickApprove:function(){
 				console.log("clickApprove");
 				tokens.approveToken(this.myAddress, this.product.price);
-				
 			},
 			
 			clickPay:function(){
+				this.$refs.buy_confirm.close();
 				console.log("clickPay", this.product.id, this.myAddress);
-				router.methods.buy(this.product.id).send({from: this.myAddress}, (error, result)=>{
-					console.log("buy:", error, result);
-					if(!error){
-						uni.showToast({
-							title:"支付成功"
-						});
-						this.$refs.buy_confirm.close();
-						
-						uni.navigateTo({
-							url:"../buy-result/buy-result",
-							complete:function(r){
-								console.log(r);
-							}
-						})
-					}
-				});
+				router.methods.buy(this.product.id).send({from: this.myAddress}).on('transactionHash', (hash)=>{
+					this.buying = true;
+					storage.setTransactionPennding(tokenId, hash);
+					uni.navigateTo({
+						url:"../buy-result/buy-result?id=" + this.product.id + "hash=" + hash,
+						complete:function(r){
+							console.log(r);
+						}
+					});
+					
+				}).on('error', (error)=>{
+					this.downSaling = false;
+					uni.showToast({
+						title:"购买失败"
+					});
+				}); 
+			
 			}
 			
 		}
@@ -419,7 +443,7 @@
 				color: #ff56a7;
 			}
 			
-			.upSell{
+			.upSale{
 				width: 80%;
 				height: 80rpx;
 				background-color: #000000;
@@ -427,13 +451,23 @@
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				text {
-					color: #FFFFFF;
-				}
+				color: #FFFFFF;
 				margin: 10rpx auto;
 			}
 			
-			.downSell{
+			.upSaling{
+				width: 80%;
+				height: 80rpx;
+				background-color: #e7e7e7;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 80rpx;
+				font-weight: bold;
+				color: #000000;
+				margin: 10rpx auto;
+			}
+			
+			.downSale{
 				float: right;
 				display: inline-block;
 				vertical-align: middle;
@@ -444,9 +478,22 @@
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				text {
-					color: #FFFFFF;
-				}
+				color: #FFFFFF;
+				margin: 10rpx 20rpx;
+			}
+			
+			.downSaling{
+				float: right;
+				display: inline-block;
+				vertical-align: middle;
+				width: 250rpx;
+				height: 80rpx;
+				background-color: #e7e7e7;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 80rpx;
+				font-weight: bold;
+				color: #000000;
 				margin: 10rpx 20rpx;
 			}
 			
@@ -461,13 +508,27 @@
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				text {
-					color: #FFFFFF;
-				}
+				color: #FFFFFF;
 				margin: 10rpx 20rpx;
 			}
 			
-			.sellOut {
+			.buying{
+				float: right;
+				display: inline-block;
+				vertical-align: middle;
+				width: 250rpx;
+				height: 80rpx;
+				background-color: #e7e7e7;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 80rpx;
+				font-weight: bold;
+				color: #000000;
+				margin: 10rpx 20rpx;
+			}
+			
+			
+			.SaleOut {
 				float: right;
 				display: inline-block;
 				vertical-align: middle;

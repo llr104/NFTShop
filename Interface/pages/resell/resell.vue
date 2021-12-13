@@ -20,8 +20,11 @@
 		<view class="card2">
 			<uni-title class="t" title="出售单价" type="h1"></uni-title>
 			<uni-easyinput class="pinput" type="number" trim="all" v-model="price" placeholder="请输入挂售的价格" />
-			<view class="approve" v-if="isApprove"  @click="clickApprove"><text>授权NFT挂售到平台</text></view>
-			<view class="bottom" v-if="!isApprove">
+			<button type="default"  class="approve" v-if="isApprove==false && approving==false"
+			 @click="clickApprove">授权NFT挂售到平台</button>
+			<button type="default"  class="approvedis" loading="true" v-if="approving">授权NFT中...</button>
+			
+			<view class="bottom" v-if="isApprove">
 				<view class="bottom-fixed">
 					<view class="upSell"  @click="clickUpSell"><text>确认挂售</text></view>
 				</view>
@@ -38,6 +41,8 @@
 
 	
 	var tokens = require('../../script/tokens.js');
+	var storage = require('../../script/storage.js');
+	
 	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	
@@ -48,6 +53,7 @@
 				price:"",
 				isFound:false,
 				isApprove:true,
+				approving:false,
 			};
 		},
 		
@@ -82,8 +88,8 @@
 			checkApprove:function(){
 				if(this.myAddress && this.isFound){
 					tokens.isApproveNFT( this.product.id, (error, r)=>{
-						if(!error && r){
-							this.isApprove = false;
+						if(!error){
+							this.isApprove = r;
 						}else{
 							this.isApprove = true;
 						}
@@ -93,15 +99,42 @@
 			
 			clickApprove:function(){
 				console.log("clickApprove");
-				tokens.approveNFT(this.myAddress, this.product.id, (error, result)=>{
-					if(!error){
+				tokens.approveNFT(this.myAddress, this.product.id).on('transactionHash', (hash)=>{
+					console.log("transactionHash:", hash);
+					this.approving = true;
+				}).on('receipt', (receipt)=>{
+					console.log("receipt:", receipt);
+					if(receipt.status){
+						this.isApprove = true;
+						uni.showToast({
+							title:"授权成功"
+						});
+					}else{
 						this.isApprove = false;
+						uni.showToast({
+							title:"授权失败"
+						});
 					}
-				});
+					this.approving = false;
+					
+				}).on('error', (error)=>{
+					this.approving = false;
+					this.isApprove = false;
+					uni.showToast({
+						title:"授权失败"
+					});
+				}); 
 			},
 			
 			clickUpSell:function(){
 				console.log("clickUpSell");
+				if(!this.isApprove){
+					uni.showToast({
+						title:"请先授权"
+					})
+					return;
+				}
+				
 				let price = Number(this.price);
 				console.log("price:", price);
 				if(isNaN(price) || price <= 0){
@@ -127,28 +160,17 @@
 					return
 				}
 				
-				nft.methods.setTokenPrice(tokenId, price).send({from: this.myAddress}, (error, result)=>{
-					if(error){
-						uni.showToast({
-							title:"挂售失败"
-						});
-					}else{
-						uni.showToast({
-							title:"挂售成功"
-						});
-						
-						this.product.price = price;
-						tokens.updateToken(this.product);
-						
-						uni.navigateTo({
-							url:"../resell-result/resell-result?id="+this.product.id,
-							complete:function(r){
-								console.log(r);
-							}
-						})
-					}
-					console.log("setTokenPriceAndSale:", error, result);
-				});
+				nft.methods.setTokenPrice(tokenId, price).send({from: this.myAddress}).on('transactionHash', (hash)=>{
+					storage.setTransactionPennding(tokenId, hash);
+					uni.navigateTo({
+						url:"../resell-result/resell-result?id=" + this.product.id+"&hash=" + hash,
+					});
+				}).on('error', (error)=>{
+					uni.showToast({
+						title:"挂售失败"
+					});
+				}); 
+				
 			}
 		}
 	}
@@ -212,11 +234,22 @@
 		text-align: center;
 		line-height: 80rpx;
 		font-weight: bold;
-		text {
-			color: #FFFFFF;
-		}
+		color: #FFFFFF;
 		margin: 20rpx auto;
 	}
+	
+	.approvedis {
+		width: 80%;
+		height: 80rpx;
+		background-color: #e7e7e7;
+		border-radius: 30rpx;
+		text-align: center;
+		line-height: 80rpx;
+		font-weight: bold;
+		color: #000000;
+		margin: 20rpx auto;
+	}
+	
 	.bottom{
 		width: 100%;
 		height: 100rpx;
