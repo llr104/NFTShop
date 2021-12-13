@@ -73,7 +73,6 @@ const storage = (function () {
 		}
 		
 		this.__isSame__ = (hashObj, hash) => {
-			console.log("__isSame__:", hashObj);
 			if(hashObj.hash.toString().toLowerCase() == hash.toString().toLowerCase()){
 				return true;
 			}

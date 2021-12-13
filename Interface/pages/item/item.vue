@@ -266,9 +266,8 @@
 				console.log("clickPay", this.product.id, this.myAddress);
 				router.methods.buy(this.product.id).send({from: this.myAddress}).on('transactionHash', (hash)=>{
 					this.buying = true;
-					storage.setTransactionPennding(tokenId, hash);
 					uni.navigateTo({
-						url:"../buy-result/buy-result?id=" + this.product.id + "hash=" + hash,
+						url:"../buy-result/buy-result?id=" + this.product.id + "&hash=" + hash,
 						complete:function(r){
 							console.log(r);
 						}

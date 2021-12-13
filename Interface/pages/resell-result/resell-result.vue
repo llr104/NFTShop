@@ -1,7 +1,11 @@
 <template>
 	<view>
 		<view class="top">
-			<view class="t">
+			<view class="t" v-if="finsh==false">
+				<loading class="g-l"></loading>
+				<text >挂售中...</text>
+			</view>
+			<view class="t" v-if="finsh">
 				<image class="g-h" src="../../static/green-hook.svg" mode=""></image>
 				<text >挂售成功</text>
 			</view>
@@ -20,7 +24,15 @@
 </template>
 
 <script>
+	import loading from "../../components/loading/loading.vue";
+	let storage = require("../../script/storage.js");
+	
 	export default {
+		
+		components:{
+			loading
+		},
+		
 		data() {
 			return {
 				finsh:false,
@@ -28,8 +40,10 @@
 		},
 		
 		onLoad(options) {
+			
 			let hash = options.hash;
 			let tokenId = options.id;
+			storage.setTransactionPennding(tokenId, hash, storage.opType.upSaling);
 			
 			uni.$on("receiptHash", (hashObj)=>{
 				if(hashObj.hash.toString().toLowerCase() == hash.toString().toLowerCase()){
@@ -70,6 +84,15 @@
 			width: 60rpx;
 			height: 60rpx;
 			margin-right: 10rpx;
+		}
+		
+		.g-l {
+			display: inline-block;
+			vertical-align: middle;
+			width: 60rpx;
+			height: 60rpx;
+			margin-right: 10rpx;
+			margin-top: 10rpx;
 		}
 	}
 	

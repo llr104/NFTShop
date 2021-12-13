@@ -161,7 +161,6 @@
 				}
 				
 				nft.methods.setTokenPrice(tokenId, price).send({from: this.myAddress}).on('transactionHash', (hash)=>{
-					storage.setTransactionPennding(tokenId, hash);
 					uni.navigateTo({
 						url:"../resell-result/resell-result?id=" + this.product.id+"&hash=" + hash,
 					});
