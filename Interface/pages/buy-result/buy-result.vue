@@ -38,7 +38,7 @@
 		onLoad(options) {
 			let hash = options.hash;
 			let tokenId = options.id;
-			storage.setTransactionPennding(tokenId, hash, storage.opType.buying);
+			storage.setTransactionPennding(tokenId, hash, storage.opType.Buying);
 			uni.$on("receiptHash", (hashObj)=>{
 				if(hashObj.hash.toString().toLowerCase() == hash.toString().toLowerCase()){
 					console.log("receiptHash:", hash);

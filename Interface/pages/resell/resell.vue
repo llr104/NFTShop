@@ -99,11 +99,10 @@
 			
 			clickApprove:function(){
 				console.log("clickApprove");
+				this.approving = true;
 				tokens.approveNFT(this.myAddress, this.product.id).on('transactionHash', (hash)=>{
-					console.log("transactionHash:", hash);
-					this.approving = true;
+					storage.setTransactionPennding(this.product.id, hash, storage.opType.ApprovingNFT);
 				}).on('receipt', (receipt)=>{
-					console.log("receipt:", receipt);
 					if(receipt.status){
 						this.isApprove = true;
 						uni.showToast({

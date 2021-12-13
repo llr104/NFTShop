@@ -43,7 +43,7 @@
 			
 			let hash = options.hash;
 			let tokenId = options.id;
-			storage.setTransactionPennding(tokenId, hash, storage.opType.upSaling);
+			storage.setTransactionPennding(tokenId, hash, storage.opType.UpSaling);
 			
 			uni.$on("receiptHash", (hashObj)=>{
 				if(hashObj.hash.toString().toLowerCase() == hash.toString().toLowerCase()){

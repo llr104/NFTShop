@@ -22,10 +22,11 @@ const storage = (function () {
 		}
 		
 		this.opType = {
-			Approving:0,
-			UpSaling:1,
-			DownSaling:2,
-			Buying:3
+			ApprovingToken:0,
+			ApprovingNFT:1,
+			UpSaling:2,
+			DownSaling:3,
+			Buying:4
 		}
 		
 		this.update = () =>{
@@ -38,7 +39,7 @@ const storage = (function () {
 		}
 		
 		this.setTransactionPennding = (tokenId, hash, op)=>{
-			 
+
 			let key = tokenId + "";
 			this.hashToTokenId[hash] = Number(tokenId);
 			if(!this.tokenIdToHash[key]){

@@ -41,6 +41,9 @@
 					<button type="default" v-else-if="upSaling"
 					class="upSaling" loading="true">正在上架...</button>
 					
+					<button type="default" v-else-if="approving"
+					class="approving" loading="true">授权中...</button>
+					
 					<button type="default" v-else-if="buying"
 					class="buying" loading="true">购买中...</button>
 					
@@ -85,6 +88,8 @@
 							<text>价格:{{product.price}}</text>
 						</view>
 					</view>
+					
+					<button type="default" v-if="approving" class="approving2" loading="true">授权中...</button>
 					<button type="default" v-if="isApprove" class="approve" @click="clickApprove">授权</button>
 					<button type="default" v-else class="pay" @click="clickPay">支付</button>
 					
@@ -134,12 +139,13 @@
 				downSaling:false,
 				upSaling:false,
 				buying:false,
+				approving:false,
 				product:{}
 			}
 		},
 		
 		onLoad(options) {
-			console.log("options:", options);
+
 			this.addressShow = addressShow;
 			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
@@ -148,22 +154,63 @@
 			});
 			
 			if(options.id){
-				tokens.queryToken(options.id, (error, t)=>{
-					if(!error){
-						this.isFound = true;
-						this.product = t;
-					}else{
-						this.isFound = false;
+				let id = options.id;
+				this.queryToken(id);
+				
+				uni.$on("receiptHash", (hashObj)=>{
+					if(!hashObj || hashObj.tokenId != id){
+						return;
 					}
+					
+					if(hashObj.op == storage.opType.ApproveNFT){
+						
+					}else if(hashObj.op == storage.opType.ApproveToken){
+						this.approving = false;
+					}else if(hashObj.op == storage.opType.UpSaling){
+						this.upSaling = false;
+					}else if(hashObj.op == storage.opType.DownSaling){
+						this.downSaling = false;
+					}else if(hashObj.op == storage.opType.Buying){
+						this.buying = false;
+					}
+					
+					this.queryToken(id);
 				});
 			}
 		
 		},
+		
+		
 			
 		methods: {
 			
-			moveStop:function(){
-				console.log("moveStop");
+			queryToken(id){
+				tokens.queryToken(id, (error, t)=>{
+					if(!error){
+						this.isFound = true;
+						this.product = t;
+						let hashArr = storage.getTransactionPennding(t.id);
+						if(hashArr){
+							
+							for (let i = 0; i < hashArr.length; i++) {
+								let hashObj = hashArr[i];
+								if(hashObj.op == storage.opType.ApproveNFT){
+									
+								}else if(hashObj.op == storage.opType.ApproveToken){
+									this.approving = true;
+								}else if(hashObj.op == storage.opType.UpSaling){
+									this.upSaling = true;
+								}else if(hashObj.op == storage.opType.DownSaling){
+									this.downSaling = true;
+								}else if(hashObj.op == storage.opType.Buying){
+									this.buying = true;
+								}
+							}
+						}
+					}else{
+						this.isFound = false;
+					}
+				});
 			},
 			
 			clickContactAddress:function(){
@@ -234,6 +281,7 @@
 				
 				nft.methods.setTokenPrice(this.product.id, 0).send({from: this.myAddress}).on('transactionHash', (hash)=>{
 					this.downSaling = true;
+					storage.setTransactionPennding(this.product.id, hash, storage.opType.DownSaling);
 				}).on('receipt', (receipt)=>{
 					console.log("receipt:", receipt);
 					this.downSaling = false;
@@ -258,7 +306,14 @@
 			
 			clickApprove:function(){
 				console.log("clickApprove");
-				tokens.approveToken(this.myAddress, this.product.price);
+				this.approving = true;
+				tokens.approveToken(this.myAddress, this.product.price).on('transactionHash', (hash)=>{
+					storage.setTransactionPennding(this.product.id, hash, storage.opType.ApprovingToken);
+				}).on('receipt', (receipt)=>{
+					this.approving = false;
+				}).on('error', (error)=>{
+					this.approving = false;
+				});
 			},
 			
 			clickPay:function(){
@@ -440,7 +495,8 @@
 				color: #ff56a7;
 			}
 			
-			.upSale{
+			.upSale,
+			.upSaling{
 				width: 80%;
 				height: 80rpx;
 				background-color: #000000;
@@ -452,7 +508,7 @@
 				margin: 10rpx auto;
 			}
 			
-			.upSaling{
+			.approving{
 				width: 80%;
 				height: 80rpx;
 				background-color: #e7e7e7;
@@ -464,37 +520,26 @@
 				margin: 10rpx auto;
 			}
 			
-			.downSale{
-				float: right;
-				display: inline-block;
-				vertical-align: middle;
-				width: 250rpx;
-				height: 80rpx;
-				background-color: #000000;
-				border-radius: 30rpx;
-				text-align: center;
-				line-height: 80rpx;
-				font-weight: bold;
-				color: #FFFFFF;
-				margin: 10rpx 20rpx;
-			}
-			
+			.downSale,
 			.downSaling{
 				float: right;
 				display: inline-block;
 				vertical-align: middle;
 				width: 250rpx;
 				height: 80rpx;
-				background-color: #e7e7e7;
+				background-color: #000000;
 				border-radius: 30rpx;
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				color: #5a5a5a;
+				color: #FFFFFF;
 				margin: 10rpx 20rpx;
 			}
 			
-			.buy{
+			
+			
+			.buy,
+			.buying{
 				float: right;
 				display: inline-block;
 				vertical-align: middle;
@@ -508,22 +553,6 @@
 				color: #FFFFFF;
 				margin: 10rpx 20rpx;
 			}
-			
-			.buying{
-				float: right;
-				display: inline-block;
-				vertical-align: middle;
-				width: 250rpx;
-				height: 80rpx;
-				background-color: #e7e7e7;
-				border-radius: 30rpx;
-				text-align: center;
-				line-height: 80rpx;
-				font-weight: bold;
-				color: #5a5a5a;
-				margin: 10rpx 20rpx;
-			}
-			
 			
 			.SaleOut {
 				float: right;
@@ -536,7 +565,7 @@
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				color: #FFFFFF;
+				color: #000000;
 				margin: 10rpx 20rpx;
 			}
 		}
@@ -632,6 +661,14 @@
 			.approve{
 				width: 200rpx;
 				background-color: #000000;
+				color: #FFFFFF;
+				font-weight: bold;
+				margin-top: 10rpx;
+			}
+			
+			.approving2{
+				width: 200rpx;
+				background-color: #e7e7e7;
 				color: #FFFFFF;
 				font-weight: bold;
 				margin-top: 10rpx;
