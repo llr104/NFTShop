@@ -12,13 +12,19 @@ const checkTrxPennding = (function () {
 				return
 			}
 			Object.keys(hashs).forEach(function(key){
-			     // console.log("key:", key, hashs[key]);
 				 //查询交易
 				 eth.getTransactionReceipt(key, function(err, r){
-				 	// console.log("getTransactionReceipt:", err, r);
-					if(!err && r){
-						uni.$emit("receiptHash", key);
+				 
+					let hashObj = storage.getHashObj(key);
+					console.log("hashObj:", hashObj);
+					if(err){
+						uni.$emit("receiptHash", hashObj);
 						storage.deleteHash(key);
+					}else{
+						if(r){
+							uni.$emit("receiptHash", hashObj);
+							storage.deleteHash(key);
+						}
 					}
 				 });
 			});

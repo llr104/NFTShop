@@ -133,6 +133,7 @@
 				isApprove: true,
 				downSaling:false,
 				upSaling:false,
+				buying:false,
 				product:{}
 			}
 		},
@@ -156,14 +157,11 @@
 					}
 				});
 			}
-			
-			
-			console.log("this.product:", this.product);
+		
 		},
 			
 		methods: {
 			
-		
 			moveStop:function(){
 				console.log("moveStop");
 			},
@@ -463,7 +461,7 @@
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				color: #000000;
+				color: #5a5a5a;
 				margin: 10rpx auto;
 			}
 			
@@ -493,7 +491,7 @@
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				color: #000000;
+				color: #5a5a5a;
 				margin: 10rpx 20rpx;
 			}
 			
@@ -523,7 +521,7 @@
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				color: #000000;
+				color: #5a5a5a;
 				margin: 10rpx 20rpx;
 			}
 			
@@ -539,9 +537,7 @@
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				text {
-					color: #FFFFFF;
-				}
+				color: #FFFFFF;
 				margin: 10rpx 20rpx;
 			}
 		}
@@ -561,7 +557,7 @@
 	
 	.downSale_popup {
 		
-		.c {
+		.c{
 			width: 100%;
 			height: 280rpx;
 			background-color: #ffffff;

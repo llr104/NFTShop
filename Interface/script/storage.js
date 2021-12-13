@@ -4,16 +4,16 @@ const storage = (function () {
 		
 		this.load = ()=>{
 			this.hashToTokenId = {};
-			this.tokenToHash = {};
+			this.tokenIdToHash = {};
 			
 			try {
 			    const hashToTokenId = uni.getStorageSync('hashToTokenId');
 			    if (hashToTokenId) {
 			        this.hashToTokenId = hashToTokenId;
 			    }
-				const tokenToHash = uni.getStorageSync('tokenToHash');
-				if (tokenToHash) {
-				    this.tokenToHash = tokenToHash;
+				const tokenIdToHash = uni.getStorageSync('tokenIdToHash');
+				if (tokenIdToHash) {
+				    this.tokenIdToHash = tokenIdToHash;
 				}
 				
 			} catch (e) {
@@ -21,30 +21,81 @@ const storage = (function () {
 			}
 		}
 		
-		this.setTransactionPennding = (tokenId, hash)=>{
+		this.opType = {
+			Approving:0,
+			UpSaling:1,
+			DownSaling:2,
+			Buying:3
+		}
+		
+		this.update = () =>{
+			try {
+				uni.setStorageSync("hashToTokenId", this.hashToTokenId);
+				uni.setStorageSync("tokenIdToHash", this.tokenIdToHash);
+			} catch (e) {
+				console.log("setTransactionPennding:", e);
+			}
+		}
+		
+		this.setTransactionPennding = (tokenId, hash, op)=>{
 			 
-			  this.hashToTokenId[hash] = Number(tokenId);
-			  this.tokenToHash[tokenId+""] = hash;
-			  
-			  try {
-			     uni.setStorageSync("hashToTokenId", this.hashToTokenId);
-			     uni.setStorageSync("tokenToHash", this.tokenToHash);
-			  	
-			  } catch (e) {
-			      console.log("setTransactionPennding:", e);
-			  }
-			 
+			let key = tokenId + "";
+			this.hashToTokenId[hash] = Number(tokenId);
+			if(!this.tokenIdToHash[key]){
+				this.tokenIdToHash[key] = [];
+			}
+			
+			let obj = {
+				hash: hash,
+				op: op,
+				tokenId: tokenId
+			}
+			
+			this.tokenIdToHash[key].push(obj);
+			this.update();
 		}
 		
 		this.getTransactionPennding = (tokenId) => {
-			  return this.tokenToHash[tokenId+""];
+			return this.tokenIdToHash[tokenId+""];
+		}
+		
+		this.getHashObj = (hash) => {
+			var tokenId = this.hashToTokenId[hash];
+			let key = tokenId + "";
+			if(this.tokenIdToHash[key]){
+				for (var i = 0; i < this.tokenIdToHash[key].length; i++) {
+					if (this.__isSame__(this.tokenIdToHash[key][i], hash)){
+						return this.tokenIdToHash[key][i];
+					}
+				}
+			}
+			return null;
+		}
+		
+		this.__isSame__ = (hashObj, hash) => {
+			console.log("__isSame__:", hashObj);
+			if(hashObj.hash.toString().toLowerCase() == hash.toString().toLowerCase()){
+				return true;
+			}
+			return false;
 		}
 		
 		this.deleteHash = (hash) => {
-			console.log("deleteHash:", hash);
+			console.log("deleteHash 1111:", hash);
 			var tokenId = this.hashToTokenId[hash];
-			delete this.tokenToHash[tokenId+""];
+			let key = tokenId + "";
+			
 			delete this.hashToTokenId[hash];
+			if(this.tokenIdToHash[key]){
+				for (var i = 0; i < this.tokenIdToHash[key].length; i++) {
+					if (this.__isSame__(this.tokenIdToHash[key][i], hash)){
+						console.log("deleteHash 2222:", hash);
+						this.tokenIdToHash[key].splice(i, 1);
+						break;
+					}
+				}
+			}
+			this.update();
 		}
 		
 		this.getHashs = () => {

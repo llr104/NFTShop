@@ -246,7 +246,7 @@
 		text-align: center;
 		line-height: 80rpx;
 		font-weight: bold;
-		color: #000000;
+		color: #5a5a5a;
 		margin: 20rpx auto;
 	}
 	

@@ -28,11 +28,11 @@
 		},
 		
 		onLoad(options) {
-			let h = options.hash;
+			let hash = options.hash;
 			let tokenId = options.id;
 			
-			uni.$on("receiptHash", (hash)=>{
-				if(hash.toString().toLowerCase() == h.toString().toLowerCase()){
+			uni.$on("receiptHash", (hashObj)=>{
+				if(hashObj.hash.toString().toLowerCase() == hash.toString().toLowerCase()){
 					console.log("receiptHash:", hash);
 					this.finsh = true;
 				}
