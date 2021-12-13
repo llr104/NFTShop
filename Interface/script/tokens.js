@@ -75,15 +75,13 @@
 								token.uri = result.uri;
 								token.name = result.name;
 								token.ownerAddress = ownerAddress;
-								
-								token.ownerAddress = result;
 								this.tokenMap.set(Number(id), token);
 								uni.$emit("TokensUpdate", this.tokenMap);
 								
 								if(cb){
 									cb(error, token);
 								}
-								
+
 							}else{
 								if(cb){
 									cb(error, null);
@@ -141,7 +139,7 @@
 			}
 			
 			this.approveNFT = (from, id)=>{
-				this.NFT.methods.approve(routerAddress, id).send({from:from});
+				return this.NFT.methods.approve(routerAddress, id).send({from:from});
 			}
 			
 			this.isApproveNFT = (from, cb)=>{
