@@ -122,12 +122,8 @@
 				return this.Token;
 			}
 			
-			this.approveToken = (from, value, cb)=>{
-				this.Token.methods.approve(routerAddress, value).send({from:from}, (error, result)=>{
-					if(cb){
-						cb(value, cb);
-					}
-				});
+			this.approveToken = (from, value)=>{
+				return this.Token.methods.approve(routerAddress, value).send({from:from});
 			}
 			
 			this.isApproveToken = (from, cb)=>{

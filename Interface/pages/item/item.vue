@@ -41,9 +41,6 @@
 					<button type="default" v-else-if="upSaling"
 					class="upSaling" loading="true">正在上架...</button>
 					
-					<button type="default" v-else-if="approving"
-					class="approving" loading="true">授权中...</button>
-					
 					<button type="default" v-else-if="buying"
 					class="buying" loading="true">购买中...</button>
 					
@@ -90,7 +87,7 @@
 					</view>
 					
 					<button type="default" v-if="approving" class="approving2" loading="true">授权中...</button>
-					<button type="default" v-if="isApprove" class="approve" @click="clickApprove">授权</button>
+					<button type="default" v-else-if="isApprove && approving==false" class="approve" @click="clickApprove">授权</button>
 					<button type="default" v-else class="pay" @click="clickPay">支付</button>
 					
 				</view>
@@ -194,6 +191,7 @@
 							
 							for (let i = 0; i < hashArr.length; i++) {
 								let hashObj = hashArr[i];
+								console.log("hashObj:", hashObj);
 								if(hashObj.op == storage.opType.ApproveNFT){
 									
 								}else if(hashObj.op == storage.opType.ApproveToken){
@@ -308,6 +306,7 @@
 				console.log("clickApprove");
 				this.approving = true;
 				tokens.approveToken(this.myAddress, this.product.price).on('transactionHash', (hash)=>{
+					console.log("clickApprove:", hash);
 					storage.setTransactionPennding(this.product.id, hash, storage.opType.ApprovingToken);
 				}).on('receipt', (receipt)=>{
 					this.approving = false;
@@ -507,19 +506,7 @@
 				color: #FFFFFF;
 				margin: 10rpx auto;
 			}
-			
-			.approving{
-				width: 80%;
-				height: 80rpx;
-				background-color: #e7e7e7;
-				border-radius: 30rpx;
-				text-align: center;
-				line-height: 80rpx;
-				font-weight: bold;
-				color: #5a5a5a;
-				margin: 10rpx auto;
-			}
-			
+				
 			.downSale,
 			.downSaling{
 				float: right;
@@ -535,8 +522,6 @@
 				color: #FFFFFF;
 				margin: 10rpx 20rpx;
 			}
-			
-			
 			
 			.buy,
 			.buying{
@@ -667,8 +652,8 @@
 			}
 			
 			.approving2{
-				width: 200rpx;
-				background-color: #e7e7e7;
+				width: 250rpx;
+				background-color: #000000;
 				color: #FFFFFF;
 				font-weight: bold;
 				margin-top: 10rpx;
