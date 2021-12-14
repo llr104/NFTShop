@@ -5,8 +5,9 @@
 				<text class="address l-margin">{{addressShow(address)}}</text>
 			</view>
 			<view class @click="clickLink">
-				<text class="op" v-if="price==0">取消挂售</text>
-				<text class="op" v-if="price!=0">挂售{{price}}ustd</text>
+				<text class="op" v-if="buy">买入</text>
+				<text class="op" v-else-if="price == 0 && !buy">取消挂售</text>
+				<text class="op" v-else-if="price != 0">挂售{{price}}ustd</text>
 			</view>
 			<view class>
 				<text class="date l-margin">{{date}}</text>
@@ -45,6 +46,11 @@
 			price: {
 				type: [Number],
 				default: 0
+			},
+			
+			buy: {
+				type: [Boolean],
+				default: false
 			},
 			
 			blockNumber :{

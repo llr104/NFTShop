@@ -5,6 +5,7 @@
 			<transaction-item v-for="(item,index) in txEvents" :key="index"
 			:border="true" :address="item.returnValues._from" 
 			:price="Number(item.returnValues._price)"
+			:buy="item.returnValues._buy"
 			:txHash="item.transactionHash"
 			:blockNumber ="item.blockNumber" @clickLink="clickLink">
 			</transaction-item>

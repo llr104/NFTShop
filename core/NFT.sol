@@ -4,7 +4,7 @@ import "./Ownable.sol";
 
 contract NFTBox is NFTMdata, Ownable{
    
-    event SetOnSalePrice(address indexed _from, uint256 indexed _tokenId, uint256 _price);
+    event SetOnSale(address indexed _from, uint256 indexed _tokenId, uint256 _price, bool _buy);
     
     constructor(string memory _name, string memory _symbol) public {
         nftName = _name;
@@ -23,6 +23,8 @@ contract NFTBox is NFTMdata, Ownable{
     function sale(address _to, uint256 _tokenId) canOperate(_tokenId) external{
         _setTokenPrice(_tokenId, 0);
         _transfer(_to, _tokenId);
+
+        emit SetOnSale(_to, _tokenId, 0, true);
     }
 
     function openBlindBox(uint256 _tokenId) external canOperate(_tokenId) {
@@ -35,7 +37,7 @@ contract NFTBox is NFTMdata, Ownable{
 
     function setTokenPrice(uint256 _tokenId, uint256 _price) external canOperate(_tokenId){
         super._setTokenPrice(_tokenId, _price);
-        emit SetOnSalePrice(msg.sender, _tokenId, _price);
+        emit SetOnSale(msg.sender, _tokenId, _price, false);
     }
 
     function setAttribute(uint256 _tokenId, uint256 _index, uint256 _tvalue) external onlyManager{

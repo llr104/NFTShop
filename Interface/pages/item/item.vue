@@ -173,7 +173,7 @@
 				});
 				
 				nft.getPastEvents(
-				  'SetOnSalePrice',
+				  'SetOnSale',
 				  {
 					filter:{
 						_tokenId:id+""
@@ -183,7 +183,7 @@
 				  },(error, events)=>{
 					console.log("events:", events);
 					if(!error){
-						this.txEvents = events;
+						this.txEvents = events.reverse();
 						// setTimeout(()=>{
 						// 	this.txEvents = events;
 						// }, 3000)
