@@ -4,6 +4,9 @@ import "./NFToken.sol";
 contract NFTMdata is NFToken {
     
     enum NFTType { BlindBox, Normal }
+    enum OPType { Mint, Buy, Up, Down}
+    event SetOnSale(address indexed _from, uint256 indexed _tokenId, uint256 _price, OPType _op);
+
     string internal nftName;
     string internal nftSymbol;
 
@@ -78,6 +81,8 @@ contract NFTMdata is NFToken {
             attr.name = _name;
             attr.describe = _des;
             cAttributes.push(attr);
+
+            emit SetOnSale(_to, _tokenId, 0, OPType.Mint);
         }
     
     }

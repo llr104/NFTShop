@@ -2,10 +2,10 @@
 	<view>
 		<uni-list >
 			
-			<transaction-item v-for="(item,index) in txEvents" :key="index"
+			<transaction-item v-for="(item,index) in txShowEvents" :key="index"
 			:border="true" :address="item.returnValues._from" 
 			:price="Number(item.returnValues._price)"
-			:buy="item.returnValues._buy"
+			:op="Number(item.returnValues._op)"
 			:txHash="item.transactionHash"
 			:blockNumber ="item.blockNumber" @clickLink="clickLink">
 			</transaction-item>
@@ -36,20 +36,24 @@
 		
 		data() {
 			return {
-				
+				txShowEvents:[]
 			};
 		},
 		
 		created() {
-			
-			console.log("txEvents:", this.txEvents);
+			this.txShowEvents = this.txEvents;
 		},
 		
+	
 		methods:{
 			clickLink:function(txHash) {
 				console.log("clickLink:", txHash);
 				this.$emit("clickLink", txHash)
-			}
+			},
+			
+			reload(txEvents){
+				this.txShowEvents = txEvents;
+			},
 		}
 	}
 </script>

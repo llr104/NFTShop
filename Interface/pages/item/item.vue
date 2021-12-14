@@ -28,7 +28,7 @@
 				<text class="more" @click="clickMore">更多</text>
 			</view>
 			
-			<transaction-list :txEvents="txEvents" @clickLink="clickLink"></transaction-list>
+			<transaction-list :txEvents="txEvents" ref="txlist1" @clickLink="clickLink"></transaction-list>
 			
 			<view class="bottom">
 				<view class="bottom-fixed">
@@ -172,24 +172,6 @@
 					this.queryToken(id);
 				});
 				
-				nft.getPastEvents(
-				  'SetOnSale',
-				  {
-					filter:{
-						_tokenId:id+""
-					},
-				    fromBlock: 8717848,
-				    toBlock: 'latest'
-				  },(error, events)=>{
-					console.log("events:", events);
-					if(!error){
-						this.txEvents = events.reverse();
-						// setTimeout(()=>{
-						// 	this.txEvents = events;
-						// }, 3000)
-					}
-					
-				});
 			}
 		},
 		
@@ -219,6 +201,25 @@
 						}
 					}else{
 						this.isFound = false;
+					}
+				});
+			
+				nft.getPastEvents(
+				  'SetOnSale',
+				  {
+					filter:{
+						_tokenId:id+""
+					},
+				    fromBlock: 8717848,
+				    toBlock: 'latest'
+				  },(error, events)=>{
+					console.log("events:", events);
+					if(!error){
+						this.txEvents = events.reverse();
+						if(this.$refs.txlist1){
+							this.$refs.txlist1.reload(this.txEvents);
+						}
+						
 					}
 				});
 			},

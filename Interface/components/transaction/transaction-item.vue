@@ -5,9 +5,11 @@
 				<text class="address l-margin">{{addressShow(address)}}</text>
 			</view>
 			<view class @click="clickLink">
-				<text class="op" v-if="buy">买入</text>
-				<text class="op" v-else-if="price == 0 && !buy">取消挂售</text>
-				<text class="op" v-else-if="price != 0">挂售{{price}}ustd</text>
+				<text class="op" v-if="op == 0">锻造</text>
+				<text class="op" v-else-if="op == 1">买入</text>
+				<text class="op" v-else-if="op == 2">挂售{{price}}ustd</text>
+				<text class="op" v-else-if="op == 3">取消挂售</text>
+				
 			</view>
 			<view class>
 				<text class="date l-margin">{{date}}</text>
@@ -48,8 +50,8 @@
 				default: 0
 			},
 			
-			buy: {
-				type: [Boolean],
+			op: {
+				type: [Number],
 				default: false
 			},
 			
