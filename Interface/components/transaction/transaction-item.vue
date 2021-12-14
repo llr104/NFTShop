@@ -74,7 +74,6 @@
 		
 		methods:{
 			clickLink:function(){
-				console.log("clickLink");
 				this.$emit("clickLink", this.txHash);
 			}
 		}

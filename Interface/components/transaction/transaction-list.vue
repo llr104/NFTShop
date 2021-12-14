@@ -45,9 +45,9 @@
 		},
 		
 		methods:{
-			clickLink:function(url) {
-				console.log("clickLink:", url);
-				this.$emit("clickLink", url)
+			clickLink:function(txHash) {
+				console.log("clickLink:", txHash);
+				this.$emit("clickLink", txHash)
 			}
 		}
 	}

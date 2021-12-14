@@ -109,8 +109,8 @@
 	import productList from "../../components/product-list/product-list.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
-	
 	import {nftAddress} from '../../script/eth.js';
+	import {openTxHash, openAddress} from '../../script/openScan.js'
 	var tokens = require('../../script/tokens.js');
 	var storage = require("../../script/storage.js");
 	
@@ -225,6 +225,7 @@
 			
 			clickContactAddress:function(){
 				console.log("clickContactAddress");
+				openAddress(this.nftAddress);
 			},
 			
 			clickOnwerAddress:function(){
@@ -258,8 +259,8 @@
 				this.$refs.ph_popup.open("bottom");
 			},
 			
-			clickLink:function(url){
-				window.open(url);
+			clickLink:function(hash){
+				openTxHash(hash);
 			},
 			
 			clickUpSale:function(){
