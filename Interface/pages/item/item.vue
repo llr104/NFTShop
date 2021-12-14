@@ -87,7 +87,7 @@
 					</view>
 					
 					<button type="default" v-if="approving" class="approving2" loading="true">授权中...</button>
-					<button type="default" v-else-if="isApprove && approving==false" class="approve" @click="clickApprove">授权</button>
+					<button type="default" v-else-if="isApprove==false && approving==false" class="approve" @click="clickApprove">授权</button>
 					<button type="default" v-else class="pay" @click="clickPay">支付</button>
 					
 				</view>
@@ -132,7 +132,7 @@
 				isFound:false,
 				nftAddress:nftAddress,
 				myAddress:"",
-				isApprove: true,
+				isApprove: false,
 				downSaling:false,
 				upSaling:false,
 				buying:false,
@@ -159,11 +159,9 @@
 						return;
 					}
 					
-					if(hashObj.op == storage.opType.ApproveNFT){
-						
-					}else if(hashObj.op == storage.opType.ApproveToken){
+					if(hashObj.op == storage.opType.ApprovingToken){
 						this.approving = false;
-					}else if(hashObj.op == storage.opType.UpSaling){
+					}else if(hashObj.op == storage.opType.UpSalling){
 						this.upSaling = false;
 					}else if(hashObj.op == storage.opType.DownSaling){
 						this.downSaling = false;
@@ -192,11 +190,9 @@
 							for (let i = 0; i < hashArr.length; i++) {
 								let hashObj = hashArr[i];
 								console.log("hashObj:", hashObj);
-								if(hashObj.op == storage.opType.ApproveNFT){
-									
-								}else if(hashObj.op == storage.opType.ApproveToken){
+								if(hashObj.op == storage.opType.ApprovingToken){
 									this.approving = true;
-								}else if(hashObj.op == storage.opType.UpSaling){
+								}else if(hashObj.op == storage.opType.UpSalling){
 									this.upSaling = true;
 								}else if(hashObj.op == storage.opType.DownSaling){
 									this.downSaling = true;
@@ -233,13 +229,10 @@
 				console.log("clickBuy");
 				this.$refs.buy_confirm.open("bottom");
 				tokens.isApproveToken(this.myAddress, (error, v)=>{
-					console.log("isApprove:", v, error, this.product.price);
 					if(!error && v >= this.product.price){
-						console.log("isApprove false");
-						this.isApprove = false;
-					}else{
-						console.log("isApprove true");
 						this.isApprove = true;
+					}else{
+						this.isApprove = false;
 					}
 				});
 			},
@@ -290,14 +283,16 @@
 						this.product.price = 0;
 					}else{
 						uni.showToast({
-							title:"取消挂售失败"
+							title:"取消挂售失败",
+							icon:"error"
 						});
 					}
 					
 				}).on('error', (error)=>{
 					this.downSaling = false;
 					uni.showToast({
-						title:"取消挂售失败"
+						title:"取消挂售失败",
+						icon:"error"
 					});
 				}); 
 			},
@@ -310,6 +305,7 @@
 					storage.setTransactionPennding(this.product.id, hash, storage.opType.ApprovingToken);
 				}).on('receipt', (receipt)=>{
 					this.approving = false;
+					this.isApprove = true;
 				}).on('error', (error)=>{
 					this.approving = false;
 				});
@@ -330,7 +326,8 @@
 				}).on('error', (error)=>{
 					this.downSaling = false;
 					uni.showToast({
-						title:"购买失败"
+						title:"购买失败",
+						icon:"error"
 					});
 				}); 
 			

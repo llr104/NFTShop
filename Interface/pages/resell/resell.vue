@@ -22,15 +22,17 @@
 			<uni-easyinput class="pinput" type="number" trim="all" v-model="price" placeholder="请输入挂售的价格" />
 			<button type="default"  class="approve" v-if="isApprove==false && approving==false"
 			 @click="clickApprove">授权NFT挂售到平台</button>
-			<button type="default"  class="approvedis" loading="true" v-if="approving">授权NFT中...</button>
+			 
+			<button type="default" class="approving" v-if="approving" loading="true">正在授权NFT...</button>
 			
-			<view class="bottom" v-if="isApprove">
+			<view class="bottom" v-if="isApprove && product.price==0">
 				<view class="bottom-fixed">
-					<view class="upSell"  @click="clickUpSell"><text>确认挂售</text></view>
+					<button type="default" class="upSall" v-if="!upSalling" @click="clickUpSall">确认挂售</button>
+					<button type="default" class="upSalling" v-if="upSalling" loading="true">挂售中...</button>
 				</view>
 				<view class="space">
 				</view>
-			</view>
+			</view> 
 		</view>
 	</view>
 </template>
@@ -54,10 +56,12 @@
 				isFound:false,
 				isApprove:true,
 				approving:false,
+				upSalling:false,
 			};
 		},
 		
 		onLoad(options) {
+			
 			console.log("options:", options);
 			this.addressShow = addressShow;
 			eth.getAccounts((error, result)=>{
@@ -67,16 +71,22 @@
 				}
 			});
 			
+			
 			if(options.id){
-				tokens.queryToken(options.id, (error, t)=>{
-					console.log("queryToken", error, t);
-					if(!error){
-						this.isFound = true;
-						this.product = t;
-						this.checkApprove();
-					}else{
-						this.isFound = false;
+				let id = Number(options.id);
+				this.queryToken(id);
+				
+				uni.$on("receiptHash", (hashObj)=>{
+					if(!hashObj || Number(hashObj.tokenId) != id){
+						return;
 					}
+					
+					if(hashObj.op == storage.opType.ApprovingNFT){
+						this.approving = false;
+					}else if(hashObj.op == storage.opType.UpSalling){
+						this.upSalling = false;
+					}
+					this.queryToken(id);
 				});
 			}
 			
@@ -84,6 +94,34 @@
 		},
 		
 		methods:{
+			
+			queryToken:function(id){
+				tokens.queryToken(id, (error, t)=>{
+					console.log("queryToken", error, t);
+					if(!error){
+						this.isFound = true;
+						this.product = t;
+						this.checkApprove();
+						
+						let hashArr = storage.getTransactionPennding(t.id);
+						if(hashArr){
+							
+							for (let i = 0; i < hashArr.length; i++) {
+								let hashObj = hashArr[i];
+								console.log("hashObj:", hashObj);
+								if(hashObj.op == storage.opType.ApprovingNFT){
+									this.approving = true;
+								}else if(hashObj.op == storage.opType.UpSalling){
+									this.upSalling = true;
+								}
+								console.log("this.approving:", this.approving);
+							}
+						}
+					}else{
+						this.isFound = false;
+					}
+				});
+			},
 			
 			checkApprove:function(){
 				if(this.myAddress && this.isFound){
@@ -128,8 +166,8 @@
 				}); 
 			},
 			
-			clickUpSell:function(){
-				console.log("clickUpSell");
+			clickUpSall:function(){
+				console.log("clickUpSall");
 				if(!this.isApprove){
 					uni.showToast({
 						title:"请先授权",
@@ -230,32 +268,21 @@
 			width: 85%;
 			margin: 0 auto;
 		}
+		
+		.approve,.approving{
+			width: 80%;
+			height: 80rpx;
+			background-color: #000000;
+			border-radius: 30rpx;
+			text-align: center;
+			line-height: 80rpx;
+			font-weight: bold;
+			color: #FFFFFF;
+			margin: 20rpx auto;
+		}
 	}
 	
-	.approve{
-		width: 80%;
-		height: 80rpx;
-		background-color: #000000;
-		border-radius: 30rpx;
-		text-align: center;
-		line-height: 80rpx;
-		font-weight: bold;
-		color: #FFFFFF;
-		margin: 20rpx auto;
-	}
-	
-	.approvedis {
-		width: 80%;
-		height: 80rpx;
-		background-color: #e7e7e7;
-		border-radius: 30rpx;
-		text-align: center;
-		line-height: 80rpx;
-		font-weight: bold;
-		color: #5a5a5a;
-		margin: 20rpx auto;
-	}
-	
+
 	.bottom{
 		width: 100%;
 		height: 100rpx;
@@ -275,7 +302,7 @@
 			line-height: 100rpx;
 			background-color: #FFFFFF;
 
-			.upSell{
+			.upSall, .upSalling{
 				width: 80%;
 				height: 80rpx;
 				background-color: #000000;
@@ -283,9 +310,7 @@
 				text-align: center;
 				line-height: 80rpx;
 				font-weight: bold;
-				text {
-					color: #FFFFFF;
-				}
+				color: #FFFFFF;
 				margin: 10rpx auto;
 			}
 			

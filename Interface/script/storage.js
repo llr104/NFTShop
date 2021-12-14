@@ -27,7 +27,7 @@ const storage = (function () {
 		this.opType = {
 			ApprovingToken:0,
 			ApprovingNFT:1,
-			UpSaling:2,
+			UpSalling:2,
 			DownSaling:3,
 			Buying:4
 		}
