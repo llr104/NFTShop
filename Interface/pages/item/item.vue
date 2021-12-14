@@ -151,11 +151,11 @@
 			});
 			
 			if(options.id){
-				let id = options.id;
+				let id = Number(options.id);
 				this.queryToken(id);
 				
 				uni.$on("receiptHash", (hashObj)=>{
-					if(!hashObj || hashObj.tokenId != id){
+					if(!hashObj || Number(hashObj.tokenId) != id){
 						return;
 					}
 					

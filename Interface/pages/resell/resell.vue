@@ -111,8 +111,10 @@
 					}else{
 						this.isApprove = false;
 						uni.showToast({
-							title:"授权失败"
+							title:"授权失败",
+							icon:"error"
 						});
+						
 					}
 					this.approving = false;
 					
@@ -120,7 +122,8 @@
 					this.approving = false;
 					this.isApprove = false;
 					uni.showToast({
-						title:"授权失败"
+						title:"授权失败",
+						icon:"error"
 					});
 				}); 
 			},
@@ -129,7 +132,8 @@
 				console.log("clickUpSell");
 				if(!this.isApprove){
 					uni.showToast({
-						title:"请先授权"
+						title:"请先授权",
+						icon:"error"
 					})
 					return;
 				}
@@ -138,14 +142,16 @@
 				console.log("price:", price);
 				if(isNaN(price) || price <= 0){
 					uni.showToast({
-						title:"挂售金额输入有误"
+						title:"挂售金额输入有误",
+						icon:"error"
 					});
 					return
 				}
 				
 				if(!this.myAddress){
 					uni.showToast({
-						title:"钱包没有连接成功"
+						title:"钱包没有连接成功",
+						icon:"error"
 					});
 					return
 				}
@@ -154,7 +160,8 @@
 				console.log("tokenId:", tokenId);
 				if(isNaN(tokenId) || tokenId <= 0){
 					uni.showToast({
-						title:"商品不存在"
+						title:"商品不存在",
+						icon:"error"
 					});
 					return
 				}
@@ -165,7 +172,8 @@
 					});
 				}).on('error', (error)=>{
 					uni.showToast({
-						title:"挂售失败"
+						title:"挂售失败",
+						icon:"error"
 					});
 				}); 
 				

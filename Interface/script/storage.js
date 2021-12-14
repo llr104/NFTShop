@@ -16,6 +16,9 @@ const storage = (function () {
 				    this.tokenIdToHash = tokenIdToHash;
 				}
 				
+				console.log("hashToTokenId:", hashToTokenId);
+				console.log("tokenIdToHash:", tokenIdToHash);
+				
 			} catch (e) {
 			    console.log("load:", e);
 			}
@@ -49,7 +52,7 @@ const storage = (function () {
 			let obj = {
 				hash: hash,
 				op: op,
-				tokenId: tokenId
+				tokenId: Number(tokenId)
 			}
 			
 			this.tokenIdToHash[key].push(obj);
@@ -91,7 +94,7 @@ const storage = (function () {
 					if (this.__isSame__(this.tokenIdToHash[key][i], hash)){
 						console.log("deleteHash 2222:", hash);
 						this.tokenIdToHash[key].splice(i, 1);
-						break;
+						i = i-1;
 					}
 				}
 			}
