@@ -28,7 +28,7 @@
 				<text class="more" @click="clickMore">更多</text>
 			</view>
 			
-			<transaction-list :txEvents="txEvents" ref="txlist1" @clickLink="clickLink"></transaction-list>
+			<transaction-list :txEvents="samllTxEvents" ref="txlist1" @clickLink="clickLink"></transaction-list>
 			
 			<view class="bottom">
 				<view class="bottom-fixed">
@@ -138,6 +138,7 @@
 				approving:false,
 				product:{},
 				txEvents:[],
+				samllTxEvents:[],
 			}
 		},
 		
@@ -213,13 +214,14 @@
 				    fromBlock: 8717848,
 				    toBlock: 'latest'
 				  },(error, events)=>{
-					console.log("events:", events);
+					
 					if(!error){
 						this.txEvents = events.reverse();
+						this.samllTxEvents = this.txEvents.slice(-4, -1);
+						console.log("this.samllTxEvents:", this.samllTxEvents);
 						if(this.$refs.txlist1){
-							this.$refs.txlist1.reload(this.txEvents);
+							this.$refs.txlist1.reload(this.samllTxEvents);
 						}
-						
 					}
 				});
 			},

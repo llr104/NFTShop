@@ -41,6 +41,7 @@
 		},
 		
 		created() {
+			console.log("transaction-list created");
 			this.txShowEvents = this.txEvents;
 		},
 		
