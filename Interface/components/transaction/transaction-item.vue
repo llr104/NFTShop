@@ -2,13 +2,14 @@
 	<view class>
 		<view class="c">
 			<view class>
-				<text class="address l-margin">{{address}}</text>
+				<text class="address l-margin">{{addressShow(address)}}</text>
+			</view>
+			<view class @click="clickLink">
+				<text class="op" v-if="price==0">取消挂售</text>
+				<text class="op" v-if="price!=0">挂售{{price}}ustd</text>
 			</view>
 			<view class>
-				<text class="op" @click="clickLink">挂售555ustd</text>
-			</view>
-			<view class>
-				<text class="time l-margin">{{time}}</text>
+				<text class="date l-margin">{{date}}</text>
 			</view>
 		</view>
 		<view class="border-bottom" v-if="border"></view>
@@ -17,29 +18,64 @@
 </template>
 
 <script>
+	import {addressShow} from "../../lib/utils";
+	var tokens = require('../../script/tokens.js');
+	let eth = tokens.getETH();
+	
 	export default {
 		name:"transaction-item",
 		emits:["clickLink"],
 		
 		props: {
 			border: {
-				type: [Boolean, String],
+				type: [Boolean],
 				default: false
 			},
+			
+			address: {
+				type: [String],
+				default: ""
+			},
+			
+			txHash: {
+				type: [String],
+				default: ""
+			},
+			
+			price: {
+				type: [Number],
+				default: 0
+			},
+			
+			blockNumber :{
+				type: [Number],
+				default: ""
+			}
+		},
+		
+		created() {
+			this.addressShow = addressShow;
+			
+			console.log("blockNumber :", this.blockNumber );
+			if(this.blockNumber ){
+				eth.getBlock(this.blockNumber , (error, block)=>{
+					if(!error){
+						this.date = new Date(parseInt(block.timestamp) * 1000).format("yyyy-MM-dd hh:mm:ss");
+					}
+				});
+			}
 		},
 		
 		data() {
 			return {
-				address:"0xaasg...agsag",
-				time:"2021-11-5 9:24:50",
-				url:"https://www.baidu.com"
+				date:""
 			};
 		},
 		
 		methods:{
 			clickLink:function(){
 				console.log("clickLink");
-				this.$emit("clickLink", this.url);
+				this.$emit("clickLink", this.txHash);
 			}
 		}
 	}
@@ -82,7 +118,7 @@
 		background: url(../../static/right-row.svg) 50% no-repeat;
 	}
 	
-	.time {
+	.date {
 		font-size: 24rpx;
 		color: #8c9fad;
 	}

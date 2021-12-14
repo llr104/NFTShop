@@ -27,8 +27,8 @@
 			
 			<view class="bottom" v-if="isApprove && product.price==0">
 				<view class="bottom-fixed">
-					<button type="default" class="upSall" v-if="!upSalling" @click="clickUpSall">确认挂售</button>
-					<button type="default" class="upSalling" v-if="upSalling" loading="true">挂售中...</button>
+					<button type="default" class="upSale" v-if="!upSaling" @click="clickUpSale">确认挂售</button>
+					<button type="default" class="upSaling" v-if="upSaling" loading="true">挂售中...</button>
 				</view>
 				<view class="space">
 				</view>
@@ -56,7 +56,7 @@
 				isFound:false,
 				isApprove:true,
 				approving:false,
-				upSalling:false,
+				upSaling:false,
 			};
 		},
 		
@@ -83,8 +83,8 @@
 					
 					if(hashObj.op == storage.opType.ApprovingNFT){
 						this.approving = false;
-					}else if(hashObj.op == storage.opType.UpSalling){
-						this.upSalling = false;
+					}else if(hashObj.op == storage.opType.UpSaling){
+						this.upSaling = false;
 					}
 					this.queryToken(id);
 				});
@@ -111,8 +111,8 @@
 								console.log("hashObj:", hashObj);
 								if(hashObj.op == storage.opType.ApprovingNFT){
 									this.approving = true;
-								}else if(hashObj.op == storage.opType.UpSalling){
-									this.upSalling = true;
+								}else if(hashObj.op == storage.opType.UpSaling){
+									this.upSaling = true;
 								}
 								console.log("this.approving:", this.approving);
 							}
@@ -166,8 +166,8 @@
 				}); 
 			},
 			
-			clickUpSall:function(){
-				console.log("clickUpSall");
+			clickUpSale:function(){
+				console.log("clickUpSale");
 				if(!this.isApprove){
 					uni.showToast({
 						title:"请先授权",
@@ -302,7 +302,7 @@
 			line-height: 100rpx;
 			background-color: #FFFFFF;
 
-			.upSall, .upSalling{
+			.upSale, .upSaling{
 				width: 80%;
 				height: 80rpx;
 				background-color: #000000;

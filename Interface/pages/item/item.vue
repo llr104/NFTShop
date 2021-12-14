@@ -28,7 +28,7 @@
 				<text class="more" @click="clickMore">更多</text>
 			</view>
 			
-			<transaction-list @clickLink="clickLink"></transaction-list>
+			<transaction-list :txEvents="txEvents" @clickLink="clickLink"></transaction-list>
 			
 			<view class="bottom">
 				<view class="bottom-fixed">
@@ -64,7 +64,6 @@
 					<button class="downSaleBtnLeft" type="default" @click="downSaleCancle">取消</button>
 					<button class="downSaleBtnRight" type="default" @click="downSaleOK">确定</button>
 				</view>
-				
 			</uni-popup>
 			
 			<uni-popup class="buy_confirm" ref="buy_confirm">
@@ -98,7 +97,7 @@
 				<uni-title class="tt" title="交易记录" type="h2"></uni-title>
 			</view>
 			<scroll-view class="sh" scroll-y="true">
-				<transaction-list></transaction-list>
+				<transaction-list :txEvents="txEvents" @clickLink="clickLink"></transaction-list>
 			</scroll-view>
 		</uni-popup>
 	</view>
@@ -137,7 +136,8 @@
 				upSaling:false,
 				buying:false,
 				approving:false,
-				product:{}
+				product:{},
+				txEvents:[],
 			}
 		},
 		
@@ -171,12 +171,28 @@
 					
 					this.queryToken(id);
 				});
+				
+				nft.getPastEvents(
+				  'SetOnSalePrice',
+				  {
+					filter:{
+						_tokenId:id+""
+					},
+				    fromBlock: 8717848,
+				    toBlock: 'latest'
+				  },(error, events)=>{
+					console.log("events:", events);
+					if(!error){
+						this.txEvents = events;
+						// setTimeout(()=>{
+						// 	this.txEvents = events;
+						// }, 3000)
+					}
+					
+				});
 			}
-		
 		},
 		
-		
-			
 		methods: {
 			
 			queryToken(id){
