@@ -104,7 +104,7 @@
 </template>
 
 <script>
-	import {addressShow} from "../../lib/utils";
+	import {addressShow, copy} from "../../lib/utils";
 	import navigation from "../../components/navigation/navigation.vue";
 	import productList from "../../components/product-list/product-list.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
@@ -229,7 +229,14 @@
 			},
 			
 			clickOnwerAddress:function(){
-				console.log("clickOnwerAddress");
+				console.log("clickOnwerAddress:", this.product.ownerAddress);
+				copy(this.product.ownerAddress, function(error){
+					if(!error){
+						uni.showToast({
+							title:"复制成功"
+						})
+					}
+				});
 			},
 			
 			clickOwnerHome:function(){
