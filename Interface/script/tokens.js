@@ -79,7 +79,7 @@
 					}
 					let ownerAddress = result;
 					this.NFT.methods.idToIndex(id).call((error, result)=>{
-						console.log("queryToken idToIndex:", result);
+						// console.log("queryToken idToIndex:", result);
 						if(error){
 							if(cb){
 								cb(error, result);
