@@ -8,7 +8,7 @@
 			<view class="product-text">
 				<view class="product-title">{{product.name}}</view>
 				<view class="product-onwer">{{addressShow(product.ownerAddress)}}</view>
-				<view class="product-price">{{product.price}}&nbsp;{{unitSymbol}}</view>
+				<view class="product-price" v-if="product.price">{{product.price}}&nbsp;{{unitSymbol}}</view>
 			</view>
 			 <view class="right-row"></view>
 	    </view>
