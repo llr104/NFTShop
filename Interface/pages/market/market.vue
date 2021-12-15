@@ -8,6 +8,8 @@
 <script>
 	import productList from "../../components/product-list/product-list.vue";
 	import navigation from "../../components/navigation/navigation.vue";
+	var tokens = require('../../script/tokens.js');
+	
 	export default {
 		components:{
 			navigation,
@@ -25,19 +27,18 @@
 			this.tokenSymbol = tokens.getTokenSymbol(); 
 		},
 		
+		onReachBottom() {
+			this.$refs.pl.reachBottom();
+		},
+		
+		onPullDownRefresh() {
+		    
+		    setTimeout(() => {
+		        uni.stopPullDownRefresh();
+		    }, 2000);
+		},
+		
 		methods:{
-			
-			onReachBottom() {
-				console.log("market onReachBottom");
-				this.$refs.pl.loadData();
-			},
-			
-			onPullDownRefresh() {
-			    
-			    setTimeout(() => {
-			        uni.stopPullDownRefresh();
-			    }, 2000);
-			},
 			
 			onClickProduct(product){
 				console.log("onClickProduct:", product);

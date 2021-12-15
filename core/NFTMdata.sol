@@ -12,6 +12,7 @@ contract NFTMdata is NFToken {
 
     string constant INVALID_INDEX = "005007";
     string constant INVALID_BLINKBOX = "005008";
+    string constant INVALID_PAGE = "005009";
 
     uint256 constant NO_GROUP = 0;
     uint256 public groupId;
@@ -53,6 +54,33 @@ contract NFTMdata is NFToken {
 
     function ownerTokens(address _owner) external view returns (uint256[] memory) {
         return ownerToIds[_owner];
+    }
+
+    function tokenPage(uint256 _page, uint256 _prePageCnt, address _owner) external view returns (uint256[100] memory){
+        require(_page != 0 && _prePageCnt != 0 && _prePageCnt <= 100 , INVALID_PAGE);
+
+        uint256[100] memory ret;
+        uint256[] memory temp;
+        if(_owner == address(0)){
+            temp = tokens;
+        }else{
+            temp = ownerToIds[_owner];
+        }
+
+        uint256 start = (_page-1) * _prePageCnt;
+        uint256 end = start + _prePageCnt;
+        if(end > temp.length){
+            end = temp.length;
+        }
+
+        if(start < temp.length){
+            uint256 j = 0;
+            for (uint256 i = start; i < end; i++) {
+                ret[j] = temp[i];
+                j++;
+            }
+        }
+        return ret;
     }
 
     function _mint(address _to, string memory _name, string memory _uri, 

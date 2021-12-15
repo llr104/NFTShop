@@ -200,12 +200,4 @@ contract NFToken is ERC721 {
             delete idToApproval[_tokenId];
         }
     }
-
-    function test1(uint256 _tokenId)  external view validNFToken(_tokenId) canOperate(_tokenId) returns(address, address){
-        return (msg.sender, idToApproval[_tokenId]) ;
-    }
-
-    function test2(uint256 _tokenId)  external view validNFToken(_tokenId) returns(address, address){
-        return (msg.sender, idToApproval[_tokenId]) ;
-    }
 }

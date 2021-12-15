@@ -12,6 +12,9 @@
 			</view>
 			 <view class="right-row"></view>
 	    </view>
+		<view v-if="isEnd" class="end">
+			<text>---没有更多了---</text>
+		</view>
 	</view>
 </template>
 
@@ -39,32 +42,36 @@
 		        title: 'product-list',
 		        productList: [],
 		        renderImage: false,
+				isEnd: false,
 		    };
 		},
 		methods: {
 			
 		    loadData() {
-				console.log("filter:", this.filter);
-				
-				let all = tokens.getAllToken();
-				let ts = [...all.values()];
-				
-				if(!this.filter){
-					console.log("no filter");
-					this.productList = ts;
-				}else{
-					console.log("has filter");
-					let filters = [];
-					for (var i = 0; i < ts.length; i++) {
-						var t = ts[i];
-						if(t.ownerAddress == this.filter){
-							filters.push(t);
+				console.log("loadData");
+				this.qryPage(1);
+		    },
+			
+			qryPage(page){
+				tokens.queryNFTPageIds(page, 10, this.filter, (error, ids)=>{
+					if(!error){
+						if(ids.length>0){
+							for (let i = 0; i < ids.length; i++) {
+								let id = Number(ids[i]);
+								tokens.queryToken(id, (error, nft) =>{
+									if(!error){
+										this.tokenMap.set(id+"", nft);
+										this.productList = [...this.tokenMap.values()];
+									}
+								})
+							}
+							this.page = page;
+						}else{
+							this.isEnd = true;
 						}
 					}
-					this.productList = filters;
-				}
-				
-		    },
+				});
+			},
 			
 			clear(){
 				this.productList = [];
@@ -73,6 +80,11 @@
 			clickProduct:function(product){
 				console.log("clickProduct:", product);
 				this.$emit("clickProduct", product);
+			},
+			
+			reachBottom(){
+				console.log("pl reachBottom", this.page+1);
+				this.qryPage(this.page+1);
 			}
 		},
 		
@@ -82,6 +94,8 @@
 		
 		mounted() {
 			console.log("mounted");
+			this.tokenMap = new Map();
+			this.page = 1;
 			this.addressShow = addressShow;
 		    this.loadData();
 			
@@ -89,11 +103,9 @@
 		        this.renderImage = true;
 		    }, 300);
 			
-			uni.$on("TokensUpdate", ()=>{
-				console.log("TokensUpdate");
-				this.loadData();
-			})
 		},
+		
+		
 		
 	}
 </script>
@@ -166,4 +178,9 @@
         background: url(./right-row-radius.svg) no-repeat center;
 		background-size: 60rpx;
     }
+	
+	.end {
+		margin: 10rpx auto;
+		margin-top: -15rpx;
+	}
 </style>

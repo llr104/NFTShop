@@ -5,8 +5,8 @@
 		<v-tabs v-model="current" :tabs="tabs" :bold="true" 
 		:lineScale="0.8" fontSize="34rpx" @change="changeTab">
 		</v-tabs>
-		<product-list :filter="address" :unitSymbol="tokenSymbol" v-if="current==0 && address" @clickProduct="onClickProduct" class="plist"></product-list>
-		<product-list :filter="address" :unitSymbol="tokenSymbol" v-if="current==1 && address" @clickProduct="onClickProduct" class="plist"></product-list>
+		<product-list ref="pl1" :filter="address" :unitSymbol="tokenSymbol" v-if="current==0 && address" @clickProduct="onClickProduct" class="plist"></product-list>
+		<product-list ref="pl2" :filter="address" :unitSymbol="tokenSymbol" v-if="current==1 && address" @clickProduct="onClickProduct" class="plist"></product-list>
 		
 	</view>
 </template>
@@ -40,6 +40,21 @@
 		onLoad(options) {
 			this.address = options.address;
 			this.tokenSymbol = tokens.getTokenSymbol(); 
+		},
+		
+		onReachBottom() {
+			if(this.current == 0){
+				this.$refs.pl1.reachBottom();
+			}else if(this.current == 1){
+				this.$refs.pl2.reachBottom();
+			}
+		},
+		
+		onPullDownRefresh() {
+		    
+		    setTimeout(() => {
+		        uni.stopPullDownRefresh();
+		    }, 2000);
 		},
 		
 		methods:{

@@ -73,7 +73,7 @@
 		
 		onLoad() {
 			console.log("onLoad");
-			tokens.queryAllToken();
+			tokens.queryNFTPage(1, 20, "0x0000000000000000000000000000000000000000");
 			this.tokenSymbol = tokens.getTokenSymbol(); 
 		},
 		

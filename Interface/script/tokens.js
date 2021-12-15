@@ -7,9 +7,7 @@
 	const tokens = (function () {
 	    function _mgr() {
 	        this.name = 'tokens';
-			this.tokenMap = new Map();
-			
-			
+
 			this.ETH = provider.eth;
 			this.NFT = new provider.eth.Contract(nftAbi, nftAddress);
 			this.Router = new provider.eth.Contract(routerAbi, routerAddress);
@@ -33,19 +31,40 @@
 			this.show = ()=>{
 				console.log("show:", this.name);
 			}
-			
-			
-			this.queryAllToken = ()=>{
-				this.NFT.methods.totalTokens().call((error, result)=>{
+		
+			this.queryNFTPage = (page, prePage, address) =>{
+				this.NFT.methods.tokenPage(page, prePage, address).call((error, result)=>{
 					if(!error){
 						let ids = result;
-						console.log("totalTokens ids:", ids);
 						for (let i = 0; i < ids.length; i++) {
 							let id = Number(ids[i]);
+							if(id == 0){
+								break;
+							}
 							this.queryToken(id);
 						}
 					}
-				});
+				})
+			}
+			
+			this.queryNFTPageIds = (page, prePage, address, cb) =>{
+				if(!address){
+					address = "0x0000000000000000000000000000000000000000";
+				}
+				this.NFT.methods.tokenPage(page, prePage, address).call((error, result)=>{
+					let rids = [];
+					if(!error){
+						let ids = result;
+						for (let i = 0; i < ids.length; i++) {
+							let id = Number(ids[i]);
+							if(id == 0){
+								break;
+							}
+							rids.push(id);
+						}
+					}
+					cb(error, rids);
+				})
 			}
 			
 			this.queryToken = (id, cb)=>{
@@ -82,9 +101,7 @@
 								token.uri = result.uri;
 								token.name = result.name;
 								token.ownerAddress = ownerAddress;
-								this.tokenMap.set(Number(id), token);
-								uni.$emit("TokensUpdate", this.tokenMap);
-								
+							
 								if(cb){
 									cb(error, token);
 								}
@@ -98,19 +115,6 @@
 					})
 				});
 				
-			}
-			
-			this.getAllToken = ()=>{
-				return this.tokenMap;
-			}
-			
-			this.updateToken = (t)=>{
-				this.tokenMap.set(Number(t.id), t);
-				uni.$emit("TokensUpdate", this.tokenMap);
-			}
-			
-			this.getTokenById = (id)=>{
-				return this.tokenMap.get(Number(id));
 			}
 			
 			this.getNFT = ()=> {

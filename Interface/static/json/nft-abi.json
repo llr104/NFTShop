@@ -989,6 +989,37 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "_page",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_prePageCnt",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"name": "tokenPage",
+		"outputs": [
+			{
+				"internalType": "uint256[100]",
+				"name": "",
+				"type": "uint256[100]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
 			}
