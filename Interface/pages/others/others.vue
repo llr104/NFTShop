@@ -5,8 +5,8 @@
 		<v-tabs v-model="current" :tabs="tabs" :bold="true" 
 		:lineScale="0.8" fontSize="34rpx" @change="changeTab">
 		</v-tabs>
-		<product-list :filter="address" v-if="current==0 && address" @clickProduct="onClickProduct" class="plist"></product-list>
-		<product-list :filter="address" v-if="current==1 && address" @clickProduct="onClickProduct" class="plist"></product-list>
+		<product-list :filter="address" :unitSymbol="tokenSymbol" v-if="current==0 && address" @clickProduct="onClickProduct" class="plist"></product-list>
+		<product-list :filter="address" :unitSymbol="tokenSymbol" v-if="current==1 && address" @clickProduct="onClickProduct" class="plist"></product-list>
 		
 	</view>
 </template>
@@ -32,12 +32,14 @@
 			return {
 				current: 0,
 				address: "",
-				tabs: ['他拥有的', '他卖出的']
+				tabs: ['他拥有的', '他卖出的'],
+				tokenSymbol:""
 			};
 		},
 		
 		onLoad(options) {
 			this.address = options.address;
+			this.tokenSymbol = tokens.getTokenSymbol(); 
 		},
 		
 		methods:{

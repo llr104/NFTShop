@@ -7,9 +7,8 @@
 			<view class @click="clickLink">
 				<text class="op" v-if="op == 0">锻造</text>
 				<text class="op" v-else-if="op == 1">买入</text>
-				<text class="op" v-else-if="op == 2">挂售{{price}}ustd</text>
+				<text class="op" v-else-if="op == 2">挂售{{price}}&nbsp;{{unitSymbol}}</text>
 				<text class="op" v-else-if="op == 3">取消挂售</text>
-				
 			</view>
 			<view class>
 				<text class="date l-margin">{{date}}</text>
@@ -58,7 +57,14 @@
 			blockNumber :{
 				type: [Number],
 				default: ""
-			}
+			},
+			
+			unitSymbol: {
+			  type: String,
+			  default() {
+			    return "";
+			  }
+			},
 		},
 		
 		created() {

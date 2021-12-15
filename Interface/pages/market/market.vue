@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<navigation></navigation>
-		<product-list ref="pl" @clickProduct="onClickProduct"></product-list>
+		<product-list ref="pl" :unitSymbol="tokenSymbol" @clickProduct="onClickProduct"></product-list>
 	</view>
 </template>
 
@@ -16,9 +16,13 @@
 		
 		data() {
 			return {
-				
+				tokenSymbol:""
 			};
 			
+		},
+
+		onLoad(){
+			this.tokenSymbol = tokens.getTokenSymbol(); 
 		},
 		
 		methods:{

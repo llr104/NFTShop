@@ -8,7 +8,7 @@
 			<view class="product-text">
 				<view class="product-title">{{product.name}}</view>
 				<view class="product-onwer">{{addressShow(product.ownerAddress)}}</view>
-				<view class="product-price">{{product.price}}&nbsp;usdt</view>
+				<view class="product-price">{{product.price}}&nbsp;{{unitSymbol}}</view>
 			</view>
 			 <view class="right-row"></view>
 	    </view>
@@ -25,6 +25,10 @@
 		
 		props: {
 			filter: {
+				type: String,
+				default: ''
+			},
+			unitSymbol: {
 				type: String,
 				default: ''
 			},

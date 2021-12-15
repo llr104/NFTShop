@@ -7,7 +7,9 @@
 			:price="Number(item.returnValues._price)"
 			:op="Number(item.returnValues._op)"
 			:txHash="item.transactionHash"
-			:blockNumber ="item.blockNumber" @clickLink="clickLink">
+			:blockNumber ="item.blockNumber"
+			:unitSymbol = "unitSymbol" 
+			@clickLink="clickLink">
 			</transaction-item>
 			
 		</uni-list>
@@ -25,7 +27,14 @@
 		  txEvents: {
 		    type: Array,
 		    default() {
-		      return []
+		      return [];
+		    }
+		  },
+		  
+		  unitSymbol: {
+		    type: String,
+		    default() {
+		      return "";
 		    }
 		  },
 		},

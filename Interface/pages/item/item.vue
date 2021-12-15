@@ -28,11 +28,11 @@
 				<text class="more" @click="clickMore">更多</text>
 			</view>
 			
-			<transaction-list :txEvents="samllTxEvents" ref="txlist1" @clickLink="clickLink"></transaction-list>
+			<transaction-list :txEvents="samllTxEvents" :unitSymbol="tokenSymbol" ref="txlist1" @clickLink="clickLink"></transaction-list>
 			
 			<view class="bottom">
 				<view class="bottom-fixed">
-					<view v-if="product.price" class="price">{{product.price}}&nbsp;usdt</view> 
+					<view v-if="product.price" class="price">{{product.price}}&nbsp;{{tokenSymbol}}</view> 
 					
 					<!-- 按钮 -->
 					<button type="default" v-if="downSaling"
@@ -97,7 +97,7 @@
 				<uni-title class="tt" title="交易记录" type="h2"></uni-title>
 			</view>
 			<scroll-view class="sh" scroll-y="true">
-				<transaction-list :txEvents="txEvents" @clickLink="clickLink"></transaction-list>
+				<transaction-list :txEvents="txEvents" :unitSymbol="tokenSymbol" @clickLink="clickLink"></transaction-list>
 			</scroll-view>
 		</uni-popup>
 	</view>
@@ -106,7 +106,6 @@
 <script>
 	import {addressShow, copy} from "../../lib/utils";
 	import navigation from "../../components/navigation/navigation.vue";
-	import productList from "../../components/product-list/product-list.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
 	import {nftAddress} from '../../script/eth.js';
@@ -121,7 +120,6 @@
 	export default {
 		components:{
 			navigation,
-			productList,
 			transactionItem,
 			transactionList
 		},
@@ -139,12 +137,15 @@
 				product:{},
 				txEvents:[],
 				samllTxEvents:[],
+				tokenSymbol:""
 			}
 		},
 		
 		onLoad(options) {
 
 			this.addressShow = addressShow;
+			this.tokenSymbol = tokens.getTokenSymbol(); 
+			
 			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
 					this.myAddress = result[0];

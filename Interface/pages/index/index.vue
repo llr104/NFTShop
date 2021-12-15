@@ -17,7 +17,7 @@
 		</swiper>
 		
 		<uni-title class="subTitle" type="h3" title="发现NFT"></uni-title>
-		<product-list ref="pl" @clickProduct="onClickProduct"></product-list>
+		<product-list ref="pl" :unitSymbol="tokenSymbol" @clickProduct="onClickProduct"></product-list>
 		<view class="more" @click="clickMore">
 			<text>查看更多</text>
 		</view>
@@ -66,13 +66,15 @@
 						des:"每个NFT都是一个独立的个体，无法拆分，因此不能购买或转让NFT的一部分，因此具有不可分割性。",
 						img:"../../static/three.png"
 					}
-				]
+				],
+				tokenSymbol:"",
 			}
 		},
 		
 		onLoad() {
 			console.log("onLoad");
 			tokens.queryAllToken();
+			this.tokenSymbol = tokens.getTokenSymbol(); 
 		},
 		
 		methods: {

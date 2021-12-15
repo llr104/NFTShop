@@ -21,7 +21,14 @@
 					console.log("decimals:", result);
 					this.TokenDecimals = Number(result);
 				}
-			})
+			});
+			
+			this.Token.methods.symbol().call((error, result)=>{
+				if(!error){
+					console.log("symbol:", result);
+					this.TokenSymbol = result;
+				}
+			});
 			
 			this.show = ()=>{
 				console.log("show:", this.name);
@@ -120,6 +127,10 @@
 			
 			this.getToken = ()=>{
 				return this.Token;
+			}
+			
+			this.getTokenSymbol = ()=>{
+				return this.TokenSymbol;
 			}
 			
 			this.approveToken = (from, value)=>{
