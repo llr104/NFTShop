@@ -182,5 +182,6 @@
 	.end {
 		margin: 10rpx auto;
 		margin-top: -15rpx;
+		color: #626262;
 	}
 </style>

@@ -141,11 +141,14 @@
 			}
 		},
 		
+		onPullDownRefresh() {
+			this.queryToken(this.id);
+			uni.stopPullDownRefresh();
+		},
+		
 		onLoad(options) {
 
 			this.addressShow = addressShow;
-			this.tokenSymbol = tokens.getTokenSymbol(); 
-			
 			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
 					this.myAddress = result[0];
@@ -154,8 +157,7 @@
 			
 			if(options.id){
 				let id = Number(options.id);
-				this.queryToken(id);
-				
+				this.id = id;
 				uni.$on("receiptHash", (hashObj)=>{
 					if(!hashObj || Number(hashObj.tokenId) != id){
 						return;
@@ -174,57 +176,67 @@
 					this.queryToken(id);
 				});
 				
+				this.queryToken(id);
 			}
 		},
 		
 		methods: {
 			
 			queryToken(id){
-				tokens.queryToken(id, (error, t)=>{
-					if(!error){
-						this.isFound = true;
-						this.product = t;
-						let hashArr = storage.getTransactionPennding(t.id);
-						if(hashArr){
-							
-							for (let i = 0; i < hashArr.length; i++) {
-								let hashObj = hashArr[i];
-								console.log("hashObj:", hashObj);
-								if(hashObj.op == storage.opType.ApprovingToken){
-									this.approving = true;
-								}else if(hashObj.op == storage.opType.UpSalling){
-									this.upSaling = true;
-								}else if(hashObj.op == storage.opType.DownSaling){
-									this.downSaling = true;
-								}else if(hashObj.op == storage.opType.Buying){
-									this.buying = true;
+				tokens.ready(()=>{
+					this.tokenSymbol = tokens.getTokenSymbol(); 
+					tokens.queryToken(id, (error, t)=>{
+						if(!error){
+							this.isFound = true;
+							this.product = t;
+							let hashArr = storage.getTransactionPennding(t.id);
+							if(hashArr){
+								
+								for (let i = 0; i < hashArr.length; i++) {
+									let hashObj = hashArr[i];
+									console.log("hashObj:", hashObj);
+									if(hashObj.op == storage.opType.ApprovingToken){
+										this.approving = true;
+									}else if(hashObj.op == storage.opType.UpSalling){
+										this.upSaling = true;
+									}else if(hashObj.op == storage.opType.DownSaling){
+										this.downSaling = true;
+									}else if(hashObj.op == storage.opType.Buying){
+										this.buying = true;
+									}
 								}
 							}
+						}else{
+							this.isFound = false;
 						}
-					}else{
-						this.isFound = false;
-					}
-				});
-			
-				nft.getPastEvents(
-				  'SetOnSale',
-				  {
-					filter:{
-						_tokenId:id+""
-					},
-				    fromBlock: 8717848,
-				    toBlock: 'latest'
-				  },(error, events)=>{
-					
-					if(!error){
-						this.txEvents = events.reverse();
-						this.samllTxEvents = this.txEvents.slice(-4, -1);
-						console.log("this.samllTxEvents:", this.samllTxEvents);
-						if(this.$refs.txlist1){
-							this.$refs.txlist1.reload(this.samllTxEvents);
+					});
+								
+					nft.getPastEvents(
+					  'SetOnSale',
+					  {
+						filter:{
+							_tokenId:id+""
+						},
+					    fromBlock: 8717848,
+					    toBlock: 'latest'
+					  },(error, events)=>{
+						
+						if(!error){
+							this.txEvents = events.reverse();
+							if(this.txEvents.length>=4){
+								this.samllTxEvents = this.txEvents.slice(-4, -1);
+							}else{
+								this.samllTxEvents = this.txEvents;
+							}
+							
+							console.log("this.samllTxEvents:", this.samllTxEvents);
+							if(this.$refs.txlist1){
+								this.$refs.txlist1.reload(this.samllTxEvents);
+							}
 						}
-					}
+					});
 				});
+				
 			},
 			
 			clickContactAddress:function(){

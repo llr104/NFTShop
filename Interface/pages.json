@@ -28,7 +28,7 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "Item",
-                "enablePullDownRefresh": false
+                "enablePullDownRefresh": true
             }
             
         }

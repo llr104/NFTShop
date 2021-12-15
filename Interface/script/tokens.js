@@ -7,26 +7,15 @@
 	const tokens = (function () {
 	    function _mgr() {
 	        this.name = 'tokens';
-
-			this.ETH = provider.eth;
-			this.NFT = new provider.eth.Contract(nftAbi, nftAddress);
-			this.Router = new provider.eth.Contract(routerAbi, routerAddress);
-			this.Token = new provider.eth.Contract(tokenAbi, tokenAddress);
 			
-			this.TokenDecimals = 1;
-			this.Token.methods.decimals().call((error, result)=>{
-				if(!error){
-					console.log("decimals:", result);
-					this.TokenDecimals = Number(result);
-				}
-			});
-			
-			this.Token.methods.symbol().call((error, result)=>{
-				if(!error){
-					console.log("symbol:", result);
-					this.TokenSymbol = result;
-				}
-			});
+			this.__init__ = ()=>{
+				
+				this.ETH = provider.eth;
+				this.NFT = new provider.eth.Contract(nftAbi, nftAddress);
+				this.Router = new provider.eth.Contract(routerAbi, routerAddress);
+				this.Token = new provider.eth.Contract(tokenAbi, tokenAddress);
+				this.ready();
+			}
 			
 			this.show = ()=>{
 				console.log("show:", this.name);
@@ -166,16 +155,61 @@
 					}
 				})
 			}
-
-			this.getTestNFT = ()=>{
-				return this.testNFT;
+			
+			this.ready = (cb)=>{
+				if(this.TokenDecimals && this.TokenSymbol){
+					if(cb){
+						cb(true);
+					}
+					return;
+				}
+				
+				if(!this.TokenDecimals){
+					this.Token.methods.decimals().call((error, result)=>{
+						if(!error){
+							console.log("decimals:", result);
+							this.TokenDecimals = Number(result);
+						}
+						
+						if(cb){
+							if(error){
+								cb(false);
+								return
+							}
+							
+							if(this.TokenSymbol){
+								cb(true);
+							}
+						}
+					});
+				}
+				
+				if(!this.TokenSymbol){
+					this.Token.methods.symbol().call((error, result)=>{
+						if(!error){
+							console.log("symbol:", result);
+							this.TokenSymbol = result;
+						}
+						
+						if(cb){
+							if(error){
+								cb(false);
+								return
+							}
+							
+							if(this.TokenDecimals){
+								cb(true);
+							}
+						}
+					});
+				}
 			}
 		}
 		
 	    return function () {
 	        if (!_mgr.instance) {
 	            _mgr.instance = new _mgr();
-				
+				_mgr.instance.__init__();
 	        }
 	        return _mgr.instance
 	    }
