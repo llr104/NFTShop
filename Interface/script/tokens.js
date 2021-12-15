@@ -1,4 +1,6 @@
 	import {provider, nftAddress, routerAddress, tokenAddress} from './eth.js';
+	import {fromTokenValue} from '../lib/utils.js';
+	
 	var nftAbi = require('@/static/json/nft-abi.json');
 	var routerAbi = require('@/static/json/router-abi.json');
 	var tokenAbi = require('@/static/json/token-abi.json');
@@ -87,10 +89,12 @@
 								token.groupId = Number(result.groupId)
 								token.nftType = Number(result.nftType);
 								token.price = Number(result.price);
+								token.showPrice = fromTokenValue(result.price, this.TokenDecimals);
 								token.uri = result.uri;
 								token.name = result.name;
 								token.ownerAddress = ownerAddress;
-							
+								
+								console.log("token:", token);
 								if(cb){
 									cb(error, token);
 								}
@@ -124,6 +128,10 @@
 			
 			this.getTokenSymbol = ()=>{
 				return this.TokenSymbol;
+			}
+			
+			this.getTokenDecimals = ()=>{
+				return this.TokenDecimals;
 			}
 			
 			this.approveToken = (from, value)=>{

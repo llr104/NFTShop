@@ -7,7 +7,7 @@
 			<view class @click="clickLink">
 				<text class="op" v-if="op == 0">锻造</text>
 				<text class="op" v-else-if="op == 1">买入</text>
-				<text class="op" v-else-if="op == 2">挂售&nbsp;{{price}}&nbsp;{{unitSymbol}}</text>
+				<text class="op" v-else-if="op == 2">挂售&nbsp;{{showPrice}}&nbsp;{{unitSymbol}}</text>
 				<text class="op" v-else-if="op == 3">取消挂售</text>
 			</view>
 			<view class>
@@ -20,9 +20,9 @@
 </template>
 
 <script>
-	import {addressShow} from "../../lib/utils";
+	import {addressShow, fromTokenValue} from "../../lib/utils.js";
 	var tokens = require('../../script/tokens.js');
-	let eth = tokens.getETH();
+	var eth = tokens.getETH();
 	
 	export default {
 		name:"transaction-item",
@@ -69,8 +69,9 @@
 		
 		created() {
 			this.addressShow = addressShow;
+			this.fromTokenValue = fromTokenValue;
 			
-			console.log("blockNumber :", this.blockNumber );
+			console.log("blockNumber :", this.blockNumber);
 			if(this.blockNumber ){
 				eth.getBlock(this.blockNumber , (error, block)=>{
 					if(!error){
@@ -80,9 +81,15 @@
 			}
 		},
 		
+		updated() {
+			console.log("updated");
+			this.showPrice = fromTokenValue(this.price, tokens.getTokenDecimals());
+		},
+		
 		data() {
 			return {
-				date:""
+				date:"",
+				showPrice:"",
 			};
 		},
 		

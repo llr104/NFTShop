@@ -176,22 +176,6 @@
 			},
 			
 			cllickMHDZ:function(){
-
-				eth.getAccounts((error, result)=>{
-					if(error){
-						return;
-					}
-					let test = tokens.getTestNFT();
-					test.methods.setTokenPrice(2, 10).send({from: result[0]}).on('transactionHash', function(hash){
-						console.log("transactionHash:", hash);
-					}).on('confirmation', function(confirmationNumber, receipt){
-						console.log("confirmation:", confirmationNumber, receipt);
-					}).on('receipt', function(receipt){
-						console.log("receipt:", receipt);
-					}).on('error', function(error){
-						console.log("error:", error);
-					}); 
-				});
 				
 			},
 			

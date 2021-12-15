@@ -38,7 +38,7 @@
 </template>
 
 <script>
-	import {addressShow} from "../../lib/utils";
+	import {addressShow, toTokenValue} from "../../lib/utils.js";
 	import navigation from "../../components/navigation/navigation.vue";
 
 	
@@ -60,6 +60,11 @@
 			};
 		},
 		
+		onPullDownRefresh() {
+			this.queryToken(this.id);
+			uni.stopPullDownRefresh();
+		},
+		
 		onLoad(options) {
 			
 			console.log("options:", options);
@@ -74,7 +79,7 @@
 			
 			if(options.id){
 				let id = Number(options.id);
-				this.queryToken(id);
+				this.id = id;
 				
 				uni.$on("receiptHash", (hashObj)=>{
 					if(!hashObj || Number(hashObj.tokenId) != id){
@@ -88,38 +93,42 @@
 					}
 					this.queryToken(id);
 				});
+				
+				this.queryToken(id);
 			}
 			
-			console.log("this.product:", this.product);
 		},
 		
 		methods:{
 			
 			queryToken:function(id){
-				tokens.queryToken(id, (error, t)=>{
-					console.log("queryToken", error, t);
-					if(!error){
-						this.isFound = true;
-						this.product = t;
-						this.checkApprove();
-						
-						let hashArr = storage.getTransactionPennding(t.id);
-						if(hashArr){
+				tokens.ready(()=>{
+					this.tokenDecimals = tokens.getTokenDecimals(); 
+					tokens.queryToken(id, (error, t)=>{
+						console.log("queryToken", error, t);
+						if(!error){
+							this.isFound = true;
+							this.product = t;
+							this.checkApprove();
 							
-							for (let i = 0; i < hashArr.length; i++) {
-								let hashObj = hashArr[i];
-								console.log("hashObj:", hashObj);
-								if(hashObj.op == storage.opType.ApprovingNFT){
-									this.approving = true;
-								}else if(hashObj.op == storage.opType.UpSaling){
-									this.upSaling = true;
+							let hashArr = storage.getTransactionPennding(t.id);
+							if(hashArr){
+								
+								for (let i = 0; i < hashArr.length; i++) {
+									let hashObj = hashArr[i];
+									console.log("hashObj:", hashObj);
+									if(hashObj.op == storage.opType.ApprovingNFT){
+										this.approving = true;
+									}else if(hashObj.op == storage.opType.UpSaling){
+										this.upSaling = true;
+									}
+									console.log("this.approving:", this.approving);
 								}
-								console.log("this.approving:", this.approving);
 							}
+						}else{
+							this.isFound = false;
 						}
-					}else{
-						this.isFound = false;
-					}
+					});
 				});
 			},
 			
@@ -204,7 +213,8 @@
 					return
 				}
 				
-				nft.methods.setTokenPrice(tokenId, price).send({from: this.myAddress}).on('transactionHash', (hash)=>{
+				let toPrice = toTokenValue(price, this.tokenDecimals);
+				nft.methods.setTokenPrice(tokenId, toPrice).send({from: this.myAddress}).on('transactionHash', (hash)=>{
 					uni.navigateTo({
 						url:"../resell-result/resell-result?id=" + this.product.id+"&hash=" + hash,
 					});

@@ -32,7 +32,7 @@
 			
 			<view class="bottom">
 				<view class="bottom-fixed">
-					<view v-if="product.price" class="price">{{product.price}}&nbsp;{{tokenSymbol}}</view> 
+					<view v-if="product.price" class="price">{{(product.showPrice)}}&nbsp;{{tokenSymbol}}</view> 
 					
 					<!-- 按钮 -->
 					<button type="default" v-if="downSaling"
@@ -81,7 +81,7 @@
 							<text>链上标识:{{product.id}}</text>
 						</view>
 						<view class="l2">
-							<text>价格:{{product.price}}</text>
+							<text>价格:{{product.showPrice}}</text>
 						</view>
 					</view>
 					
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-	import {addressShow, copy} from "../../lib/utils";
+	import {addressShow, copy, toTokenValue} from "../../lib/utils.js";
 	import navigation from "../../components/navigation/navigation.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
@@ -149,6 +149,8 @@
 		onLoad(options) {
 
 			this.addressShow = addressShow;
+			this.toTokenValue = toTokenValue;
+			
 			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
 					this.myAddress = result[0];
@@ -184,7 +186,8 @@
 			
 			queryToken(id){
 				tokens.ready(()=>{
-					this.tokenSymbol = tokens.getTokenSymbol(); 
+					this.tokenSymbol = tokens.getTokenSymbol();
+					this.tokenDecimals = tokens.getTokenDecimals();
 					tokens.queryToken(id, (error, t)=>{
 						if(!error){
 							this.isFound = true;
@@ -340,7 +343,8 @@
 			clickApprove:function(){
 				console.log("clickApprove");
 				this.approving = true;
-				tokens.approveToken(this.myAddress, this.product.price).on('transactionHash', (hash)=>{
+				let price = this.product.price;
+				tokens.approveToken(this.myAddress, price).on('transactionHash', (hash)=>{
 					console.log("clickApprove:", hash);
 					storage.setTransactionPennding(this.product.id, hash, storage.opType.ApprovingToken);
 				}).on('receipt', (receipt)=>{

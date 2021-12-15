@@ -18,7 +18,10 @@ const checkTrxPennding = (function () {
 					let hashObj = storage.getHashObj(key);
 					console.log("hashObj:", hashObj);
 					if(err){
-						uni.$emit("receiptHash", hashObj);
+						if(hashObj){
+							uni.$emit("receiptHash", hashObj);
+						}
+						
 						storage.deleteHash(key);
 					}else{
 						if(r){
