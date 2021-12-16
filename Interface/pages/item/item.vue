@@ -274,7 +274,7 @@
 					complete:function(r){
 						console.log(r);
 					}
-				})
+				});
 			},
 			
 			clickBuy:function(){

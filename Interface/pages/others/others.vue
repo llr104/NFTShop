@@ -59,7 +59,7 @@
 		
 		methods:{
 			changeTab(index) {
-				console.log('当前选中的项：' + index)
+				console.log('当前选中的项：' + index);
 			},
 			
 			onClickProduct(product){
