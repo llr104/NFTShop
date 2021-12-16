@@ -44,10 +44,10 @@
 					<button type="default" v-else-if="buying"
 					class="buying" loading="true">购买中...</button>
 					
-					<button type="default" v-else-if="!product.price && myAddress==product.ownerAddress"
+					<button type="default" v-else-if="!product.price && isSameAddress(myAddress, product.ownerAddress)"
 					class="upSale" @click="clickUpSale">立即挂售</button>
 					
-					<button type="default" v-else-if="product.price && myAddress==product.ownerAddress"
+					<button type="default" v-else-if="product.price && isSameAddress(myAddress, product.ownerAddress)"
 					class="downSale" @click="clickDownSale">取消挂售</button>
 					
 					<button type="default" v-else-if="product.price" class="buy" @click="clickBuy">立即购买</button>
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-	import {addressShow, copy, toTokenValue} from "../../lib/utils.js";
+	import {addressShow, copy, toTokenValue, isSameAddress} from "../../lib/utils.js";
 	import navigation from "../../components/navigation/navigation.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
@@ -150,6 +150,7 @@
 
 			this.addressShow = addressShow;
 			this.toTokenValue = toTokenValue;
+			this.isSameAddress = isSameAddress;
 			
 			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
@@ -157,6 +158,14 @@
 				}
 			});
 			
+			ethereum.on("accountsChanged", (acounts)=> {
+				console.log("item accountsChanged:", acounts);
+				if(acounts.length>0){
+					this.myAddress = acounts[0];
+				}
+			});
+		
+
 			if(options.id){
 				let id = Number(options.id);
 				this.id = id;

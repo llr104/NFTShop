@@ -52,8 +52,16 @@
 				this.qryPage(1);
 		    },
 			
+			changeFilter(filter){
+				this.myFilter = filter;
+				this.tokenMap = new Map();
+				this.productList = [];
+				
+				this.loadData();
+			},
+			
 			qryPage(page){
-				tokens.queryNFTPageIds(page, 10, this.filter, (error, ids)=>{
+				tokens.queryNFTPageIds(page, 10, this.myFilter, (error, ids)=>{
 					if(!error){
 						if(ids.length>0){
 							for (let i = 0; i < ids.length; i++) {
@@ -90,6 +98,7 @@
 		
 		created() {
 			console.log("created");
+			this.myFilter = this.filter;
 		},
 		
 		mounted() {

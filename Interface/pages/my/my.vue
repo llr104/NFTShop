@@ -43,6 +43,18 @@
 					this.address = result[0];
 				}
 			});
+			
+			ethereum.on("accountsChanged", (acounts)=> {
+				if(acounts.length>0){
+					this.address = acounts[0];
+				}
+				
+				if(this.current == 0){
+					this.$refs.pl1.changeFilter(this.address);
+				}else if(this.current == 1){
+					this.$refs.pl2.changeFilter(this.address);
+				}
+			});
 
 			this.tokenSymbol = tokens.getTokenSymbol(); 
 		},

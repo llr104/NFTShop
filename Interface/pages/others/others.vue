@@ -39,7 +39,7 @@
 		
 		onLoad(options) {
 			this.address = options.address;
-			this.tokenSymbol = tokens.getTokenSymbol(); 
+			this.tokenSymbol = tokens.getTokenSymbol();
 		},
 		
 		onReachBottom() {

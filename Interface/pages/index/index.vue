@@ -43,6 +43,7 @@
 	import productList from "../../components/product-list/product-list.vue";
 	import navigation from "../../components/navigation/navigation.vue";
 	var tokens = require('../../script/tokens.js');
+	
 	export default {
 		components:{
 			productList
@@ -73,11 +74,16 @@
 		
 		onLoad() {
 			console.log("onLoad");
-			tokens.queryNFTPage(1, 20, "0x0000000000000000000000000000000000000000");
-			this.tokenSymbol = tokens.getTokenSymbol(); 
+			this.load();
 		},
 		
 		methods: {
+			
+			load:function(){
+				tokens.queryNFTPage(1, 20, "0x0000000000000000000000000000000000000000");
+				this.tokenSymbol = tokens.getTokenSymbol(); 
+			},
+			
 			clickAd:function(){
 				uni.showToast({
 					title:"功能尚未开放，敬请期待"

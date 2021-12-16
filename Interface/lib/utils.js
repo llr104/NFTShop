@@ -19,6 +19,13 @@ function fromTokenValue(value, decimals){
 	return value/(10**decimals);
 }
 
+function isSameAddress(addr1, addr2){
+	if(!addr1 || !addr2){
+		return false;
+	}
+	
+	return addr1.toString().toLowerCase() == addr2.toString().toLowerCase();
+}
 /**
  * 时间对象的格式化;
  */
@@ -93,7 +100,8 @@ module.exports = {
 	"addressShow": addressShow,
 	"copy": copy,
 	"toTokenValue": toTokenValue,
-	"fromTokenValue": fromTokenValue
+	"fromTokenValue": fromTokenValue,
+	"isSameAddress": isSameAddress,
 	
 };
 

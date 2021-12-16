@@ -76,6 +76,12 @@
 				}
 			});
 			
+			ethereum.on("accountsChanged", (acounts)=> {
+				if(acounts.length>0){
+					this.myAddress = acounts[0];
+				}
+			});
+			
 			
 			if(options.id){
 				let id = Number(options.id);

@@ -38,8 +38,13 @@
 		},
 		
 		created() {
-			this.connect();
 			console.log("created:", this.address);
+			this.connect();
+			ethereum.on("accountsChanged", (acounts)=> {
+				if(acounts.length>0){
+					this.address = acounts[0];
+				}
+			});
 		},
 		
 		methods:{
