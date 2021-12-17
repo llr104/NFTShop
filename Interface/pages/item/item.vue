@@ -229,7 +229,7 @@
 						filter:{
 							_tokenId:id+""
 						},
-					    fromBlock: 8717848,
+					    fromBlock: 10939147,
 					    toBlock: 'latest'
 					  },(error, events)=>{
 						

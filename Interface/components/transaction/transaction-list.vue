@@ -3,7 +3,9 @@
 		<uni-list >
 			
 			<transaction-item v-for="(item,index) in txShowEvents" :key="index"
-			:border="true" :address="item.returnValues._from" 
+			:border="true" 
+			:from="item.returnValues._from"
+			:to="item.returnValues._to"
 			:price="Number(item.returnValues._price)"
 			:op="Number(item.returnValues._op)"
 			:txHash="item.transactionHash"

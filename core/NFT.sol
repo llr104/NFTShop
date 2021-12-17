@@ -20,10 +20,11 @@ contract NFTBox is NFTMdata, Ownable{
     }
 
     function sale(address _to, uint256 _tokenId) canOperate(_tokenId) external{
+        address from = idToOwner[_tokenId];
         _setTokenPrice(_tokenId, 0);
         _transfer(_to, _tokenId);
-
-        emit SetOnSale(_to, _tokenId, 0, OPType.Buy);
+        
+        emit SetOnSale(from, _to, _tokenId, 0, OPType.Buy);
     }
 
     function openBlindBox(uint256 _tokenId) external canOperate(_tokenId) {
@@ -36,10 +37,11 @@ contract NFTBox is NFTMdata, Ownable{
 
     function setTokenPrice(uint256 _tokenId, uint256 _price) external canOperate(_tokenId){
         super._setTokenPrice(_tokenId, _price);
+        address to = idToOwner[_tokenId];
         if(_price == 0){
-            emit SetOnSale(msg.sender, _tokenId, 0, OPType.Down);
+            emit SetOnSale(msg.sender, to, _tokenId, 0, OPType.Down);
         }else{
-            emit SetOnSale(msg.sender, _tokenId, _price, OPType.Up);
+            emit SetOnSale(msg.sender, to, _tokenId, _price, OPType.Up);
         }
     }
 

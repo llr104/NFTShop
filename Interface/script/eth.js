@@ -28,9 +28,14 @@ ethereum.on('accountsChanged', function(a){
 	console.log("accountsChanged:", a);
 });
 
-var nftAddress = "0x597A658dFF7555B5251113F54D888d4A14B16789";
-var tokenAddress = "0x66a5a5ec3453C56a15d4ff65e0FFF85ac3A4F321";
-var routerAddress = "0xcf4402E11eaD7C287e9d3f3d67F2A34Fe7F028e3";
+// var nftAddress = "0x597A658dFF7555B5251113F54D888d4A14B16789";
+// var tokenAddress = "0x66a5a5ec3453C56a15d4ff65e0FFF85ac3A4F321";
+// var routerAddress = "0xcf4402E11eaD7C287e9d3f3d67F2A34Fe7F028e3";
+
+var nftAddress = "0x5884C18D703fe55271A07ceC2F2632dFBe7577c7";
+var tokenAddress = "0x29d957447c2a173ecda68801ba42b2957959a428";
+var routerAddress = "0xC6CD3E1B8CFFE6aED5C5ed369dEE73A746adc532";
+
 var scanUrl = "https://ropsten.etherscan.io"
 
 module.exports = {

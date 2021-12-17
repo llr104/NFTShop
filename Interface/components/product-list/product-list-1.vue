@@ -1,5 +1,5 @@
 <template>
-	<view class="product-list">
+	<view class="product-list-1">
 	    <view class="product" v-for="(product,index) in productList" :key="index" @click="clickProduct(product)">
 	        <view class="image-view">
 	            <image v-if="renderImage" class="product-image" :src="product.uri"></image>
@@ -23,14 +23,10 @@
 	import {addressShow} from "../../lib/utils";
 	
 	export default {
-		name:"product-list",
+		name:"product-list-1",
 		emits:["clickProduct"],
 		
 		props: {
-			filter: {
-				type: String,
-				default: ''
-			},
 			unitSymbol: {
 				type: String,
 				default: ''
@@ -39,7 +35,7 @@
 		
 		data() {
 		    return {
-		        title: 'product-list',
+		        title: 'product-list-1',
 		        productList: [],
 		        renderImage: false,
 				isEnd: false,
@@ -48,45 +44,38 @@
 		},
 		methods: {
 			
-		    loadData() {
-				console.log("loadData");
+		    loadIds(ids) {
+				this.ids = ids;
+				this.tokenMap = new Map();
+				this.productList = [];
 				this.qryPage(1);
 		    },
 			
-			changeFilter(filter){
-				this.myFilter = filter;
-				this.tokenMap = new Map();
-				this.productList = [];
-				
-				this.loadData();
-			},
 			
 			qryPage(page){
-				tokens.queryNFTPageIds(page, 10, this.myFilter, (error, ids)=>{
-					if(!error){
-						if(ids.length>0){
-							for (let i = 0; i < ids.length; i++) {
-								let id = Number(ids[i]);
-								tokens.queryToken(id, (error, nft) =>{
-									if(!error){
-										this.tokenMap.set(id+"", nft);
-										this.productList = [...this.tokenMap.values()];
-									}
-								})
+				let prePage = 10;
+				let max = parseInt(this.ids.length/prePage) + 1;
+				if(page > max){
+					return;
+				}
+				let ids = this.ids.slice((page-1)*prePage, page*prePage);
+				if(ids.length>0){
+					for (let i = 0; i < ids.length; i++) {
+						let id = Number(ids[i]);
+						tokens.queryToken(id, (error, nft) =>{
+							if(!error){
+								this.tokenMap.set(id+"", nft);
+								this.productList = [...this.tokenMap.values()];
 							}
-							this.page = page;
-						}else{
-							console.log("this.page:", this.page);
-							this.isEnd = true;
-						}
+						})
 					}
-				});
+					this.page = page;
+				}else{
+					this.isEnd = true;
+				}
 			},
 			
-			clear(){
-				this.productList = [];
-			},
-			
+	
 			clickProduct:function(product){
 				console.log("clickProduct:", product);
 				this.$emit("clickProduct", product);
@@ -100,15 +89,13 @@
 		
 		created() {
 			console.log("created");
-			this.myFilter = this.filter;
 		},
 		
 		mounted() {
 			console.log("mounted");
 			this.tokenMap = new Map();
 			this.addressShow = addressShow;
-		    this.loadData();
-			
+		   
 		    setTimeout(() => {
 		        this.renderImage = true;
 		    }, 300);
@@ -125,7 +112,7 @@
         font-size: 28rpx;
     }
 
-	.product-list {
+	.product-list-1 {
         display: flex;
         width: 100%;
         flex-wrap: wrap;

@@ -5,7 +5,7 @@ contract NFTMdata is NFToken {
     
     enum NFTType { BlindBox, Normal }
     enum OPType { Mint, Buy, Up, Down}
-    event SetOnSale(address indexed _from, uint256 indexed _tokenId, uint256 _price, OPType _op);
+    event SetOnSale(address indexed _from, address indexed _to, uint256 indexed _tokenId, uint256 _price, OPType _op);
 
     string internal nftName;
     string internal nftSymbol;
@@ -110,7 +110,7 @@ contract NFTMdata is NFToken {
             attr.describe = _des;
             cAttributes.push(attr);
 
-            emit SetOnSale(_to, _tokenId, 0, OPType.Mint);
+            emit SetOnSale(msg.sender, _to, _tokenId, 0, OPType.Mint);
         }
     
     }

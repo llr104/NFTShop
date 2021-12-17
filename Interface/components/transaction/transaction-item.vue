@@ -2,7 +2,8 @@
 	<view class>
 		<view class="c">
 			<view class>
-				<text class="address l-margin">{{addressShow(address)}}</text>
+				<text v-if="op == 1" class="address l-margin">{{addressShow(to)}}</text>
+				<text v-else class="address l-margin">{{addressShow(from)}}</text>
 			</view>
 			<view class @click="clickLink">
 				<text class="op" v-if="op == 0">锻造</text>
@@ -34,7 +35,12 @@
 				default: false
 			},
 			
-			address: {
+			from: {
+				type: [String],
+				default: ""
+			},
+			
+			to: {
 				type: [String],
 				default: ""
 			},
