@@ -99,7 +99,7 @@
 						_op:"1",
 					},
 				    fromBlock: 10939147,
-				    toBlock: 'latest'
+				    toBlock: 10939999
 				  },(error, events)=>{
 					
 					if(!error){

@@ -6,16 +6,18 @@
 		:lineScale="0.8" fontSize="34rpx" @change="changeTab">
 		</v-tabs>
 		<product-list ref="pl1" :filter="address" :unitSymbol="tokenSymbol" v-if="current==0 && address" @clickProduct="onClickProduct" class="plist"></product-list>
-		<product-list ref="pl2" :filter="address" :unitSymbol="tokenSymbol" v-if="current==1 && address" @clickProduct="onClickProduct" class="plist"></product-list>
+		<product-list-1 ref="pl2" :unitSymbol="tokenSymbol" v-if="current==1 && address" @clickProduct="onClickProduct" class="plist"></product-list-1>
 		
 	</view>
 </template>
 
 <script>
-	
+	import {isSameAddress} from "../../lib/utils.js";
 	import navigation from "../../components/navigation/navigation.vue";
 	import vtab from "../../components/v-tabs/v-tabs.vue";
 	import productList from "../../components/product-list/product-list.vue";
+	import productList1 from "../../components/product-list/product-list-1.vue";
+	
 	
 	var tokens = require('../../script/tokens.js');
 	let nft = tokens.getNFT();
@@ -25,7 +27,8 @@
 		components:{
 			navigation,
 			vtab,
-			productList
+			productList,
+			productList1
 		},
 		
 		data() {
@@ -37,15 +40,37 @@
 			};
 		},
 		
-		onLoad(options) {
-			this.address = options.address;
-			this.tokenSymbol = tokens.getTokenSymbol();
+		onLoad() {
+			
+			eth.getAccounts((error, result)=>{
+				if(!error && result.length != 0){
+					this.address = result[0];
+				}
+			});
+			
+			ethereum.on("accountsChanged", (acounts)=> {
+				if(acounts.length>0){
+					this.address = acounts[0];
+				}
+				
+				if(this.$refs.pl1){
+					this.$refs.pl1.changeFilter(this.address);
+				}
+				if(this.$refs.pl2){
+					this.$refs.pl2.loadIds([]);
+					this.saleHistory();
+				}
+				
+			});
+
+			this.tokenSymbol = tokens.getTokenSymbol(); 
 		},
 		
 		onReachBottom() {
-			if(this.current == 0){
+			if(this.$refs.pl1){
 				this.$refs.pl1.reachBottom();
-			}else if(this.current == 1){
+			}
+			if(this.$refs.pl2){
 				this.$refs.pl2.reachBottom();
 			}
 		},
@@ -60,6 +85,48 @@
 		methods:{
 			changeTab(index) {
 				console.log('当前选中的项：' + index);
+				if(index == 1){
+					this.saleHistory();
+				}
+			},
+			
+			saleHistory(){
+				nft.getPastEvents(
+				  'SetOnSale',
+				  {
+					filter:{
+						_from:this.address,
+						_op:"1",
+					},
+				    fromBlock: 10939147,
+				    toBlock: 10939999
+				  },(error, events)=>{
+					
+					if(!error){
+						let txEvents = events.reverse();
+						let ids = this.cal(txEvents);
+						
+						if(this.$refs.pl2){
+							this.$refs.pl2.loadIds(ids);
+						}
+					}
+				});
+			},
+			
+			cal:function(txEvents){
+				if(!txEvents){
+					return [];
+				}
+				
+				let ret = [];
+				for (var i = 0; i < txEvents.length; i++) {
+					let from = txEvents[i].returnValues._from;
+					let op = txEvents[i].returnValues._op;
+					if(op == "1" && isSameAddress(this.address, from)){
+						ret.push(txEvents[i].returnValues._tokenId);
+					}
+				}
+				return ret;
 			},
 			
 			onClickProduct(product){
