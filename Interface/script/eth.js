@@ -24,9 +24,7 @@ if (window.ethereum) {
 }
 var provider = new Web3(web3Provider);//web3js就是你需要的web3实例
 console.log("Web3:", provider);
-ethereum.on('accountsChanged', function(a){
-	console.log("accountsChanged:", a);
-});
+
 
 // var nftAddress = "0x597A658dFF7555B5251113F54D888d4A14B16789";
 // var tokenAddress = "0x66a5a5ec3453C56a15d4ff65e0FFF85ac3A4F321";

@@ -1,6 +1,10 @@
 <template>
 	<view>
 		<navigation address></navigation>
+		<view class="topSpace">
+			<text class="t">上下架</text>
+		</view>
+		
 		<view class="gs">
 			<uni-forms-item required name="tokenId" label="tokenId">
 				<uni-easyinput type="number" v-model="data.tokenId" @input="gsTokenIdInput" placeholder="请输入tokenId" />
@@ -104,6 +108,17 @@
 </script>
 
 <style lang="scss">
+	.topSpace {
+		width: 100%;
+		background-color: #808080;
+		text-align: center;
+		.t {
+			line-height: 1.8;
+			font-size: 40rpx;
+			font-weight: bolder;
+		}
+	}
+	
 	.gs {
 		margin-top: 2rpx;
 		padding: 50rpx;

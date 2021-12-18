@@ -1,6 +1,9 @@
 <template>
 	<view>
 		<navigation address></navigation>
+		<view class="topSpace">
+			<text class="t">查询</text>
+		</view>
 		<view class="cx">
 			<uni-forms-item required name="tokenId" label="tokenId">
 				<uni-easyinput type="number" v-model="data.tokenId" placeholder="请输入需要查询的tokenId" />
@@ -80,6 +83,17 @@
 </script>
 
 <style lang="scss">
+	.topSpace {
+		width: 100%;
+		background-color: #808080;
+		text-align: center;
+		.t {
+			line-height: 1.8;
+			font-size: 40rpx;
+			font-weight: bolder;
+		}
+	}
+	
 	.cx {
 		margin-top: 2rpx;
 		padding: 50rpx;
