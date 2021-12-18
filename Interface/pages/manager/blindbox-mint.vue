@@ -47,6 +47,7 @@
 					</uni-td>
 				</uni-tr>
 			</uni-table>
+			<button type="default" class="bbResult" @click="clickBBResult">生成盲盒结果</button>
 			<uni-popup class="pop" ref="popup" type="bottom">
 				<view class="c">
 					<uni-forms :modelValue="elem.modify">
@@ -102,13 +103,13 @@
 							name:"第一个盲盒",
 							des:"这里是第一个盲盒的描述啊，哈哈哈哈哈哈哈哈哈哈哈",
 							uri:"http://www.manhe.com",
-							cnt:1
+							cnt:10
 						},
 						{
 							name:"第2个盲盒",
 							des:"这里是第一个盲盒的描述啊，哈哈哈哈哈哈哈哈哈哈哈",
 							uri:"http://www.manhe.com",
-							cnt:1
+							cnt:10
 						}
 					],
 					modify:{
@@ -175,7 +176,7 @@
 					uni.showToast({
 						title:"输入有误",
 						icon:"error"
-					})
+					});
 					return;
 				}
 				let elem = this.elem.data[this.modifyIndex];
@@ -186,6 +187,31 @@
 				
 				this.$refs.popup.close();
 				
+			},
+			
+			clickBBResult:function(){
+				console.log("clickBBResult");
+				if(!this.elem.data || !this.elem.data.length){
+					uni.showToast({
+						title:"请先配置盲盒元素",
+						icon:"error"
+					});
+					return;
+				}
+				
+				let result = [];
+				for (var i = 0; i < this.elem.data.length; i++) {
+					let data = this.elem.data[i];
+					for (var j = 0; j < data.cnt; j++) {
+						result.push(i);
+					}
+				}
+				
+				result.sort(function() {
+				    return .5 - Math.random();
+				});
+				
+				console.log("result:", result);
 			}
 		}
 	}
@@ -230,6 +256,10 @@
 			padding: 10rpx 20rpx;
 			border-radius: 8rpx;
 			margin: 20rpx 30rpx;
+		}
+		
+		.bbResult {
+			margin-top: 50rpx;
 		}
 		
 		.pop{

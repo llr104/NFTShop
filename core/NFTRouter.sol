@@ -28,6 +28,7 @@ contract NFTRouter is Ownable {
 
     mapping(uint256=>blinkboxCfg) public BBCFG;
     mapping(uint256=>blinkboxEle[]) public BBELE;
+    mapping(uint256=>uint256[]) private BBRES;
 
     string constant NFT_NOT_ONSALE = "001001";
     string constant NFT_INVALID = "001002";
@@ -119,6 +120,13 @@ contract NFTRouter is Ownable {
         BBELE[_bbId][_eleIndex] = ele;
     }
     
+    function setBlinkBoxResult(uint256 _bbId, uint256[] memory _res) public onlyManager validBBCFG(_bbId) {
+        BBRES[_bbId] = _res;
+    }
+    
+    function getBlinkBoxResult(uint256 _bbId) public view onlyManager returns(uint256[] memory) {
+        return BBRES[_bbId];
+    }
         
     function getBlinkBoxCfg(uint256 _bbId) public view validBBCFG(_bbId) returns(string memory _name, string memory _des, string  memory _uri){
         
