@@ -47,6 +47,7 @@
 					</uni-td>
 				</uni-tr>
 			</uni-table>
+			<button type="default" class="elemAdd" @click="clickAdd">添加</button>
 			<button type="default" class="bbResult" @click="clickBBResult">生成盲盒结果</button>
 			<uni-popup class="pop" ref="popup" type="bottom">
 				<view class="c">
@@ -64,7 +65,7 @@
 							<uni-easyinput type="number" v-model="elem.modify.cnt" placeholder="请输入盲盒数量" />
 						</uni-forms-item>
 					</uni-forms>
-					<button type="default" @click="clickModifyComfirm">确认提交</button>
+					<button type="default" @click="clickComfirm">确认提交</button>
 				</view>
 			</uni-popup>
 		</view>
@@ -144,17 +145,23 @@
 				
 			},
 			
+			clickAdd:function(){
+				console.log("clickAdd");
+				this.modifyIndex = this.elem.data.length;
+				this.$refs.popup.open("bottom");
+			},
+			
 			clickModify:function(index){
-				console.log("clickModify:", index);
+				
 				this.modifyIndex = index;
 				let elem = this.elem.data[index];
-				
 				this.elem.modify.name = elem.name;
 				this.elem.modify.des = elem.des;
 				this.elem.modify.uri = elem.uri;
 				this.elem.modify.cnt = elem.cnt;
-				
 				this.$refs.popup.open("bottom");
+				
+				console.log("clickModify:", index, this.elem.modify);
 			},
 			
 			clickDel:function(index){
@@ -169,8 +176,8 @@
 				})
 			},
 			
-			clickModifyComfirm:function(){
-				console.log("clickModifyComfirm:", this.elem.modify);
+			clickComfirm:function(){
+				console.log("clickComfirm:", this.elem.modify);
 				let modify = this.elem.modify;
 				if(!modify.name || !modify.des || !modify.uri || !modify.cnt){
 					uni.showToast({
@@ -179,12 +186,18 @@
 					});
 					return;
 				}
-				let elem = this.elem.data[this.modifyIndex];
+				
+				let elem = {}
+				if(this.modifyIndex == this.elem.data.length){
+					this.elem.data.push(elem);
+				}
+				elem = this.elem.data[this.modifyIndex];
+				
 				elem.name = modify.name;
 				elem.des = modify.des;
 				elem.uri = modify.uri;
 				elem.cnt = modify.cnt;
-				
+							
 				this.$refs.popup.close();
 				
 			},
@@ -260,6 +273,10 @@
 		
 		.bbResult {
 			margin-top: 50rpx;
+		}
+		
+		.clickAdd {
+			
 		}
 		
 		.pop{
