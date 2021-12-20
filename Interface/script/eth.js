@@ -32,7 +32,7 @@ console.log("Web3:", provider);
 
 var nftAddress = "0x2746865f2f3ef82668c016040909444dB26fA5AB";
 var tokenAddress = "0x29d957447c2a173ecda68801ba42b2957959a428";
-var routerAddress = "0x8d2c3f3425B32b19d2eD9f3ff630843c5635Ddfc";
+var routerAddress = "0x66fc36B67B46Ad87D959d7a9Dbd03BebBC634B12";
 
 var scanUrl = "https://ropsten.etherscan.io"
 

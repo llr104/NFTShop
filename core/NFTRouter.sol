@@ -42,7 +42,7 @@ contract NFTRouter is Ownable {
     mapping(uint256=>blinkboxCfg) public BBCFG;
     mapping(uint256=>blinkboxEle[]) public BBELE;
     mapping(uint256=>uint32[]) private BBRES;
-    mapping(uint256=>uint32) BBRESIndex;
+    mapping(uint256=>uint32) public BBRESIndex;
 
     string constant NFT_NOT_ONSALE = "001001";
     string constant NFT_INVALID = "001002";
@@ -144,8 +144,9 @@ contract NFTRouter is Ownable {
         
         uint256 bbId = INFT(nftAddress).getAttributesValuebyIndex(_tokenId, 0);
         uint32 index = BBRESIndex[bbId];
+        uint256 eleIndex = BBRES[bbId][index];
         blinkboxCfg memory cfg = BBCFG[bbId];
-        blinkboxEle memory ele = BBELE[bbId][index];
+        blinkboxEle memory ele = BBELE[bbId][eleIndex];
         
         INFT(nftAddress).mint(_owner, ele.name, ele.uri, ele.des, IEnumDef.NFTType.Normal, 1, int256(cfg.groupId), 0);
 
