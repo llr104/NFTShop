@@ -1,7 +1,10 @@
 <template>
 	<view>
 		<navigation address></navigation>
-		<view class="topSpace"></view>
+		<view class="topSpace">
+			<text class="t">普通锻造</text>
+		</view>
+
 		<view class="ptdz">
 			<uni-forms :modelValue="data">
 				<uni-forms-item required name="name" label="NFT名字">
@@ -95,7 +98,14 @@
 
 <style lang="scss">
 	.topSpace {
-		margin-top: 30rpx;
+		width: 100%;
+		background-color: #808080;
+		text-align: center;
+		.t {
+			line-height: 1.8;
+			font-size: 40rpx;
+			font-weight: bolder;
+		}
 	}
 	
 	.ptdz {
