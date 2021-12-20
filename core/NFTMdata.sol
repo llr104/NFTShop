@@ -1,17 +1,17 @@
 pragma solidity ^0.5.0;
 import "./NFToken.sol";
+import "./IEnumDef.sol";
 
-contract NFTMdata is NFToken {
+contract NFTMdata is NFToken, IEnumDef {
     
-    enum NFTType { BlindBox, Normal }
-    enum OPType { Mint, Buy, Up, Down}
+
     event SetOnSale(address indexed _from, address indexed _to, uint256 indexed _tokenId, uint256 _price, OPType _op);
 
     string internal nftName;
     string internal nftSymbol;
 
     string constant INVALID_INDEX = "005007";
-    string constant INVALID_BLINKBOX = "005008";
+    string constant INVALID_BlindBox = "005008";
     string constant INVALID_PAGE = "005009";
 
     uint256 constant NO_GROUP = 0;
@@ -84,9 +84,18 @@ contract NFTMdata is NFToken {
     }
 
     function _mint(address _to, string memory _name, string memory _uri, 
-    string memory _des, NFTType _type,  uint32 _count, bool _isGroup) internal {
-        if(_isGroup){
+    string memory _des, NFTType _type,  uint32 _count, int256 _groupId, uint256 _BBCfgId) internal{
+
+        uint256 gid = 0;
+        if(_groupId < 0){
             groupId++;
+            gid = groupId;
+
+        }else if(_groupId > 0){
+            if (_groupId> int256(groupId)){
+                groupId = uint256(_groupId);
+            }
+            gid = uint256(_groupId);
         }
 
         for (uint256 i = 0; i < _count; i++) {
@@ -96,12 +105,12 @@ contract NFTMdata is NFToken {
             idToIndex[_tokenId] = tokens.length - 1;
             
             cAttributesStruct memory attr;
-            if(_isGroup){
-                attr.groupId = groupId;   
+            if(_groupId == 0){
+               attr.groupId = NO_GROUP; 
+            }else{
+                attr.groupId = gid;
                 groupToIds[_tokenId].push(_tokenId);
                 groupToIndex[_tokenId] = groupToIds[_tokenId].length - 1;
-            }else{
-                attr.groupId = NO_GROUP;   
             }
             
             attr.uri = _uri;   
@@ -109,10 +118,12 @@ contract NFTMdata is NFToken {
             attr.name = _name;
             attr.describe = _des;
             cAttributes.push(attr);
+            if(_type == NFTType.BlindBox){
+                _addTokenAttributes(_tokenId, _BBCfgId);
+            }
 
             emit SetOnSale(msg.sender, _to, _tokenId, 0, OPType.Mint);
         }
-    
     }
 
     function _burn(uint256 _tokenId) internal {
@@ -177,11 +188,6 @@ contract NFTMdata is NFToken {
         return ownerToIds[_owner].length;
     }
 
-    function _openBlindBox(uint256 _tokenId) internal validNFToken(_tokenId){
-       
-    }
-    
-
     function _setTokenDescribe(uint256 _tokenId, string memory _des) internal validNFToken(_tokenId){
         uint256 tokenIndex = idToIndex[_tokenId];
         cAttributes[tokenIndex].describe = _des;
@@ -218,6 +224,11 @@ contract NFTMdata is NFToken {
     function getTokenPrice(uint256 _tokenId) external view validNFToken(_tokenId) returns(uint256){
         uint256 tokenIndex = idToIndex[_tokenId];
         return cAttributes[tokenIndex].price;
+    }
+
+    function isBlindBox(uint256 _tokenId) public view validNFToken(_tokenId) returns(bool){
+        uint256 tokenIndex = idToIndex[_tokenId];
+        return cAttributes[tokenIndex].nftType == NFTType.BlindBox;
     }
     
 }

@@ -24,63 +24,75 @@
 		<view v-if="current==1" class="elem">
 			<uni-forms :modelValue="elem">
 				<uni-forms-item required name="id" label="盲盒配置id">
-					<uni-easyinput type="number" v-model="base.name" placeholder="请输入盲盒配置id" @input="idInput"/>
+					<uni-easyinput type="number" v-model="elem.id" placeholder="请输入盲盒配置id" @input="idInput"/>
 				</uni-forms-item>
-				
-				<view class="" v-if="Number(data.level)>0">
-					<uni-forms-item :label="getName(i)" v-for="i in Number(data.level)" :key="i">
-						<view class="">
-							<uni-easyinput type="text" v-model="data.levels[i-1].name" placeholder="请输入该等级名字" />
-							<uni-easyinput type="text" v-model="data.levels[i-1].des" placeholder="请输入该等级描述" />
-							<uni-easyinput type="text" v-model="data.levels[i-1].uri" placeholder="请输入该等级uri" />
-							<uni-easyinput type="number" v-model="data.levels[i-1].count" placeholder="请输入该等级数量" />
-						</view>
-					</uni-forms-item>
-				</view>
-				
-				
 			</uni-forms>
 			<view class="split"></view>
-			<uni-table class="tb" stripe emptyText="暂无更多数据">
-				<uni-tr>
-					<uni-th align="center">名字</uni-th>
-					<uni-th align="center">数量</uni-th>
-					<uni-th align="center">uri</uni-th>
-					<uni-th align="center">描述</uni-th>
-					<uni-th align="center">设置</uni-th>
-				</uni-tr>
-				<uni-tr v-for="(e,index) in elem.data" :key="index">
-					<uni-td align="center">{{e.name}}</uni-td>
-					<uni-td align="center">{{e.cnt}}</uni-td>
-					<uni-td align="center">{{e.uri}}</uni-td>
-					<uni-td align="center">{{e.des}}</uni-td>
-					<uni-td align="center">
-						<text class="left" @click="clickModify(index)">修改</text>
-						<text class="right" @click="clickDel(index)">删除</text>
-					</uni-td>
-				</uni-tr>
-			</uni-table>
-			<button type="default" class="elemAdd" @click="clickAdd">添加</button>
-			<button type="default" class="bbResult" @click="clickBBResult">生成盲盒结果</button>
-			<uni-popup class="pop" ref="popup" type="bottom">
-				<view class="c">
-					<uni-forms :modelValue="elem.modify">
-						<uni-forms-item required name="name" label="盲盒名字">
-							<uni-easyinput type="text" v-model="elem.modify.name" placeholder="请输入盲盒名字" />
-						</uni-forms-item>
-						<uni-forms-item required name="des" label="盲盒描述">
-							<uni-easyinput type="text" v-model="elem.modify.des" placeholder="请输入盲盒描述" />
-						</uni-forms-item>
-						<uni-forms-item required name="uri" label="盲盒 URI">
-							<uni-easyinput type="text" v-model="elem.modify.uri" placeholder="请输入盲盒 URI" />
-						</uni-forms-item>
-						<uni-forms-item required name="cnt" label="盲盒数量">
-							<uni-easyinput type="number" v-model="elem.modify.cnt" placeholder="请输入盲盒数量" />
-						</uni-forms-item>
-					</uni-forms>
-					<button type="default" @click="clickComfirm">确认提交</button>
-				</view>
-			</uni-popup>
+			
+			<view class="r" v-if="elem.hasBase">
+				<uni-table class="tb" stripe emptyText="暂无更多数据">
+					<uni-tr>
+						<uni-th align="center">名字</uni-th>
+						<uni-th align="center">数量</uni-th>
+						<uni-th align="center">uri</uni-th>
+						<uni-th align="center">描述</uni-th>
+						<uni-th align="center">设置</uni-th>
+					</uni-tr>
+					<uni-tr v-for="(e,index) in elem.data" :key="index">
+						<uni-td align="center">{{e.name}}</uni-td>
+						<uni-td align="center">{{e.cnt}}</uni-td>
+						<uni-td align="center">{{e.uri}}</uni-td>
+						<uni-td align="center">{{e.des}}</uni-td>
+						<uni-td align="center">
+							<text class="left" @click="clickModify(index)">修改</text>
+							<text class="right" @click="clickDel(index)">删除</text>
+						</uni-td>
+					</uni-tr>
+				</uni-table>
+				<button type="default" class="elemAdd" @click="clickAdd">添加</button>
+				<button type="default" class="bbResult" @click="clickBBResult">生成盲盒结果</button>
+				<button type="default" class="bbMint" v-if="elem.canMint" @click="clickBBMint">锻造盲盒</button>
+				
+				<uni-popup class="pop" ref="popupadd" type="bottom">
+					<view class="c">
+						<uni-forms :modelValue="elem.add">
+							<uni-forms-item required name="name" label="盲盒名字">
+								<uni-easyinput type="text" v-model="elem.add.name" placeholder="请输入盲盒名字" />
+							</uni-forms-item>
+							<uni-forms-item required name="des" label="盲盒描述">
+								<uni-easyinput type="text" v-model="elem.add.des" placeholder="请输入盲盒描述" />
+							</uni-forms-item>
+							<uni-forms-item required name="uri" label="盲盒 URI">
+								<uni-easyinput type="text" v-model="elem.add.uri" placeholder="请输入盲盒 URI" />
+							</uni-forms-item>
+							<uni-forms-item required name="cnt" label="盲盒数量">
+								<uni-easyinput type="number" v-model="elem.add.cnt" placeholder="请输入盲盒数量" />
+							</uni-forms-item>
+						</uni-forms>
+						<button type="default" @click="clickAddComfirm">确认提交</button>
+					</view>
+				</uni-popup>
+				<uni-popup class="pop" ref="popupmod" type="bottom">
+					<view class="c">
+						<uni-forms :modelValue="elem.modify">
+							<uni-forms-item required name="name" label="盲盒名字">
+								<uni-easyinput type="text" v-model="elem.modify.name" placeholder="请输入盲盒名字" />
+							</uni-forms-item>
+							<uni-forms-item required name="des" label="盲盒描述">
+								<uni-easyinput type="text" v-model="elem.modify.des" placeholder="请输入盲盒描述" />
+							</uni-forms-item>
+							<uni-forms-item required name="uri" label="盲盒 URI">
+								<uni-easyinput type="text" v-model="elem.modify.uri" placeholder="请输入盲盒 URI" />
+							</uni-forms-item>
+							<uni-forms-item required name="cnt" label="盲盒数量">
+								<uni-easyinput type="number" v-model="elem.modify.cnt" placeholder="请输入盲盒数量" />
+							</uni-forms-item>
+						</uni-forms>
+						<button type="default" @click="clickModifyComfirm">确认提交</button>
+					</view>
+				</uni-popup>
+			</view>
+			
 		</view>
 	</view>
 	
@@ -94,6 +106,7 @@
 	var tokens = require('../../script/tokens.js');
 	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
+	let router = tokens.getRouter();
 	
 	export default {
 		
@@ -105,34 +118,31 @@
 		data() {
 			return {
 				base:{
-					name:"",
-					des:"",
-					uri:"",
+					name:"盲盒1",
+					des:"这是盲盒1",
+					uri:"https://www.ibox.fan/file/oss/nft/image/nft-goods/503c96a67b154a2caa3f16165e59febb.png?style=st6",
 				},
 				
 				elem:{
+					hasBase:false,
+					canMint:false,
 					id:0,
 					data:[
-						{
-							name:"第一个盲盒",
-							des:"这里是第一个盲盒的描述啊，哈哈哈哈哈哈哈哈哈哈哈",
-							uri:"http://www.manhe.com",
-							cnt:10
-						},
-						{
-							name:"第2个盲盒",
-							des:"这里是第一个盲盒的描述啊，哈哈哈哈哈哈哈哈哈哈哈",
-							uri:"http://www.manhe.com",
-							cnt:10
-						}
+						
 					],
 					modify:{
-						name:"",
-						des:"",
-						uri:"",
-						cnt:0
+						name:"牛气冲天-new",
+						des:"该作品象征着不轻言放弃、死磕到底的斗牛精神，初生牛犊不怕虎，熬夜盯盘不惧苦。蓝色是你的幸运色，因为你心在高空，志在远方，批一身金钢盔甲，不要怂，一把梭，拿起键盘就是干，赢，会所嫩模，输？你的字典没有输",
+						uri:"https://www.ibox.fan/file/oss/nft/image/nft-goods/9530030d975d4831a2e83358915d275b.jpg?style=st6",
+						cnt:3
 					},
-					modifyIndex:0,
+					add:{
+						name:"牛气冲天-new",
+						des:"该作品象征着不轻言放弃、死磕到底的斗牛精神，初生牛犊不怕虎，熬夜盯盘不惧苦。蓝色是你的幸运色，因为你心在高空，志在远方，批一身金钢盔甲，不要怂，一把梭，拿起键盘就是干，赢，会所嫩模，输？你的字典没有输",
+						uri:"https://www.ibox.fan/file/oss/nft/image/nft-goods/9530030d975d4831a2e83358915d275b.jpg?style=st6",
+						cnt:3
+					},
+					opIndex:0,
 				},
 				
 				tabs:["基础", "元素"],
@@ -150,10 +160,60 @@
 					})
 					return;
 				}
+				
+				eth.getAccounts((error, result)=>{
+					if(!error && result.length > 0){
+						// console.log("result[0]:", result[0]);
+						router.methods.makeBlinkBoxCfg(this.base.name, this.base.des, this.base.uri).send({from: result[0]});
+					}
+				});
+				
 			},
 			
 			idInput:function(id){
-				console.log(id);
+		
+				if(id && Number(id)){
+					router.methods.getBlinkBoxCfg(Number(id)).call((error, result)=>{
+						if(error || !result){
+							this.elem.hasBase = false;
+						}else{
+							this.elem.hasBase = true;
+							
+							router.methods.getBlinkBoxEleLen(Number(id)).call((error, result)=>{
+								if(!error){
+									for (let i = 0; i < result; i++) {
+										
+										this.elem.data.push({name:"", uri:"", des:"", cnt:0});
+										router.methods.getBlinkBoxEleCfg(Number(id), Number(i)).call((error, result)=>{
+											if(!error){
+												let obj = {};
+												this.elem.data[i].name = result._name;
+												this.elem.data[i].uri = result._uri;
+												this.elem.data[i].des = result._des;
+												this.elem.data[i].cnt = result._cnt;
+											}
+										});
+									}
+								}
+							});
+							
+							eth.getAccounts((error, account)=>{
+								router.methods.getBlinkBoxResult(Number(id)).call({from: account[0]}, (error, result)=>{
+									if(error){
+										this.elem.canMint = false;
+									}else{
+										if(result && result.length){
+											this.elem.canMint = true;
+										}else{
+											this.elem.canMint = false;
+										}
+									}
+								});
+							});
+							
+						}
+					});
+				}
 			},
 			
 			changeTab:function(){
@@ -162,21 +222,21 @@
 			
 			clickAdd:function(){
 				console.log("clickAdd");
-				this.modifyIndex = this.elem.data.length;
-				this.$refs.popup.open("bottom");
+				this.opIndex = this.elem.data.length;
+				this.$refs.popupadd.open("bottom");
 			},
 			
 			clickModify:function(index){
 				
-				this.modifyIndex = index;
+				this.opIndex = index;
 				let elem = this.elem.data[index];
 				this.elem.modify.name = elem.name;
 				this.elem.modify.des = elem.des;
 				this.elem.modify.uri = elem.uri;
 				this.elem.modify.cnt = elem.cnt;
-				this.$refs.popup.open("bottom");
+				this.$refs.popupmod.open("bottom");
 				
-				console.log("clickModify:", index, this.elem.modify);
+				console.log("clickModify:", index, this.elem.modify, elem);
 			},
 			
 			clickDel:function(index){
@@ -185,16 +245,26 @@
 					content:"是否确定删除？",
 					 success: (res) =>{
 						if (res.confirm) {
-							this.elem.data = this.elem.data.slice(index, 1);
+							eth.getAccounts((error, result)=>{
+								if(!error && result.length){
+									router.methods.delBlinkBoxEleCfg(Number(this.elem.id), 
+									index).send({from:result[0]}, (error, result)=>{
+										if(!error){
+											this.elem.data.splice(index, 1);
+										}
+									});
+								}
+							});
 						}
 					}
-				})
+				});
+				
 			},
 			
-			clickComfirm:function(){
-				console.log("clickComfirm:", this.elem.modify);
-				let modify = this.elem.modify;
-				if(!modify.name || !modify.des || !modify.uri || !modify.cnt){
+			clickAddComfirm:function(){
+				
+				let add = this.elem.add;
+				if(!add.name || !add.des || !add.uri || !add.cnt){
 					uni.showToast({
 						title:"输入有误",
 						icon:"error"
@@ -202,18 +272,61 @@
 					return;
 				}
 				
-				let elem = {}
-				if(this.modifyIndex == this.elem.data.length){
-					this.elem.data.push(elem);
-				}
-				elem = this.elem.data[this.modifyIndex];
+				this.$refs.popupadd.close();
 				
-				elem.name = modify.name;
-				elem.des = modify.des;
-				elem.uri = modify.uri;
-				elem.cnt = modify.cnt;
-							
-				this.$refs.popup.close();
+				eth.getAccounts((error, result)=>{
+					if(!error && result.length > 0){
+						
+						let elem = {};
+						elem.name = add.name;
+						elem.des = add.des;
+						elem.uri = add.uri;
+						elem.cnt = add.cnt;
+						
+						router.methods.addBlinkBoxEleCfg(Number(this.elem.id), add.name, 
+						add.des, add.uri, add.cnt).send({from: result[0]}, (error, result)=>{
+							if(!error){
+								this.elem.data.push(elem);
+								console.log("this.elem.data:", this.elem.data);
+							}
+						});
+					}
+				});
+				
+			},
+			
+			clickModifyComfirm:function(){
+				console.log("clickModifyComfirm:", this.elem.modify);
+				let modify = this.elem.modify;
+				let name = modify.name;
+				let des = modify.des;
+				let uri = modify.uri;
+				let cnt = modify.cnt;
+				
+				if(!name || !des || !uri || !cnt){
+					uni.showToast({
+						title:"输入有误",
+						icon:"error"
+					});
+					return;
+				}
+				
+				this.$refs.popupmod.close();
+				
+				eth.getAccounts((error, result)=>{
+					if(!error && result.length > 0){
+					
+						router.methods.modifyBlinkBoxEleCfg(Number(this.elem.id), this.elem.opIndex, name, des, uri, cnt).send({from: result[0]}, (error, result)=>{
+							if(!error){
+								this.elem.data[this.elem.opIndex].name = name;
+								this.elem.data[this.elem.opIndex].des = des;
+								this.elem.data[this.elem.opIndex].uri = uri;
+								this.elem.data[this.elem.opIndex].cnt = cnt;
+								console.log("this.elem.data:", this.elem.data);
+							}
+						});
+					}
+				});
 				
 			},
 			
@@ -240,6 +353,29 @@
 				});
 				
 				console.log("result:", result);
+				eth.getAccounts((error, account)=>{
+					if(!error && account.length > 0){
+						router.methods.setBlinkBoxResult(Number(this.elem.id), result).send({from: account[0]}, (error, result)=>{
+							console.log("setBlinkBoxResult:", error, result);
+							if(!error){
+								this.elem.canMint = true;
+							}
+						});
+					}
+				});
+				
+			},
+			
+			clickBBMint:function(){
+				console.log("锻造");
+				eth.getAccounts((error, account)=>{
+					if(!error && account.length > 0){
+						router.methods.mintBlinkBox(this.elem.id).send({from: account[0]}, (error, result)=>{
+							console.log("mintBlinkBox:", error, result);
+						});
+					}
+				});
+				
 			}
 		}
 	}
@@ -286,9 +422,10 @@
 			margin: 20rpx 30rpx;
 		}
 		
-		.bbResult {
+		.bbResult, .bbMint {
 			margin-top: 50rpx;
 		}
+
 		
 		.clickAdd {
 			

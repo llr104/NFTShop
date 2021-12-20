@@ -68,10 +68,10 @@
 							let _uri = this.data.uri ? this.data.uri : uri
 							let _count = this.data.count ? this.data.count : count;
 							let _des = this.data.des ? this.data.des : des;
-							let _isGroup = true;
+							let _group = -1;
 							let _type = 1;
 							console.log(nft.mint);
-							nft.methods.mint(_to, _name, _uri, _des, _type, _count, _isGroup).send({from: _from}, (error, result)=>{
+							nft.methods.mint(_to, _name, _uri, _des, _type, _count, _group, 0).send({from: _from}, (error, result)=>{
 								console.log("mint error:", error);
 								console.log("mint result:", result);
 								if(!error){

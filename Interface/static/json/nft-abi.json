@@ -114,7 +114,7 @@
 			},
 			{
 				"indexed": false,
-				"internalType": "enum NFTMdata.OPType",
+				"internalType": "enum IEnumDef.OPType",
 				"name": "_op",
 				"type": "uint8"
 			}
@@ -316,7 +316,7 @@
 		"name": "cAttributes",
 		"outputs": [
 			{
-				"internalType": "enum NFTMdata.NFTType",
+				"internalType": "enum IEnumDef.NFTType",
 				"name": "nftType",
 				"type": "uint8"
 			},
@@ -606,6 +606,27 @@
 		"type": "function"
 	},
 	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "isBlindBox",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"constant": false,
 		"inputs": [
 			{
@@ -629,7 +650,7 @@
 				"type": "string"
 			},
 			{
-				"internalType": "enum NFTMdata.NFTType",
+				"internalType": "enum IEnumDef.NFTType",
 				"name": "_type",
 				"type": "uint8"
 			},
@@ -639,9 +660,14 @@
 				"type": "uint32"
 			},
 			{
-				"internalType": "bool",
-				"name": "_isGroup",
-				"type": "bool"
+				"internalType": "int256",
+				"name": "_groupId",
+				"type": "int256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_BBCfgId",
+				"type": "uint256"
 			}
 		],
 		"name": "mint",
@@ -663,21 +689,6 @@
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "openBlindBox",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
