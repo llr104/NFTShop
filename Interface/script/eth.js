@@ -30,9 +30,9 @@ console.log("Web3:", provider);
 // var tokenAddress = "0x66a5a5ec3453C56a15d4ff65e0FFF85ac3A4F321";
 // var routerAddress = "0xcf4402E11eaD7C287e9d3f3d67F2A34Fe7F028e3";
 
-var nftAddress = "0x2746865f2f3ef82668c016040909444dB26fA5AB";
+var nftAddress = "0x9a094e1d8A671F259fA6FFB942C7eF202C4FC18F";
 var tokenAddress = "0x29d957447c2a173ecda68801ba42b2957959a428";
-var routerAddress = "0x66fc36B67B46Ad87D959d7a9Dbd03BebBC634B12";
+var routerAddress = "0xf99aEABfAae8eb17f01FC5865c2f863B88A4D9d3";
 
 var scanUrl = "https://ropsten.etherscan.io"
 

@@ -173,12 +173,13 @@
 			idInput:function(id){
 		
 				if(id && Number(id)){
+					this.elem.data = this.elem.data.slice(0, 0);
 					router.methods.getBlinkBoxCfg(Number(id)).call((error, result)=>{
 						if(error || !result){
 							this.elem.hasBase = false;
+							
 						}else{
 							this.elem.hasBase = true;
-							
 							router.methods.getBlinkBoxEleLen(Number(id)).call((error, result)=>{
 								if(!error){
 									for (let i = 0; i < result; i++) {

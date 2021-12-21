@@ -44,6 +44,9 @@
 					<button type="default" v-else-if="buying"
 					class="buying" loading="true">购买中...</button>
 					
+					<button type="default" v-else-if="openbbing"
+					class="openbbing" loading="true">正在开盲盒...</button>
+					
 					<button type="default" v-else-if="!product.price && isSameAddress(myAddress, product.ownerAddress)"
 					class="upSale" @click="clickUpSale">立即挂售</button>
 					
@@ -53,6 +56,9 @@
 					<button type="default" v-else-if="product.price" class="buy" @click="clickBuy">立即购买</button>
 					
 					<button type="default" v-else-if="!product.price" class="SaleOut">已售罄</button>
+					
+					<button type="default" v-if="openbbing == false && product.nftType == 0 && !product.price 
+					&& isSameAddress(myAddress, product.ownerAddress)" class="open" @click="openBB">开盲盒</button>
 				</view>
 				<view class="space">
 				</view>
@@ -134,6 +140,7 @@
 				upSaling:false,
 				buying:false,
 				approving:false,
+				openbbing:false,
 				product:{},
 				txEvents:[],
 				samllTxEvents:[],
@@ -182,6 +189,9 @@
 						this.downSaling = false;
 					}else if(hashObj.op == storage.opType.Buying){
 						this.buying = false;
+					}else if(hashObj.op == storage.opType.Opening){
+						this.openbbing = false;
+						this.gotoMy();
 					}
 					
 					this.queryToken(id);
@@ -215,6 +225,8 @@
 										this.downSaling = true;
 									}else if(hashObj.op == storage.opType.Buying){
 										this.buying = true;
+									}else if(hashObj.op == storage.opType.Opening){
+										this.openbbing = true;
 									}
 								}
 							}
@@ -384,6 +396,35 @@
 					});
 				}); 
 			
+			},
+			
+			openBB:function(){
+				console.log("openBB");
+				uni.showModal({
+					content:"是否打开盲盒？",
+					 success: (res) =>{
+						this.openbbing = true;
+						if (res.confirm) {
+							router.methods.openBlinkBox(this.product.id).send({from: this.myAddress}).on('transactionHash', (hash)=>{
+								storage.setTransactionPennding(this.product.id, hash, storage.opType.Opening);
+							}).on('receipt', (receipt)=>{
+								this.openbbing = false;
+								this.gotoMy();
+							}).on('error', (error)=>{
+								this.openbbing = false;
+							});
+						}
+					}
+				});
+			},
+			
+			gotoMy(){
+				uni.navigateTo({
+					url:"../my/my",
+					complete:function(r){
+						console.log(r);
+					}
+				});
 			}
 			
 		}
@@ -545,7 +586,9 @@
 			}
 			
 			.upSale,
-			.upSaling{
+			.upSaling,
+			.open,
+			.openbbing{
 				width: 80%;
 				height: 80rpx;
 				background-color: #000000;

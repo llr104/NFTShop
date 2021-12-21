@@ -29,7 +29,8 @@ const storage = (function () {
 			ApprovingNFT:1,
 			UpSalling:2,
 			DownSaling:3,
-			Buying:4
+			Buying:4,
+			Opening:5,
 		}
 		
 		this.update = () =>{
