@@ -1,12 +1,8 @@
 pragma solidity ^0.5.0;
+import "./Const.sol";
 
-contract Ownable{
-    /**
-    * @dev Error constants.
-    */
-    string public constant NOT_CURRENT_OWNER = "018001";
-    string public constant CANNOT_TRANSFER_TO_ZERO_ADDRESS = "018002";
-    string public constant NOT_CURRENT_MANAGER = "018003";
+contract Ownable is Const{
+   
 
     address public owner;
     mapping(address=>bool) public Manager;

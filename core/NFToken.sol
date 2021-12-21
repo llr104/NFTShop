@@ -1,24 +1,14 @@
 pragma solidity ^0.5.0;
 import "./Library.sol";
 import "./IERC.sol";
+import "./Const.sol";
 
-
-contract NFToken is ERC721 {
+contract NFToken is ERC721, Const {
     
     using SafeMath for uint256;
     using AddressUtils for address;
 
-    string constant ZERO_ADDRESS = "003001";
-    string constant NOT_VALID_NFT = "003002";
-    string constant NOT_OWNER_OR_OPERATOR = "003003";
-    string constant NOT_OWNER_APPROWED_OR_OPERATOR = "003004";
-    string constant NOT_ABLE_TO_RECEIVE_NFT = "003005";
-    string constant NFT_ALREADY_EXISTS = "003006";
-    string constant NOT_OWNER = "003007";
-    string constant IS_OWNER = "003008";
-
     bytes4 internal constant MAGIC_ON_ERC721_RECEIVED = 0x150b7a02;
-
   
     mapping (uint256 => address) public idToOwner;
     mapping (address => mapping (address => bool)) internal ownerToOperators;

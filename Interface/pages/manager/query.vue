@@ -60,7 +60,7 @@
 					tokens.queryToken(this.data.tokenId, (error, token)=>{
 						if(error){
 							uni.showToast({
-								title:"查询错误",
+								title:"查询不到该NFT",
 								icon:"error"
 							});
 						}else{

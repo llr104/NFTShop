@@ -2,6 +2,7 @@ pragma solidity ^0.5.0;
 import "./NFToken.sol";
 import "./IEnumDef.sol";
 
+
 contract NFTMdata is NFToken, IEnumDef {
     
 
@@ -10,9 +11,6 @@ contract NFTMdata is NFToken, IEnumDef {
     string internal nftName;
     string internal nftSymbol;
 
-    string constant INVALID_INDEX = "005007";
-    string constant INVALID_BlindBox = "005008";
-    string constant INVALID_PAGE = "005009";
 
     uint256 constant NO_GROUP = 0;
     uint256 public groupId;

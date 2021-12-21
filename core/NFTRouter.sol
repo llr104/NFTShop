@@ -3,6 +3,7 @@ import "./IERC.sol";
 import "./Ownable.sol";
 import "./IEnumDef.sol";
 
+
 interface INFT{
         
     function getTokenPrice(uint256 _tokenId) external view  returns(uint256);
@@ -44,20 +45,6 @@ contract NFTRouter is Ownable {
     mapping(uint256=>uint32[]) private BBRES;
     mapping(uint256=>uint32) public BBRESIndex;
 
-    string constant NFT_NOT_ONSALE = "001001";
-    string constant NFT_INVALID = "001002";
-    string constant NFT_SAME_ADDRESS = "001003";
-    string constant BANLANCE_NOT_ENOUGH = "001004";
-    string constant NOT_VALID_BBCFG = "001005";
-    string constant NOT_VALID_BBCFG_ELE = "001006";
-    string constant NOT_VALID_BB_IS_MINT = "001007";
-    string constant NOT_OWNER = "01008";
-    string constant NOT_BLINDBOX = "01009";
-    string constant BB_ELEM_IS_EMPTY = "01010";
-    string constant BB_HAS_RES = "01011";
-    string constant BB_NO_RES = "01012";
-
-    
     modifier validBBCFG(uint32 _bbId){
         require(_bbId <= blinkboxId && _bbId > 0, NOT_VALID_BBCFG);
         _;
