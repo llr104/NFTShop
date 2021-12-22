@@ -24,8 +24,10 @@
 </template>
 
 <script>
-	import {provider} from '../../script/eth.js';
+	import { connectWallet } from '../../script/eth.js';
+	
 	var tokens = require('../../script/tokens.js');
+	let eth = tokens.getETH();
 	let router = tokens.getRouter();
 	
 	export default {
@@ -42,26 +44,29 @@
 		
 		created() {
 			console.log("created:", this.address);
-			this.connect();
-			ethereum.on("accountsChanged", (acounts)=> {
-				if(acounts.length>0){
-					this.address = acounts[0];
-					this.qryIsManager();
+			uni.$on("accountChanged", (acount)=> {
+				this.address = acount;
+				this.qryIsManager();
+			});
+			
+			eth.getAccounts((error, result) =>{
+				if (!error){
+					if(result.length>0){
+						this.address = result[0];
+					}
 				}
 			});
+			
+		},
+		
+		destroyed(){
+			uni.$off("accountChanged");
 		},
 		
 		methods:{
 			
 			connect(){
-				
-				provider.eth.getAccounts((error, result) =>{
-					if (!error){
-						if(result.length>0){
-							this.address = result[0];
-						}
-					}
-				});
+				connectWallet();
 			},
 			
 			onClickNavCtrl:function(){

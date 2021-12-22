@@ -76,13 +76,11 @@
 				}
 			});
 			
-			ethereum.on("accountsChanged", (acounts)=> {
-				if(acounts.length>0){
-					this.myAddress = acounts[0];
-				}
+			uni.$on("accountChanged", (acount)=> {
+				this.myAddress = acount;
 			});
 			
-			
+	
 			if(options.id){
 				let id = Number(options.id);
 				this.id = id;
@@ -103,6 +101,12 @@
 				this.queryToken(id);
 			}
 			
+		},
+		
+		
+		onUnload() {
+			uni.$off("accountChanged");
+			uni.$off("receiptHash");
 		},
 		
 		methods:{

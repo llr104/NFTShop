@@ -48,20 +48,21 @@
 				}
 			});
 			
-			ethereum.on("accountsChanged", (acounts)=> {
-				if(acounts.length>0){
-					this.address = acounts[0];
-				}
-				
-				if(this.$refs.pl1){
-					this.$refs.pl1.changeFilter(this.address);
-				}
-				if(this.$refs.pl2){
-					this.$refs.pl2.loadIds([]);
-					this.saleHistory();
-				}
-				
-			});
+			if(ethereum){
+				ethereum.on("accountsChanged", (acounts)=> {
+					if(acounts.length>0){
+						this.address = acounts[0];
+					}
+					
+					if(this.$refs.pl1){
+						this.$refs.pl1.changeFilter(this.address);
+					}
+					if(this.$refs.pl2){
+						this.$refs.pl2.loadIds([]);
+						this.saleHistory();
+					}
+				});
+			}
 			
 			tokens.ready(()=>{
 				this.tokenSymbol = tokens.getTokenSymbol(); 

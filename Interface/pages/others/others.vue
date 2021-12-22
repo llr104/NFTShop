@@ -48,10 +48,8 @@
 				}
 			});
 			
-			ethereum.on("accountsChanged", (acounts)=> {
-				if(acounts.length>0){
-					this.address = acounts[0];
-				}
+			uni.$on("accountChanged", (acount)=> {
+				this.address = acount;
 				
 				if(this.$refs.pl1){
 					this.$refs.pl1.changeFilter(this.address);
@@ -60,12 +58,16 @@
 					this.$refs.pl2.loadIds([]);
 					this.saleHistory();
 				}
-				
 			});
+			
 
 			tokens.ready(()=>{
 				this.tokenSymbol = tokens.getTokenSymbol(); 
 			})
+		},
+		
+		onUnload() {
+			uni.$off("accountChanged");
 		},
 		
 		onReachBottom() {

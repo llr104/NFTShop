@@ -47,6 +47,10 @@
 			});
 		},
 		
+		onUnload() {
+			uni.$off("receiptHash");
+		},
+		
 		methods:{
 			backToMy:function(){
 				uni.navigateTo({

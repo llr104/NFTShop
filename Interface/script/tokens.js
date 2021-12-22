@@ -12,9 +12,10 @@
 			
 			this.__init__ = ()=>{
 				
-				this.ETH = provider.eth;
-				this.NFT = new provider.eth.Contract(nftAbi, nftAddress);
-				this.Router = new provider.eth.Contract(routerAbi, routerAddress);
+				this.provider = provider();
+				this.ETH = this.provider.eth;
+				this.NFT = new this.ETH.Contract(nftAbi, nftAddress);
+				this.Router = new this.ETH.Contract(routerAbi, routerAddress);
 				this.isMainToken = true;
 				this.ready();
 			}
@@ -177,7 +178,7 @@
 			
 			this.buy = (id, from, price) =>{
 				if(this.isMainToken){
-					let BN = provider.utils.BN;
+					let BN = this.provider.utils.BN;
 					let v = new BN(Number(price)).toString();
 					console.log("v:", v, Number(price));
 					return this.Router.methods.buy(id).send({from: from, value: v});
@@ -188,7 +189,7 @@
 			
 			this.toTokenValue = (value) =>{
 				if(this.isMainToken){
-					return provider.utils.toWei(value+"", "ether");
+					return this.provider.utils.toWei(value+"", "ether");
 				}else{
 					return value*(10**this.TokenDecimals);
 				}
@@ -198,9 +199,9 @@
 				if(this.isMainToken){
 					let gwei = 1000000000;
 					let g = Number(value)/gwei;
-					let BN = provider.utils.BN;
+					let BN = this.provider.utils.BN;
 					let v = new BN(g).toString()+"000000000";
-					return provider.utils.fromWei(v, "ether");
+					return this.provider.utils.fromWei(v, "ether");
 				}else{
 					return value/(10**this.TokenDecimals);
 				}
@@ -220,7 +221,7 @@
 						
 						let is = isSameAddress(tokenAddress, "0x0000000000000000000000000000000000000000");
 						if(!is){
-							this.Token = new provider.eth.Contract(tokenAbi, tokenAddress);
+							this.Token = new this.ETH.Contract(tokenAbi, tokenAddress);
 							this.isMainToken = false;
 							if(!this.TokenDecimals){
 								this.Token.methods.decimals().call((error, result)=>{
