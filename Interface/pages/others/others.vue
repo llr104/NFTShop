@@ -63,7 +63,9 @@
 				
 			});
 
-			this.tokenSymbol = tokens.getTokenSymbol(); 
+			tokens.ready(()=>{
+				this.tokenSymbol = tokens.getTokenSymbol(); 
+			})
 		},
 		
 		onReachBottom() {

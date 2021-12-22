@@ -24,7 +24,11 @@
 		},
 
 		onLoad(){
-			this.tokenSymbol = tokens.getTokenSymbol(); 
+			console.log("onLoad");
+			tokens.ready(()=>{
+				this.tokenSymbol = tokens.getTokenSymbol(); 
+			});
+			
 		},
 		
 		onReachBottom() {

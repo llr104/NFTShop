@@ -74,15 +74,12 @@
 		
 		onLoad() {
 			console.log("onLoad");
-			this.load();
+			tokens.ready(()=>{
+				this.tokenSymbol = tokens.getTokenSymbol(); 
+			});
 		},
 		
 		methods: {
-			
-			load:function(){
-				tokens.queryNFTPage(1, 20, "0x0000000000000000000000000000000000000000");
-				this.tokenSymbol = tokens.getTokenSymbol(); 
-			},
 			
 			clickAd:function(){
 				uni.showToast({
