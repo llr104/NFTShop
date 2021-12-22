@@ -7,23 +7,23 @@
 		
 		<view class="gs">
 			<uni-forms-item required name="tokenId" label="tokenId">
-				<uni-easyinput type="number" v-model="data.tokenId" @input="gsTokenIdInput" placeholder="请输入tokenId" />
+				<uni-easyinput type="number" v-model="tokenId" @input="gsTokenIdInput" placeholder="请输入tokenId" />
 			</uni-forms-item>
 			<uni-forms-item required name="price" label="价格">
-				<uni-easyinput type="number" v-model="data.price" placeholder="请输入挂售金额,金额为0即为取消挂售" />
+				<uni-easyinput type="number" v-model="price" placeholder="请输入挂售金额,金额为0即为取消挂售" />
 			</uni-forms-item>
 			
-			<uni-forms-item label="授权" name="approve" v-if="data.isApprove==false && data.tokenId">
+			<uni-forms-item label="授权" name="approve" v-if="isApprove==false && tokenId && approving==false">
 				<button type="default" class="approve" @click="clickApprove">授权NFT挂售到平台</button>
 			</uni-forms-item>
 			
-			<uni-forms-item label="授权" name="approving" v-if="data.isApprove==false && data.tokenId && data.approving">
+			<uni-forms-item label="授权" name="approving" v-if="isApprove==false && tokenId && approving">
 				<button type="default" class="approving" loading="true"
 				disabled="true">授权NFT中...</button>
 			</uni-forms-item>
 			
-			<button v-if="data.saling" loading="true">修改上链中...</button>
-			<button @click="cllickGS" v-else-if="data.isApprove && data.tokenId && data.approving==false">提交</button>
+			<button v-if="saling" loading="true">修改上链中...</button>
+			<button @click="cllickGS" v-else-if="isApprove && tokenId && approving==false">提交</button>
 		</view>
 		
 	</view>
@@ -32,8 +32,7 @@
 <script>
 	
 	import navigation from "../../components/navigation/navigation.vue";
-	import {toTokenValue} from "../../lib/utils.js";
-	
+	var storage = require("../../script/storage.js");
 	var tokens = require('../../script/tokens.js');
 	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
@@ -41,43 +40,78 @@
 	export default {
 		data() {
 			return {
-				data: {
-					tokenId:"",
-					price:0,
-					approving:false,
-					isApprove:true,
-					saling:false,
-				}
+				tokenId:0,
+				price:0,
+				approving:false,
+				isApprove:true,
+				saling:false,
 			};
 		},
 		
 		methods:{
 			gsTokenIdInput:function(text){
-				this.data.approving = false;
+				this.approving = false;
 				if(Number(text)){
-					this.checkApprove();
+					setTimeout(()=>{
+						this.checkApprove();
+					}, 10);
 				}
 			},
 			
 			checkApprove:function(){
-				
-				eth.getAccounts((error, result)=>{
+			
+				tokens.isApproveNFT(Number(this.tokenId), (error, r)=>{
 					if(!error){
-						tokens.isApproveNFT(this.data.tokenId, (error, r)=>{
-							if(!error){
-								this.data.isApprove = r;
-							}else{
-								this.data.isApprove = true;
-							}
-						});
+						this.isApprove = r;
+					}else{
+						this.isApprove = true;
 					}
 				});
 			},
 			
-			cllickGS:function(){
-				console.log("cllickGS:", this.data);
+			
+			clickApprove:function(){
+				console.log("clickApprove");
 				
-				if(this.data.tokenId){
+				eth.getAccounts((error, result)=>{
+					if(!error && result.length != 0){
+						this.approving = true;
+						
+						tokens.approveNFT(result[0], this.tokenId).on('transactionHash', (hash)=>{
+							storage.setTransactionPennding(this.tokenId, hash, storage.opType.ApprovingNFT);
+						}).on('receipt', (receipt)=>{
+							console.log("receipt:", receipt);
+							if(receipt.status){
+								this.isApprove = true;
+								uni.showToast({
+									title:"授权成功"
+								});
+							}else{
+								this.isApprove = false;
+								uni.showToast({
+									title:"授权失败",
+									icon:"error"
+								});
+								
+							}
+							this.approving = false;
+							
+						}).on('error', (error)=>{
+							this.approving = false;
+							this.isApprove = false;
+							uni.showToast({
+								title:"授权失败",
+								icon:"error"
+							});
+						}); 
+					}
+				});
+				
+			},
+			
+			cllickGS:function(){
+			
+				if(this.tokenId){
 					tokens.ready(()=>{
 						this.tokenSymbol = tokens.getTokenSymbol();
 						this.tokenDecimals = tokens.getTokenDecimals();
@@ -87,16 +121,24 @@
 							}
 							
 							let _from = result[0];
-							let tokenId = Number(this.data.tokenId);
-							if(this.data.price){
-								let price = Number(this.data.price);
-								price = toTokenValue(price, this.tokenDecimals);
+							let tokenId = Number(this.tokenId);
+							if(this.price){
+								let price = Number(this.price);
+								price = tokens.toTokenValue(price);
 								nft.methods.setTokenPrice(tokenId, price).send({from: _from}).on('transactionHash', (hash)=>{
 									this.saling = true;
 								}).on('receipt', (receipt)=>{
 									this.saling = false;
+									uni.showToast({
+										title:"上架成功",
+										icon:"success"
+									});
 								}).on('error', (error)=>{
 									this.saling = false;
+									uni.showToast({
+										title:"上架失败",
+										icon:"error"
+									});
 								}); 
 							}
 						});

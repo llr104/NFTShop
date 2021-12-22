@@ -16,9 +16,6 @@ const storage = (function () {
 				    this.tokenIdToHash = tokenIdToHash;
 				}
 				
-				console.log("hashToTokenId:", hashToTokenId);
-				console.log("tokenIdToHash:", tokenIdToHash);
-				
 			} catch (e) {
 			    console.log("load:", e);
 			}

@@ -18,7 +18,8 @@
 					<uni-easyinput type="text" v-model="base.uri" placeholder="请输入盲盒 URI" />
 				</uni-forms-item>
 			</uni-forms>
-			<button class="basebtn" @click="cllickBase">提交基础配置</button>
+			<button class="basebtn" v-if="baseloading==false" @click="cllickBase">提交基础配置</button>
+			<button class="baseloading" loading="true" v-if="baseloading">提交基础配置中...</button>
 		</view>
 		
 		<view v-if="current==1" class="elem">
@@ -117,6 +118,8 @@
 		
 		data() {
 			return {
+				baseloading:false,
+				
 				base:{
 					name:"盲盒1",
 					des:"这是盲盒1",
@@ -161,13 +164,17 @@
 					return;
 				}
 				
+				this.baseloading = true;
 				eth.getAccounts((error, result)=>{
 					if(!error && result.length > 0){
-						// console.log("result[0]:", result[0]);
-						router.methods.makeBlinkBoxCfg(this.base.name, this.base.des, this.base.uri).send({from: result[0]});
+						router.methods.makeBlinkBoxCfg(this.base.name, this.base.des, this.base.uri).send({from: result[0]}).on('transactionHash', (hash)=>{
+					}).on('receipt', (receipt)=>{
+						this.baseloading = false;
+					}).on('error', (error)=>{
+						this.baseloading = false;
+					});
 					}
 				});
-				
 			},
 			
 			idInput:function(id){
@@ -237,7 +244,6 @@
 				this.elem.modify.cnt = elem.cnt;
 				this.$refs.popupmod.open("bottom");
 				
-				console.log("clickModify:", index, this.elem.modify, elem);
 			},
 			
 			clickDel:function(index){

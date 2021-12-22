@@ -13,7 +13,7 @@
 						<uni-list-item title="Home" note="" clickable @click="gotoPage('/pages/index/index')"></uni-list-item>
 						<uni-list-item title="Market" note="" clickable @click="gotoPage('/pages/market/market')"></uni-list-item>
 						<uni-list-item title="My" note="" clickable @click="gotoPage('/pages/my/my')"></uni-list-item>
-						<uni-list-item title="Manager" note="" clickable @click="gotoPage('/pages/manager/manager')"></uni-list-item>
+						<uni-list-item v-if="isManager" title="Manager" note="" clickable @click="gotoPage('/pages/manager/manager')"></uni-list-item>
 					</uni-list>
 				</scroll-view>
 			</uni-drawer>
@@ -25,7 +25,9 @@
 
 <script>
 	import {provider} from '../../script/eth.js';
-
+	var tokens = require('../../script/tokens.js');
+	let router = tokens.getRouter();
+	
 	export default {
 		name:"navigation",
 		emits: ['clickWallet'],
@@ -34,6 +36,7 @@
 		data() {
 			return {
 				address:"",
+				isManager:false,
 			}
 		},
 		
@@ -43,6 +46,7 @@
 			ethereum.on("accountsChanged", (acounts)=> {
 				if(acounts.length>0){
 					this.address = acounts[0];
+					this.qryIsManager();
 				}
 			});
 		},
@@ -53,7 +57,6 @@
 				
 				provider.eth.getAccounts((error, result) =>{
 					if (!error){
-						console.log(result)//授权成功后result能正常获取到账号了
 						if(result.length>0){
 							this.address = result[0];
 						}
@@ -81,6 +84,8 @@
 			
 			showDrawer() {
 			    this.$refs.showRight.open();
+				this.qryIsManager();
+				
 			},
 			
 			closeDrawer() {
@@ -97,6 +102,16 @@
 					}
 				})
 			},
+			
+			qryIsManager(){
+				router.methods.Manager(this.address).call((error, result)=>{
+					if(error){
+						this.isManager = false;
+					}else{
+						this.isManager = result;
+					}
+				});
+			}
 		}
 		
 	}

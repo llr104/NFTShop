@@ -1,5 +1,5 @@
-	import {provider, nftAddress, routerAddress, tokenAddress} from './eth.js';
-	import {fromTokenValue} from '../lib/utils.js';
+	import {provider, nftAddress, routerAddress, mainToken} from './eth.js';
+	import {isSameAddress} from '../lib/utils.js';
 	
 	var nftAbi = require('@/static/json/nft-abi.json');
 	var routerAbi = require('@/static/json/router-abi.json');
@@ -15,7 +15,7 @@
 				this.ETH = provider.eth;
 				this.NFT = new provider.eth.Contract(nftAbi, nftAddress);
 				this.Router = new provider.eth.Contract(routerAbi, routerAddress);
-				this.Token = new provider.eth.Contract(tokenAbi, tokenAddress);
+				this.isMainToken = true;
 				this.ready();
 			}
 			
@@ -89,7 +89,8 @@
 								token.groupId = Number(result.groupId)
 								token.nftType = Number(result.nftType);
 								token.price = Number(result.price);
-								token.showPrice = fromTokenValue(result.price, this.TokenDecimals);
+								token.showPrice = this.fromTokenValue(result.price);
+								
 								token.uri = result.uri;
 								token.name = result.name;
 								token.ownerAddress = ownerAddress;
@@ -134,16 +135,26 @@
 				return this.TokenDecimals;
 			}
 			
+
 			this.approveToken = (from, value)=>{
-				return this.Token.methods.approve(routerAddress, value).send({from:from});
+				if(!this.isMainToken){
+					return this.Token.methods.approve(routerAddress, value).send({from:from});
+				}
 			}
 			
 			this.isApproveToken = (from, cb)=>{
-				this.Token.methods.allowance(from, routerAddress).call((error, result)=>{
+				if(this.isMainToken){
 					if(cb){
-						cb(error, Number(result));
+						cb(null, Number.MAX_VALUE);
 					}
-				})
+				}else{
+					this.Token.methods.allowance(from, routerAddress).call((error, result)=>{
+						if(cb){
+							cb(error, Number(result));
+						}
+					});
+				}
+				
 			}
 			
 			this.approveNFT = (from, id)=>{
@@ -164,53 +175,103 @@
 				})
 			}
 			
+			this.buy = (id, from, price) =>{
+				if(this.isMainToken){
+					let BN = provider.utils.BN;
+					let v = new BN(Number(price)).toString();
+					console.log("v:", v, Number(price));
+					return this.Router.methods.buy(id).send({from: from, value: v});
+				}else{
+					return this.Router.methods.buy(id).send({from: from});
+				}
+			}
+			
+			this.toTokenValue = (value) =>{
+				if(this.isMainToken){
+					return provider.utils.toWei(value+"", "ether");
+				}else{
+					return value*(10**this.TokenDecimals);
+				}
+			}
+			
+			this.fromTokenValue = (value) =>{
+				if(this.isMainToken){
+					let gwei = 1000000000;
+					let g = Number(value)/gwei;
+					let BN = provider.utils.BN;
+					let v = new BN(g).toString()+"000000000";
+					return provider.utils.fromWei(v, "ether");
+				}else{
+					return value/(10**this.TokenDecimals);
+				}
+			}
+			
 			this.ready = (cb)=>{
-				if(this.TokenDecimals && this.TokenSymbol){
+				if(this.TokenDecimals != null && this.TokenSymbol != null){
 					if(cb){
 						cb(true);
 					}
 					return;
 				}
 				
-				if(!this.TokenDecimals){
-					this.Token.methods.decimals().call((error, result)=>{
-						if(!error){
-							console.log("decimals:", result);
-							this.TokenDecimals = Number(result);
-						}
+				console.log("this.Router.methods:", this.Router.methods);
+				this.Router.methods.brokerAddress().call((error, tokenAddress)=>{
+					if(!error){
 						
-						if(cb){
-							if(error){
-								cb(false);
-								return
+						let is = isSameAddress(tokenAddress, "0x0000000000000000000000000000000000000000");
+						if(!is){
+							this.Token = new provider.eth.Contract(tokenAbi, tokenAddress);
+							this.isMainToken = false;
+							if(!this.TokenDecimals){
+								this.Token.methods.decimals().call((error, result)=>{
+									if(!error){
+										console.log("decimals:", result);
+										this.TokenDecimals = Number(result);
+									}
+									
+									if(cb){
+										if(error){
+											cb(false);
+											return
+										}
+										
+										if(this.TokenSymbol){
+											cb(true);
+										}
+									}
+								});
 							}
 							
-							if(this.TokenSymbol){
+							if(!this.TokenSymbol){
+								this.Token.methods.symbol().call((error, result)=>{
+									if(!error){
+										console.log("symbol:", result);
+										this.TokenSymbol = result;
+									}
+									
+									if(cb){
+										if(error){
+											cb(false);
+											return
+										}
+										
+										if(this.TokenDecimals){
+											cb(true);
+										}
+									}
+								});
+							}
+						}else{
+							this.isMainToken = true;
+							this.TokenDecimals = 0;
+							this.TokenSymbol = mainToken;
+							if(cb){
 								cb(true);
 							}
 						}
-					});
-				}
+					}
+				});
 				
-				if(!this.TokenSymbol){
-					this.Token.methods.symbol().call((error, result)=>{
-						if(!error){
-							console.log("symbol:", result);
-							this.TokenSymbol = result;
-						}
-						
-						if(cb){
-							if(error){
-								cb(false);
-								return
-							}
-							
-							if(this.TokenDecimals){
-								cb(true);
-							}
-						}
-					});
-				}
 			}
 		}
 		

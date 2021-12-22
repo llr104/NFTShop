@@ -21,7 +21,7 @@ interface INFT{
 
 
 contract NFTRouter is Ownable {
-    address public brokerAddress;
+    address public brokerAddress; //when zero address, use main chain token
     address public nftAddress;
     uint256 public blinkboxId;
     
@@ -71,8 +71,7 @@ contract NFTRouter is Ownable {
     }
 
 
-    constructor(address _brokerAddress, address _nftAddress) public{
-        brokerAddress = _brokerAddress;
+    constructor(address _nftAddress) public{
         nftAddress = _nftAddress;
     }
 
@@ -84,9 +83,9 @@ contract NFTRouter is Ownable {
         nftAddress = _nftAddress;
     }
 
-    function buy(uint256 _tokenId) public returns(uint256, uint256) {
+    function buy(uint256 _tokenId) public payable {
    
-        address _to = ERC721(nftAddress).ownerOf(_tokenId);
+        address  _to = ERC721(nftAddress).ownerOf(_tokenId);
         require(_to != address(0), NFT_INVALID);
 
         address _from = msg.sender;
@@ -94,15 +93,20 @@ contract NFTRouter is Ownable {
 
         uint256 price = INFT(nftAddress).getTokenPrice(_tokenId);
         require(price != 0, NFT_NOT_ONSALE);
-
-        uint256 b = IERC20(brokerAddress).balanceOf(_from);
-        require(b >= price, BANLANCE_NOT_ENOUGH);
-
-        IERC20(brokerAddress).transferFrom(_from, _to, price);
-        INFT(nftAddress).sale(_from, _tokenId);
-        
-        return (b, price);
-
+      
+        if(brokerAddress == address(0)){
+            uint256 b = _from.balance;
+            require(b >= price, BANLANCE_NOT_ENOUGH);
+            address payable to = address(uint256(_to));
+            to.transfer(price);
+        }else{
+            uint256 b = IERC20(brokerAddress).balanceOf(_from);
+            require(b >= price, BANLANCE_NOT_ENOUGH);
+            IERC20(brokerAddress).transferFrom(_from, _to, price);
+        }
+       
+        INFT(nftAddress).sale(_from, _tokenId); 
+    
     }
 
     function mintBlinkBox(uint32 _bbId) public onlyManager validBBCFG(_bbId) BBIsNotMint(_bbId) BBElemIsEmpty(_bbId) HasRES(_bbId){

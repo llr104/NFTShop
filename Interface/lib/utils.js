@@ -5,19 +5,6 @@ function addressShow(address){
 	return b + "****" + a;
 }
 
-function toTokenValue(value, decimals){
-	if(!decimals || decimals < 0){
-		return value;
-	}
-	return value*(10**decimals);
-}
-
-function fromTokenValue(value, decimals){
-	if(!decimals || decimals < 0){
-		return value;
-	}
-	return value/(10**decimals);
-}
 
 function isSameAddress(addr1, addr2){
 	if(!addr1 || !addr2){
@@ -99,8 +86,6 @@ function copy(text, cb){
 module.exports = {
 	"addressShow": addressShow,
 	"copy": copy,
-	"toTokenValue": toTokenValue,
-	"fromTokenValue": fromTokenValue,
 	"isSameAddress": isSameAddress,
 	
 };

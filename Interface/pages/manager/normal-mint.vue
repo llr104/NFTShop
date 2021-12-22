@@ -39,9 +39,9 @@
 		data() {
 			return {
 				data:{
-					name:"",
-					des:"",
-					uri:"",
+					name:"生肖头像",
+					des:"漂亮的NFT",
+					uri:"https://www.ibox.fan/file/oss/nft/image/nft-goods/821aecc4c6eb4327be81fdea9fabbc98.png?style=st6",
 					count:0
 				}
 			};
@@ -58,10 +58,6 @@
 						
 						if(!error && result.length != 0){
 							
-							let name = "生肖头像";
-							let des = "漂亮的NFT";
-							let count = 1;
-							let uri ="https://www.ibox.fan/file/oss/nft/image/nft-goods/821aecc4c6eb4327be81fdea9fabbc98.png?style=st6";
 							let _to = result[0];
 							let _from = result[0];
 							let _name = this.data.name ? this.data.name : name;
@@ -70,10 +66,9 @@
 							let _des = this.data.des ? this.data.des : des;
 							let _group = -1;
 							let _type = 1;
-							console.log(nft.mint);
+			
 							nft.methods.mint(_to, _name, _uri, _des, _type, _count, _group, 0).send({from: _from}, (error, result)=>{
-								console.log("mint error:", error);
-								console.log("mint result:", result);
+								
 								if(!error){
 									uni.showToast({
 										title:"锻造成功"

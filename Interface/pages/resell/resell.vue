@@ -38,7 +38,7 @@
 </template>
 
 <script>
-	import {addressShow, toTokenValue} from "../../lib/utils.js";
+	import {addressShow} from "../../lib/utils.js";
 	import navigation from "../../components/navigation/navigation.vue";
 
 	
@@ -219,7 +219,7 @@
 					return
 				}
 				
-				let toPrice = toTokenValue(price, this.tokenDecimals);
+				let toPrice = tokens.toTokenValue(price);
 				nft.methods.setTokenPrice(tokenId, toPrice).send({from: this.myAddress}).on('transactionHash', (hash)=>{
 					uni.navigateTo({
 						url:"../resell-result/resell-result?id=" + this.product.id+"&hash=" + hash,

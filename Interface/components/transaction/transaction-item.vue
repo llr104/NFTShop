@@ -21,7 +21,7 @@
 </template>
 
 <script>
-	import {addressShow, fromTokenValue} from "../../lib/utils.js";
+	import {addressShow} from "../../lib/utils.js";
 	var tokens = require('../../script/tokens.js');
 	var eth = tokens.getETH();
 	
@@ -75,7 +75,7 @@
 		
 		created() {
 			this.addressShow = addressShow;
-			this.fromTokenValue = fromTokenValue;
+			this.fromTokenValue = tokens.fromTokenValue;
 			
 			console.log("blockNumber :", this.blockNumber);
 			if(this.blockNumber ){
@@ -89,7 +89,7 @@
 		
 		updated() {
 			console.log("updated");
-			this.showPrice = fromTokenValue(this.price, tokens.getTokenDecimals());
+			this.showPrice = tokens.fromTokenValue(this.price);
 		},
 		
 		data() {

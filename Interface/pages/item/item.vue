@@ -87,7 +87,7 @@
 							<text>链上标识:{{product.id}}</text>
 						</view>
 						<view class="l2">
-							<text>价格:{{product.showPrice}}</text>
+							<text>价格:{{product.showPrice}}&nbsp;{{tokenSymbol}}</text>
 						</view>
 					</view>
 					
@@ -110,7 +110,7 @@
 </template>
 
 <script>
-	import {addressShow, copy, toTokenValue, isSameAddress} from "../../lib/utils.js";
+	import {addressShow, copy, isSameAddress} from "../../lib/utils.js";
 	import navigation from "../../components/navigation/navigation.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
@@ -156,7 +156,7 @@
 		onLoad(options) {
 
 			this.addressShow = addressShow;
-			this.toTokenValue = toTokenValue;
+			this.toTokenValue = tokens.toTokenValue;
 			this.isSameAddress = isSameAddress;
 			
 			eth.getAccounts((error, result)=>{
@@ -241,17 +241,20 @@
 						filter:{
 							_tokenId:id+""
 						},
-					    fromBlock: 10939147,
-					    toBlock: 10939999
+					    fromBlock: 11085000,
+					    toBlock: 11089000
 					  },(error, events)=>{
 						
 						if(!error){
-							this.txEvents = events.reverse();
-							if(this.txEvents.length>=4){
-								this.samllTxEvents = this.txEvents.slice(-4, -1);
+							this.txEvents = events;
+							
+							if(this.txEvents.length>=3){
+								this.samllTxEvents = this.txEvents.slice(-3);
 							}else{
 								this.samllTxEvents = this.txEvents;
 							}
+							this.txEvents = this.txEvents.reverse();
+							this.samllTxEvents = this.samllTxEvents.reverse();
 							
 							console.log("this.samllTxEvents:", this.samllTxEvents);
 							if(this.$refs.txlist1){
@@ -366,7 +369,6 @@
 				this.approving = true;
 				let price = this.product.price;
 				tokens.approveToken(this.myAddress, price).on('transactionHash', (hash)=>{
-					console.log("clickApprove:", hash);
 					storage.setTransactionPennding(this.product.id, hash, storage.opType.ApprovingToken);
 				}).on('receipt', (receipt)=>{
 					this.approving = false;
@@ -378,8 +380,9 @@
 			
 			clickPay:function(){
 				this.$refs.buy_confirm.close();
-				console.log("clickPay", this.product.id, this.myAddress);
-				router.methods.buy(this.product.id).send({from: this.myAddress}).on('transactionHash', (hash)=>{
+				console.log("clickPay", this.product.id, this.myAddress, this.product.price);
+				
+				tokens.buy(this.product.id, this.myAddress, this.product.price).on('transactionHash', (hash)=>{
 					this.buying = true;
 					uni.navigateTo({
 						url:"../buy-result/buy-result?id=" + this.product.id + "&hash=" + hash,
