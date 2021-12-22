@@ -197,10 +197,17 @@
 			
 			this.fromTokenValue = (value) =>{
 				if(this.isMainToken){
-					let gwei = 1000000000;
-					let g = Number(value)/gwei;
+					
+					let v = "";
 					let BN = this.provider.utils.BN;
-					let v = new BN(g).toString()+"000000000";
+					try{
+						v = new BN(value).toString();
+					}catch(err){
+						let gwei = 1000000000;
+						let g = Number(value)/gwei;
+						v = new BN(g).toString()+"000000000";
+					}
+					
 					return this.provider.utils.fromWei(v, "ether");
 				}else{
 					return value/(10**this.TokenDecimals);
