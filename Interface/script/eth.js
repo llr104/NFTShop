@@ -5,6 +5,7 @@ var scanUrl = "https://ropsten.etherscan.io";
 var mainToken = "ETH"
 var supportNetwork = [3, 128, 256];
 
+
 async function asyncFun() {
 	try {
 		await window.ethereum.enable();

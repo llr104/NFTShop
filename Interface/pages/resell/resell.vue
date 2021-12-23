@@ -144,7 +144,7 @@
 			
 			checkApprove:function(){
 				if(this.myAddress && this.isFound){
-					tokens.isApproveNFT( this.product.id, (error, r)=>{
+					tokens.isApprovedAllNFT(this.myAddress, (error, r)=>{
 						if(!error){
 							this.isApprove = r;
 						}else{
@@ -157,7 +157,7 @@
 			clickApprove:function(){
 				console.log("clickApprove");
 				this.approving = true;
-				tokens.approveNFT(this.myAddress, this.product.id).on('transactionHash', (hash)=>{
+				tokens.setApprovalForAll(this.myAddress).on('transactionHash', (hash)=>{
 					storage.setTransactionPennding(this.product.id, hash, storage.opType.ApprovingNFT);
 				}).on('receipt', (receipt)=>{
 					if(receipt.status){

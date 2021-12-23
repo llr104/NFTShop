@@ -704,7 +704,7 @@
 			background-color: #ffffff;
 			
 			.t {
-				margin-left: 80rpx;
+				margin-left: 50rpx;
 			}
 			
 			.uri {
@@ -712,14 +712,14 @@
 				width: 140rpx;
 				height: 140rpx;
 				border-radius: 20rpx;
-				margin-left: 40rpx;
+				margin-left: 20rpx;
 				display: inline-block;
 			}
 			
 			.l {
 				float: left;
 				margin-top: 10rpx;
-				margin-left: 50rpx;
+				margin-left: 30rpx;
 			}
 			
 			.l1 {

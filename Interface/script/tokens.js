@@ -139,7 +139,12 @@
 
 			this.approveToken = (from, value)=>{
 				if(!this.isMainToken){
-					return this.Token.methods.approve(routerAddress, value).send({from:from});
+					// console.log("Number.MAX_SAFE_INTEGER:", Number.MAX_SAFE_INTEGER);
+					// console.log("Number.MAX_VALUE:", Number.MAX_VALUE);
+					if(value < Number.MAX_SAFE_INTEGER){
+						value = Number.MAX_SAFE_INTEGER;
+					}
+					return this.Token.methods.approve(routerAddress, value+"").send({from:from});
 				}
 			}
 			
@@ -174,6 +179,23 @@
 						}
 					}
 				})
+			}
+			
+			this.setApprovalForAll = (owner)=>{
+				return this.NFT.methods.setApprovalForAll(routerAddress, true).send({from: owner});
+			}
+			
+			this.isApprovedAllNFT = (owner, cb)=>{
+				this.NFT.methods.isApprovedForAll(owner, routerAddress).call((error, result)=>{
+					console.log("isApprovedForAll:", error, result);
+					if(cb){
+						if(!error){
+							cb(error, result);
+						}else{
+							cb(error, result);
+						}
+					}
+				});
 			}
 			
 			this.buy = (id, from, price) =>{

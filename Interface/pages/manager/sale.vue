@@ -59,12 +59,15 @@
 			},
 			
 			checkApprove:function(){
-			
-				tokens.isApproveNFT(Number(this.tokenId), (error, r)=>{
-					if(!error){
-						this.isApprove = r;
-					}else{
-						this.isApprove = true;
+				eth.getAccounts((error, result)=>{
+					if(!error && result.length != 0){
+						tokens.isApprovedAllNFT(result[0], (error, r)=>{
+							if(!error){
+								this.isApprove = r;
+							}else{
+								this.isApprove = true;
+							}
+						});
 					}
 				});
 			},
@@ -77,7 +80,7 @@
 					if(!error && result.length != 0){
 						this.approving = true;
 						
-						tokens.approveNFT(result[0], this.tokenId).on('transactionHash', (hash)=>{
+						tokens.setApprovalForAll(result[0]).on('transactionHash', (hash)=>{
 							storage.setTransactionPennding(this.tokenId, hash, storage.opType.ApprovingNFT);
 						}).on('receipt', (receipt)=>{
 							console.log("receipt:", receipt);
