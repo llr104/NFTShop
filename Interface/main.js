@@ -2,7 +2,7 @@
 // #ifndef VUE3
 import Vue from 'vue'
 import App from './App'
-require("./script/init.js");
+
 
 Vue.config.productionTip = false
 
@@ -13,6 +13,7 @@ const app = new Vue({
 })
 app.$mount()
 // #endif
+require("./script/init.js");
 
 // #ifdef VUE3
 import { createSSRApp } from 'vue'

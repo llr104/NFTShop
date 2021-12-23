@@ -1,5 +1,9 @@
 var Web3 = require('./web3.min.js');
-
+var nftAddress = "0xf9a1c4B155Cf13CA0DBC362a7D4BbD456a853002";
+var routerAddress = "0xC31F86E81E0f55D4A5EB462fC8E6E65b593F7eB8";
+var scanUrl = "https://ropsten.etherscan.io";
+var mainToken = "ETH"
+var supportNetwork = [3, 128, 256];
 
 async function asyncFun() {
 	try {
@@ -13,11 +17,35 @@ async function asyncFun() {
 function connectWallet(isFirst=false){
 	
 	if (window.ethereum) {
+		ethereum.autoRefreshOnNetworkChange = false;
 		window.ethereum.on("accountsChanged", (acounts)=> {
 			if(acounts.length>0){
 				uni.$emit("accountChanged", acounts[0]);
 			}
 		});
+		
+		window.ethereum.on("networkChanged", (nId)=>{
+			console.log("nId:", nId, supportNetwork.indexOf(Number(nId))>=0);
+			uni.showModal({
+				title:"错误",
+				content:"不支持该链，请选择正确的链",
+				showCancel:false,
+			}); 
+			
+		});
+		
+		let isSupport = supportNetwork.indexOf(Number(ethereum.networkVersion)) >= 0;
+		console.log("isSupport:", isSupport);
+		if(!isSupport){
+			
+			uni.showModal({
+				title:"错误",
+				content:"不支持该链，请选择正确的链",
+				showCancel:false,
+			}); 
+		}
+		
+		
 		asyncFun();
 	}else{
 		console.log("没有钱包插件");
@@ -59,10 +87,7 @@ function provider(){
 }
 
 connectWallet(true);
-var nftAddress = "0xf9a1c4B155Cf13CA0DBC362a7D4BbD456a853002";
-var routerAddress = "0xC31F86E81E0f55D4A5EB462fC8E6E65b593F7eB8";
-var scanUrl = "https://ropsten.etherscan.io";
-var mainToken = "ETH"
+
 
 module.exports = {
 	"provider": provider,
