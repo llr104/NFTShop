@@ -177,12 +177,10 @@
 	
 	.one-des {
 		
-		width: 92%;
 		height: 300rpx;
 		border-radius: 30rpx;
 		background-color: #FFFFFF;
-		margin: 0 auto;
-		margin-bottom: 20rpx;
+		margin: 20rpx;
 		
 		.left {
 			
