@@ -17,7 +17,8 @@ async function asyncFun() {
 function connectWallet(isFirst=false){
 	
 	if (window.ethereum) {
-		ethereum.autoRefreshOnNetworkChange = false;
+		asyncFun();
+		
 		window.ethereum.on("accountsChanged", (acounts)=> {
 			if(acounts.length>0){
 				uni.$emit("accountChanged", acounts[0]);
@@ -34,19 +35,21 @@ function connectWallet(isFirst=false){
 			
 		});
 		
-		let isSupport = supportNetwork.indexOf(Number(ethereum.networkVersion)) >= 0;
-		console.log("isSupport:", isSupport);
-		if(!isSupport){
-			
-			uni.showModal({
-				title:"错误",
-				content:"不支持该链，请选择正确的链",
-				showCancel:false,
-			}); 
-		}
+		setTimeout(()=>{
+			let isSupport = supportNetwork.indexOf(Number(ethereum.networkVersion)) >= 0;
+			console.log("isSupport:", isSupport, ethereum.networkVersion);
+			if(!isSupport){
+				
+				uni.showModal({
+					title:"错误",
+					content:"不支持该链，请选择正确的链",
+					showCancel:false,
+				}); 
+			}
+		}, 1000);
 		
 		
-		asyncFun();
+		
 	}else{
 		console.log("没有钱包插件");
 		if(!isFirst){
