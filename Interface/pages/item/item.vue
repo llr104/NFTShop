@@ -446,11 +446,11 @@
 	}
 	
 	.center-card {
-		width: 85%;
+		
 		
 		border-radius: 40rpx;
 		background-color: #d9dcde;
-		margin: 0 auto;
+		margin: 30rpx;
 		padding: 40rpx;
 		
 		.one-margin {
@@ -458,7 +458,7 @@
 		}
 		
 		.one {
-			
+			position: relative;
 			.one-1{
 				margin-left: 20rpx;
 				color: #8c9fad;
@@ -475,8 +475,8 @@
 				content: "";
 				width: 30rpx;
 				height: 30rpx;
-				right: 60rpx;
-				margin-top: 10rpx;
+				right: 20rpx;
+				
 				background: url(../../static/right-row.svg) 50% no-repeat;
 			}
 			
@@ -490,6 +490,8 @@
 				display: inline-block;
 				float: right;
 				color: #8c9fad;
+				font-size: 25rpx;
+				line-height: 30rpx;
 				margin-right: 60rpx;
 			}
 			
@@ -499,8 +501,7 @@
 				content: "";
 				width: 30rpx;
 				height: 30rpx;
-				right: 60rpx;
-				margin-top: 10rpx;
+				right: 20rpx;
 				background: url(../../static/right-row.svg) 50% no-repeat;
 			}
 		}
