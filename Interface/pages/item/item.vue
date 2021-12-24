@@ -28,7 +28,7 @@
 				<text class="more" @click="clickMore">更多</text>
 			</view>
 			
-			<transaction-list :txEvents="samllTxEvents" :unitSymbol="tokenSymbol" ref="txlist1" @clickLink="clickLink"></transaction-list>
+			<transaction-list :txEvents="txEvents" :unitSymbol="tokenSymbol" ref="txlist1" @clickLink="clickLink"></transaction-list>
 			
 			<view class="bottom">
 				<view class="bottom-fixed">
@@ -36,16 +36,16 @@
 					
 					<!-- 按钮 -->
 					<button type="default" v-if="downSaling"
-					class="downSaling" loading="true">正在下架...</button>
+					class="downSaling" loading="true">下架中...</button>
 					
 					<button type="default" v-else-if="upSaling"
-					class="upSaling" loading="true">正在上架...</button>
+					class="upSaling" loading="true">上架中...</button>
 					
 					<button type="default" v-else-if="buying"
 					class="buying" loading="true">购买中...</button>
 					
 					<button type="default" v-else-if="openbbing"
-					class="openbbing" loading="true">正在开盲盒...</button>
+					class="openbbing" loading="true">开启中...</button>
 					
 					<button type="default" v-else-if="!product.price && isSameAddress(myAddress, product.ownerAddress)"
 					class="upSale" @click="clickUpSale">立即挂售</button>
@@ -103,7 +103,7 @@
 				<uni-title class="tt" title="交易记录" type="h2"></uni-title>
 			</view>
 			<scroll-view class="sh" scroll-y="true">
-				<transaction-list :txEvents="txEvents" :unitSymbol="tokenSymbol" @clickLink="clickLink"></transaction-list>
+				<transaction-list ref="txlist2" :txEvents="txEvents" :unitSymbol="tokenSymbol" @clickLink="clickLink"></transaction-list>
 			</scroll-view>
 		</uni-popup>
 	</view>
@@ -114,7 +114,7 @@
 	import navigation from "../../components/navigation/navigation.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
-	import {nftAddress} from '../../script/eth.js';
+	import {nftAddress, fromBlock} from '../../script/eth.js';
 	import {openTxHash, openAddress} from '../../script/openScan.js'
 	var tokens = require('../../script/tokens.js');
 	var storage = require("../../script/storage.js");
@@ -144,7 +144,6 @@
 				openbbing:false,
 				product:{},
 				txEvents:[],
-				samllTxEvents:[],
 				tokenSymbol:""
 			}
 		},
@@ -155,7 +154,7 @@
 		},
 		
 		onLoad(options) {
-			
+			console.log("item onLoad");
 			this.addressShow = addressShow;
 			this.toTokenValue = tokens.toTokenValue;
 			this.isSameAddress = isSameAddress;
@@ -245,36 +244,49 @@
 							this.isFound = false;
 						}
 					});
-								
-					nft.getPastEvents(
-					  'SetOnSale',
-					  {
-						filter:{
-							_tokenId:id+""
-						},
-					    fromBlock: 11085000,
-					    toBlock: 11089000
-					  },(error, events)=>{
-						
-						if(!error){
-							this.txEvents = events;
-							
-							if(this.txEvents.length>=3){
-								this.samllTxEvents = this.txEvents.slice(-3);
-							}else{
-								this.samllTxEvents = this.txEvents;
-							}
-							this.txEvents = this.txEvents.reverse();
-							this.samllTxEvents = this.samllTxEvents.reverse();
-							
-							console.log("this.samllTxEvents:", this.samllTxEvents);
-							if(this.$refs.txlist1){
-								this.$refs.txlist1.reload(this.samllTxEvents);
-							}
-						}
-					});
+					
+					this.qryTX(id);
 				});
-				
+			
+			},
+			
+			qryTX:function(id){
+				this.txEvents = [];
+				eth.getBlockNumber((error, last)=>{
+					if(error){
+						return;
+					}
+					last = Number(last);
+					for (var from = fromBlock; from <= last; from+=5000) {
+						let to = Math.min(last, from+5000);
+						
+						nft.getPastEvents(
+						  'SetOnSale',
+						  {
+							filter:{
+								_tokenId:id+""
+							},
+						    fromBlock: from,
+						    toBlock: to
+						  },(error, events)=>{
+					
+							if(!error){
+								this.txEvents = this.txEvents.concat(events);
+								if(this.$refs.txlist1){
+									console.log("txlist1");
+									this.$refs.txlist1.reload(this.txEvents, 4);
+								}
+								
+								if(this.$refs.txlist2){
+									this.$refs.txlist2.reload(this.txEvents);
+								}
+								
+								
+							}
+						});
+					}
+				});
+			
 			},
 			
 			clickContactAddress:function(){
@@ -318,6 +330,13 @@
 			clickMore:function(){
 				console.log("clickMore");
 				this.$refs.ph_popup.open("bottom");
+				
+				setTimeout(()=>{
+					if(this.$refs.txlist2){
+						this.$refs.txlist2.reload(this.txEvents);
+					}
+				}, 100);
+			
 			},
 			
 			clickLink:function(hash){

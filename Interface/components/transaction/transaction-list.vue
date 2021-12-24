@@ -47,13 +47,14 @@
 		
 		data() {
 			return {
-				txShowEvents:[]
+				txShowEvents:[],
 			};
 		},
 		
 		created() {
 			console.log("transaction-list created");
-			this.txShowEvents = this.txEvents;
+			this.maps = new Map();
+			this.txShowEvents = this.after(this.txEvents); 
 		},
 		
 	
@@ -63,9 +64,31 @@
 				this.$emit("clickLink", txHash)
 			},
 			
-			reload(txEvents){
-				this.txShowEvents = txEvents;
+			reload(txEvents, cnt){
+				console.log("reload");
+				let ret = this.after(txEvents);
+				if(cnt>0){
+					this.txShowEvents = ret.splice(-cnt, -1);
+				}else{
+					this.txShowEvents = ret;
+				}
 			},
+			
+			after(txEvents){
+				for (var i = 0; i < txEvents.length; i++) {
+					this.maps.set(txEvents[i].transactionHash, txEvents[i]); 
+				}
+		
+				return this.sort([...this.maps.values()]);
+			},
+			
+			
+			sort(txEvents){
+				txEvents.sort((a, b)=>{
+					return b.blockNumber - a.blockNumber;
+				});
+				return txEvents;
+			}
 		}
 	}
 </script>

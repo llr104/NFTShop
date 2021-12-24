@@ -45,7 +45,7 @@
 		},
 		
 		created() {
-			console.log("created:", this.address);
+		
 			uni.$on("accountChanged", (acount)=> {
 				this.address = acount;
 				this.qryIsManager();

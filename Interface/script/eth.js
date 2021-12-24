@@ -4,6 +4,7 @@ var routerAddress = "0xC31F86E81E0f55D4A5EB462fC8E6E65b593F7eB8";
 var scanUrl = "https://ropsten.etherscan.io";
 var mainToken = "ETH"
 var supportNetwork = [3, 128, 256];
+var fromBlock = "11085000";
 
 
 async function asyncFun() {
@@ -100,4 +101,5 @@ module.exports = {
 	"scanUrl": scanUrl,
 	"mainToken": mainToken,
 	"connectWallet": connectWallet,
+	"fromBlock": Number(fromBlock),
 };

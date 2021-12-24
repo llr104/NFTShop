@@ -76,8 +76,7 @@
 		created() {
 			this.addressShow = addressShow;
 			this.fromTokenValue = tokens.fromTokenValue;
-			
-			console.log("blockNumber :", this.blockNumber);
+		
 			if(this.blockNumber ){
 				eth.getBlock(this.blockNumber , (error, block)=>{
 					if(!error){

@@ -1,4 +1,4 @@
-	import {provider, nftAddress, routerAddress, mainToken} from './eth.js';
+	import {provider, nftAddress, routerAddress, mainToken, fromBlock} from './eth.js';
 	import {isSameAddress} from '../lib/utils.js';
 	
 	var nftAbi = require('@/static/json/nft-abi.json');
@@ -17,7 +17,9 @@
 				this.NFT = new this.ETH.Contract(nftAbi, nftAddress);
 				this.Router = new this.ETH.Contract(routerAbi, routerAddress);
 				this.isMainToken = true;
+		
 				this.ready();
+			
 			}
 			
 			this.show = ()=>{
@@ -82,7 +84,7 @@
 						let index = result;
 						this.NFT.methods.cAttributes(index).call((error, result)=>{
 							if(!error){
-								console.log("queryToken cAttributes:", result);
+								// console.log("queryToken cAttributes:", result);
 								
 								let token = {};
 								token.id = id;
@@ -139,8 +141,8 @@
 			this.getTokenDecimals = ()=>{
 				return this.TokenDecimals;
 			}
+		
 			
-
 			this.approveToken = (from, value)=>{
 				if(!this.isMainToken){
 					// console.log("Number.MAX_SAFE_INTEGER:", Number.MAX_SAFE_INTEGER);
