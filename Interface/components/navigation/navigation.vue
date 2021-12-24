@@ -2,7 +2,9 @@
 	<view class="root">
 		<view class="navigation">
 			<view class="navigation-ctrl" mode="" @click="onClickNavCtrl"></view>
-			<view class="navigation-logo" mode=""></view>
+			<view class="navigation-logo" mode="">
+				INFT
+			</view>
 			<view v-if="address.length==0" class="navigation-wallet" mode="" @click="onClickWallet"></view>
 			<view v-else class="navigation-address">
 				<text>{{addressShow(address)}}</text>
@@ -147,10 +149,14 @@
 			
 			.navigation-logo {
 				float: left;
-				width: 200rpx;
-				height: 100%;
-				background: url("logo.svg")  50% no-repeat;;
-				background-size:130% auto;
+				width: 130rpx;
+				font-weight: bolder;
+				margin: 10rpx 20rpx;
+				line-height: 70rpx;
+				font-size: 40rpx;
+				text-align: center;
+				background-color: #2979FF;
+				border-radius: 10rpx;
 			}
 			
 			.navigation-wallet {
