@@ -221,6 +221,21 @@
 		"type": "function"
 	},
 	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_nftAddress",
+				"type": "address"
+			}
+		],
+		"name": "setNFTAddress",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -261,21 +276,6 @@
 			}
 		],
 		"name": "setBrokerAddress",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_nftAddress",
-				"type": "address"
-			}
-		],
-		"name": "setNFTAddress",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -607,6 +607,48 @@
 				"internalType": "uint32[]",
 				"name": "",
 				"type": "uint32[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "uint32",
+				"name": "_bbId",
+				"type": "uint32"
+			}
+		],
+		"name": "getIsMint",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "uint32",
+				"name": "_bbId",
+				"type": "uint32"
+			}
+		],
+		"name": "getIsRes",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"payable": false,

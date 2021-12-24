@@ -219,8 +219,16 @@ contract NFTRouter is Ownable {
 
 
     function getBlinkBoxEleLen(uint32 _bbId) public view validBBCFG(_bbId) returns(uint256) {
-        
         return BBELE[_bbId].length;
     }
     
+
+    function getIsMint(uint32 _bbId) public view validBBCFG(_bbId) returns(bool){
+        return BBCFG[_bbId].groupId != 0;
+    }
+
+    function getIsRes(uint32 _bbId) public view validBBCFG(_bbId) returns(bool){
+        return BBRES[_bbId].length != 0;
+    }
+
 }

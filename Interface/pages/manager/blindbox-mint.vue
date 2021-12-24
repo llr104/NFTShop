@@ -45,14 +45,14 @@
 						<uni-td align="center">{{e.uri}}</uni-td>
 						<uni-td align="center">{{e.des}}</uni-td>
 						<uni-td align="center">
-							<text class="left" @click="clickModify(index)">修改</text>
-							<text class="right" @click="clickDel(index)">删除</text>
+							<text v-if="!elem.isMint && !elem.isRes" class="left" @click="clickModify(index)">修改</text>
+							<text v-if="!elem.isMint && !elem.isRes" class="right" @click="clickDel(index)">删除</text>
 						</uni-td>
 					</uni-tr>
 				</uni-table>
-				<button type="default" class="elemAdd" @click="clickAdd">添加</button>
-				<button type="default" class="bbResult" @click="clickBBResult">生成盲盒结果</button>
-				<button type="default" class="bbMint" v-if="elem.canMint" @click="clickBBMint">锻造盲盒</button>
+				<button v-if="!elem.isMint && !elem.isRes" type="default" class="elemAdd" @click="clickAdd">添加</button>
+				<button v-if="!elem.isMint && !elem.isRes" type="default" class="bbResult" @click="clickBBResult">生成盲盒结果</button>
+				<button v-if="!elem.isMint && elem.isRes" type="default" class="bbMint" @click="clickBBMint">锻造盲盒</button>
 				
 				<uni-popup class="pop" ref="popupadd" type="bottom">
 					<view class="c">
@@ -128,8 +128,11 @@
 				
 				elem:{
 					hasBase:false,
-					canMint:false,
 					id:0,
+					opIndex:0,
+					isMint:true,
+					isRes:true,
+					
 					data:[
 						
 					],
@@ -145,7 +148,7 @@
 						uri:"https://www.ibox.fan/file/oss/nft/image/nft-goods/9530030d975d4831a2e83358915d275b.jpg?style=st6",
 						cnt:3
 					},
-					opIndex:0,
+					
 				},
 				
 				tabs:["基础", "元素"],
@@ -178,8 +181,23 @@
 			},
 			
 			idInput:function(id){
-		
+				
 				if(id && Number(id)){
+					router.methods.getIsMint(Number(id)).call((error, result)=>{
+						if(!error){
+							
+							this.elem.isMint = result;
+							console.log("this.elem.isMint:", this.elem.isMint);
+						}
+					});
+					
+					router.methods.getIsRes(Number(id)).call((error, result)=>{
+						if(!error){
+							this.elem.isRes = result;
+							console.log("this.elem.isRes:", this.elem.isRes);
+						}
+					});
+					
 					this.elem.data = this.elem.data.slice(0, 0);
 					router.methods.getBlinkBoxCfg(Number(id)).call((error, result)=>{
 						if(error || !result){
@@ -205,20 +223,7 @@
 								}
 							});
 							
-							eth.getAccounts((error, account)=>{
-								router.methods.getBlinkBoxResult(Number(id)).call({from: account[0]}, (error, result)=>{
-									if(error){
-										this.elem.canMint = false;
-									}else{
-										if(result && result.length){
-											this.elem.canMint = true;
-										}else{
-											this.elem.canMint = false;
-										}
-									}
-								});
-							});
-							
+					
 						}
 					});
 				}
@@ -365,7 +370,7 @@
 						router.methods.setBlinkBoxResult(Number(this.elem.id), result).send({from: account[0]}, (error, result)=>{
 							console.log("setBlinkBoxResult:", error, result);
 							if(!error){
-								this.elem.canMint = true;
+								this.elem.isRes = true;
 							}
 						});
 					}
