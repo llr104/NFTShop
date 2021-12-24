@@ -8,8 +8,9 @@
 			<%= htmlWebpackPlugin.options.title %>
 		</title>
 		
-		<script>
-			if (document.documentElement.clientWidth > 1024) {
+		<!-- 正式发布的时候使用，开发期间不启用。↓ -->
+		<!-- <script>
+			if (document.documentElement.clientWidth > 950) {
 				window.location.href = '/redirect.html#'+location.pathname+location.search;
 			}
 			
@@ -18,8 +19,8 @@
             ::-webkit-scrollbar{
                 display: none;
             }
-        </style>
-      
+        </style> -->
+       <!-- 正式发布的时候使用，开发期间不启用。↑ -->
 		<link rel="stylesheet" href="<%= BASE_URL %>static/index.<%= VUE_APP_INDEX_CSS_HASH %>.css" />
 	</head>
 	<body>
