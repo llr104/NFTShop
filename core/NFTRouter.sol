@@ -118,7 +118,7 @@ contract NFTRouter is Ownable {
         }
 
         blinkboxCfg memory cfg = BBCFG[_bbId];
-        INFT(nftAddress).mint(msg.sender, cfg.name, cfg.uri, cfg.des, IEnumDef.NFTType.BlindBox, cnt, 0, _bbId);
+        INFT(nftAddress).mint(msg.sender, cfg.name, cfg.uri, cfg.des, IEnumDef.NFTType.BlindBox, cnt, -1, _bbId);
 
         BBCFG[_bbId].groupId = INFT(nftAddress).groupId();
         
