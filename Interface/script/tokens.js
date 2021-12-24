@@ -112,6 +112,10 @@
 				
 			}
 			
+			this.getProvider = ()=>{
+				return this.provider;
+			}
+			
 			this.getNFT = ()=> {
 				return this.NFT;
 			}

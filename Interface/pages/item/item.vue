@@ -122,7 +122,8 @@
 	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	let router = tokens.getRouter();
-
+	let provider = tokens.getProvider();
+	
 	export default {
 		components:{
 			navigation,
@@ -154,7 +155,7 @@
 		},
 		
 		onLoad(options) {
-
+			
 			this.addressShow = addressShow;
 			this.toTokenValue = tokens.toTokenValue;
 			this.isSameAddress = isSameAddress;
@@ -173,11 +174,12 @@
 			if(options.id){
 				let id = Number(options.id);
 				this.id = id;
-				uni.$on("receiptHash", (hashObj)=>{
+				uni.$on("receiptHash", (hashObj, receipt)=>{
 					if(!hashObj || Number(hashObj.tokenId) != id){
 						return;
 					}
 					
+					let isReflash = true;
 					if(hashObj.op == storage.opType.ApprovingToken){
 						this.approving = false;
 					}else if(hashObj.op == storage.opType.UpSalling){
@@ -188,10 +190,15 @@
 						this.buying = false;
 					}else if(hashObj.op == storage.opType.Opening){
 						this.openbbing = false;
-						this.gotoMy();
+						isReflash = false;
+						console.log("receipt:", receipt);
+						this.openBBResult(receipt);
+						
+					}
+					if(isReflash){
+						this.queryToken(id);
 					}
 					
-					this.queryToken(id);
 				});
 				
 				this.queryToken(id);
@@ -206,6 +213,8 @@
 		methods: {
 			
 			queryToken(id){
+				console.log("queryToken:", id);
+				
 				tokens.ready(()=>{
 					this.tokenSymbol = tokens.getTokenSymbol();
 					this.tokenDecimals = tokens.getTokenDecimals();
@@ -413,8 +422,9 @@
 							router.methods.openBlinkBox(this.product.id).send({from: this.myAddress}).on('transactionHash', (hash)=>{
 								storage.setTransactionPennding(this.product.id, hash, storage.opType.Opening);
 							}).on('receipt', (receipt)=>{
+								console.log("openBB receipt:", receipt);
 								this.openbbing = false;
-								this.gotoMy();
+								this.openBBResult(receipt);
 							}).on('error', (error)=>{
 								this.openbbing = false;
 							});
@@ -423,15 +433,24 @@
 				});
 			},
 			
-			gotoMy(){
-				uni.navigateTo({
-					url:"../my/my",
-					complete:function(r){
-						console.log(r);
+			openBBResult(receipt){
+				if(receipt.status){
+					if(receipt.logs && receipt.logs.length){
+						let id = provider.utils.hexToNumber(receipt.logs[0].topics[3]);
+						uni.navigateTo({
+							url:"../item/item?id="+id,
+							complete:function(r){
+								console.log(r);
+							}
+						});
 					}
-				});
+				}else{
+					uni.showToast({
+						title:"开启盲盒失败",
+						icon:"error"
+					});
+				}
 			}
-			
 		}
 	}
 </script>
