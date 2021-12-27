@@ -149,21 +149,6 @@
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
 		"inputs": [
 			{
 				"internalType": "address",
@@ -177,36 +162,6 @@
 				"internalType": "bool",
 				"name": "",
 				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "NOT_CURRENT_MANAGER",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "NOT_CURRENT_OWNER",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
 			}
 		],
 		"payable": false,

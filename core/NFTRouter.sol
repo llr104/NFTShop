@@ -192,7 +192,12 @@ contract NFTRouter is Ownable {
     }
     
     function setBlinkBoxResult(uint32 _bbId, uint32[] memory _res) public onlyManager validBBCFG(_bbId) BBIsNotMint(_bbId){
-        
+        uint256 cnt = 0;
+        for (uint32 i = 0; i < BBELE[_bbId].length; i++) {
+            blinkboxEle memory ele = BBELE[_bbId][i];
+            cnt += ele.cnt;
+        }
+        require(cnt == _res.length, BB_RES_NOT_MATCH);
         BBRES[_bbId] = _res;
     }
     

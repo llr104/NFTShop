@@ -1,6 +1,6 @@
 var Web3 = require('./web3.min.js');
-var nftAddress = "0xaD0721fFa8Be12caB6b9DA7850779CAeDd694706";
-var routerAddress = "0xE6906C4124527A3C9268E9842E19818394D19CbD";
+var nftAddress = "0xd27eFBFad51B29D30Ef90e2265ed838724b8fF4A";
+var routerAddress = "0x4804fF7AB5765BC8FCae6d3cD6c8E3ae7367661b";
 var scanUrl = "https://ropsten.etherscan.io";
 var mainToken = "ETH"
 var supportNetwork = [3, 128, 256];
