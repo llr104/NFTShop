@@ -23,6 +23,25 @@
 			</view>
 			<uni-title class="subTitle" type="h3" title="作品描述"></uni-title>
 			<text class="product-des">{{product.describe}}</text>
+			
+			<uni-title class="subTitle" type="h3" title="盲盒包含"></uni-title>
+			<view class="bb-des">
+				<view class="bb-elem" v-for="(e,index) in elem" :key="index">
+					<view class="name">
+						{{e.name}}
+					</view>
+					<view class="elemImg">
+						<image :src="e.uri" mode="aspectFit"></image>
+					</view>
+					<view class="cnt">
+						数量{{e.cnt}}
+					</view>
+					<view class="des">
+						{{e.des}}
+					</view>
+				</view>
+			</view>
+			
 			<view class="record">
 				<uni-title class="subTitle saleTitle" type="h3" title="交易记录"></uni-title>
 				<text class="more" @click="clickMore">更多</text>
@@ -44,6 +63,9 @@
 					<button type="default" v-else-if="buying"
 					class="buying" loading="true">购买中...</button>
 					
+					<button type="default" v-else-if="openbbing"
+					class="openbbing" loading="true">开启中...</button>
+					
 					<button type="default" v-else-if="!product.price && isSameAddress(myAddress, product.ownerAddress)"
 					class="upSale" @click="clickUpSale">立即挂售</button>
 					
@@ -54,9 +76,12 @@
 					
 					<button type="default" v-else-if="!product.price" class="SaleOut">已售罄</button>
 					
+					<button type="default" v-if="openbbing == false && product.nftType == 0 && !product.price 
+					&& isSameAddress(myAddress, product.ownerAddress)" class="open" @click="openBB">开盲盒</button>
 				</view>
 				<view class="space">
 				</view>
+				
 			</view>
 			
 			<uni-popup class="downSale_popup" ref="downSale_popup" type="top">
@@ -136,9 +161,11 @@
 				upSaling:false,
 				buying:false,
 				approving:false,
+				openbbing:false,
 				product:{},
 				txEvents:[],
-				tokenSymbol:""
+				tokenSymbol:"",
+				elem:[],
 			}
 		},
 		
@@ -172,6 +199,7 @@
 						return;
 					}
 					
+					let isReflash = true;
 					if(hashObj.op == storage.opType.ApprovingToken){
 						this.approving = false;
 					}else if(hashObj.op == storage.opType.UpSalling){
@@ -180,8 +208,16 @@
 						this.downSaling = false;
 					}else if(hashObj.op == storage.opType.Buying){
 						this.buying = false;
+					}else if(hashObj.op == storage.opType.Opening){
+						this.openbbing = false;
+						isReflash = false;
+						console.log("receipt:", receipt);
+						this.openBBResult(receipt);
+						
 					}
-					this.queryToken(id);
+					if(isReflash){
+						this.queryToken(id);
+					}
 					
 				});
 				
@@ -220,6 +256,8 @@
 										this.downSaling = true;
 									}else if(hashObj.op == storage.opType.Buying){
 										this.buying = true;
+									}else if(hashObj.op == storage.opType.Opening){
+										this.openbbing = true;
 									}
 								}
 							}
@@ -229,6 +267,7 @@
 					});
 					
 					this.qryTX(id);
+					this.qryBBElem(id);
 				});
 			
 			},
@@ -263,8 +302,6 @@
 								if(this.$refs.txlist2){
 									this.$refs.txlist2.reload(this.txEvents);
 								}
-								
-								
 							}
 						});
 					}
@@ -272,9 +309,34 @@
 			
 			},
 			
+			qryBBElem:function(id){
+				id = Number(id);
+				
+				this.elem = [];
+				nft.methods.getAttributesValuebyIndex(id, 0).call().then((cfgId)=>{
+				
+					cfgId = Number(cfgId);
+					router.methods.getBlinkBoxEleLen(cfgId).call().then((cnt)=>{
+						for (let i = 0; i < Number(cnt); i++) {
+						
+							this.elem.push({name:"", uri:"", des:"", cnt:0});
+							router.methods.getBlinkBoxEleCfg(cfgId, i).call().then((result)=>{
+								let obj = {};
+								this.elem[i].name = result._name;
+								this.elem[i].uri = result._uri;
+								this.elem[i].des = result._des;
+								this.elem[i].cnt = result._cnt;
+							});
+						}
+					});
+				});
+			
+			},
+			
 			clickContactAddress:function(){
 				console.log("clickContactAddress");
 				openAddress(this.nftAddress);
+				
 			},
 			
 			clickOnwerAddress:function(){
@@ -286,6 +348,7 @@
 						})
 					}
 				});
+				console.log(this.elem);
 			},
 			
 			clickOwnerHome:function(){
@@ -414,6 +477,45 @@
 			
 			},
 			
+			openBB:function(){
+				console.log("openBB");
+				uni.showModal({
+					content:"是否打开盲盒？",
+					 success: (res) =>{
+						this.openbbing = true;
+						if (res.confirm) {
+							router.methods.openBlinkBox(this.product.id).send({from: this.myAddress}).on('transactionHash', (hash)=>{
+								storage.setTransactionPennding(this.product.id, hash, storage.opType.Opening);
+							}).on('receipt', (receipt)=>{
+								console.log("openBB receipt:", receipt);
+								this.openbbing = false;
+								this.openBBResult(receipt);
+							}).on('error', (error)=>{
+								this.openbbing = false;
+							});
+						}
+					}
+				});
+			},
+			
+			openBBResult(receipt){
+				if(receipt.status){
+					if(receipt.logs && receipt.logs.length){
+						let id = provider.utils.hexToNumber(receipt.logs[0].topics[3]);
+						uni.navigateTo({
+							url:"../item/item?id="+id,
+							complete:function(r){
+								console.log(r);
+							}
+						});
+					}
+				}else{
+					uni.showToast({
+						title:"开启盲盒失败",
+						icon:"error"
+					});
+				}
+			}
 		}
 	}
 </script>
@@ -505,6 +607,35 @@
 		line-height: 1.5;
 	}
 	
+	.bb-des {
+		margin: 0 20rpx;
+		padding: 20rpx;
+		border-radius: 20rpx;
+		text-align: center;
+		background-color: #FFFFFF;
+		
+		.bb-elem{
+			margin: 20rpx auto;
+			
+			.name {
+				font-weight: bold;
+				font-size: 30rpx;
+				line-height: 50rpx;
+			}
+			.cnt {
+				font-weight: bold;
+				font-size: 30rpx;
+				line-height: 50rpx;
+				color: #ff557f;
+			}
+			.des {
+				text-align: left;
+				margin: 0 20rpx;
+			}
+		}
+		
+	}
+	
 	.record{
 		vertical-align: middle;
 		.saleTitle {
@@ -553,7 +684,7 @@
 		
 		.space {
 			width: 100%;
-			height: 100rpx;
+			height: 200rpx;
 		}
 		
 		.bottom-fixed {
@@ -576,7 +707,17 @@
 			.upSale,
 			.upSaling,
 			.open,
-			
+			.openbbing{
+				width: 80%;
+				height: 80rpx;
+				background-color: #000000;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 80rpx;
+				font-weight: bold;
+				color: #FFFFFF;
+				margin: 10rpx auto;
+			}
 				
 			.downSale,
 			.downSaling{

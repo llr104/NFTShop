@@ -97,9 +97,16 @@
 			},
 			
 			onClickProduct(product){
+
 				console.log("onClickProduct:", product);
+				let uri = "";
+				if(product.nftType == 0){
+					uri = "../itembb/itembb?id="+product.id
+				}else{
+					uri = "../item/item?id="+product.id;
+				}
 				uni.navigateTo({
-					url:"../item/item?id="+product.id,
+					url:uri,
 					complete:function(r){
 						console.log(r);
 					}

@@ -205,9 +205,9 @@
 							
 						}else{
 							this.elem.hasBase = true;
-							router.methods.getBlinkBoxEleLen(Number(id)).call((error, result)=>{
+							router.methods.getBlinkBoxEleLen(Number(id)).call((error, cnt)=>{
 								if(!error){
-									for (let i = 0; i < result; i++) {
+									for (let i = 0; i < Number(cnt); i++) {
 										
 										this.elem.data.push({name:"", uri:"", des:"", cnt:0});
 										router.methods.getBlinkBoxEleCfg(Number(id), Number(i)).call((error, result)=>{
