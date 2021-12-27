@@ -1,13 +1,13 @@
-import {scanUrl} from './eth.js';
+import {scanUrl} from './chains.js';
 
 function openTxHash(hash){
 	if(!hash) return;
-	window.open(scanUrl+"/tx/"+hash);
+	window.open(scanUrl()+"/tx/"+hash);
 }
 
 function openAddress(address){
 	if(!address) return;
-	window.open(scanUrl+"/address/"+address);
+	window.open(scanUrl()+"/address/"+address);
 }
 
 module.exports = {

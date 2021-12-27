@@ -1,4 +1,6 @@
-	import {provider, nftAddress, routerAddress, mainToken, fromBlock} from './eth.js';
+	import {provider} from './eth.js';
+	import {nftAddress, routerAddress, symbol} from './chains.js';
+	
 	import {isSameAddress} from '../lib/utils.js';
 	
 	var nftAbi = require('@/static/json/nft-abi.json');
@@ -14,12 +16,11 @@
 				
 				this.provider = provider();
 				this.ETH = this.provider.eth;
-				this.NFT = new this.ETH.Contract(nftAbi, nftAddress);
-				this.Router = new this.ETH.Contract(routerAbi, routerAddress);
 				this.isMainToken = true;
-		
-				this.ready();
-			
+				
+				this.ETH.net.getId().then((id)=>{
+					this.ready();
+				});
 			}
 			
 			this.show = ()=>{
@@ -27,7 +28,7 @@
 			}
 		
 			this.queryNFTPage = (page, prePage, address) =>{
-				this.NFT.methods.tokenPage(page, prePage, address).call((error, result)=>{
+				this.getNFT().methods.tokenPage(page, prePage, address).call((error, result)=>{
 					if(!error){
 						let ids = result;
 						for (let i = 0; i < ids.length; i++) {
@@ -45,7 +46,7 @@
 				if(!address){
 					address = "0x0000000000000000000000000000000000000000";
 				}
-				this.NFT.methods.tokenPage(page, prePage, address).call((error, result)=>{
+				this.getNFT().methods.tokenPage(page, prePage, address).call((error, result)=>{
 					let rids = [];
 					if(!error){
 						let ids = result;
@@ -63,7 +64,7 @@
 			
 			this.queryToken = (id, cb)=>{
 				id = Number(id);
-				this.NFT.methods.ownerOf(id).call((error, result)=>{
+				this.getNFT().methods.ownerOf(id).call((error, result)=>{
 					console.log("queryToken ownerOf:", result);
 					if(error){
 						if(cb){
@@ -72,7 +73,7 @@
 						return;
 					}
 					let ownerAddress = result;
-					this.NFT.methods.idToIndex(id).call((error, result)=>{
+					this.getNFT().methods.idToIndex(id).call((error, result)=>{
 						// console.log("queryToken idToIndex:", result);
 						if(error){
 							if(cb){
@@ -82,7 +83,7 @@
 						}
 	
 						let index = result;
-						this.NFT.methods.cAttributes(index).call((error, result)=>{
+						this.getNFT().methods.cAttributes(index).call((error, result)=>{
 							if(!error){
 								// console.log("queryToken cAttributes:", result);
 								
@@ -119,7 +120,8 @@
 			}
 			
 			this.getNFT = ()=> {
-				return this.NFT;
+				var nft = new this.ETH.Contract(nftAbi, nftAddress());
+				return nft;
 			}
 			
 			this.getETH = ()=> {
@@ -127,7 +129,8 @@
 			}
 			
 			this.getRouter = ()=>{
-				return this.Router;
+				var router = new this.ETH.Contract(routerAbi, routerAddress());
+				return router;
 			}
 			
 			this.getToken = ()=>{
@@ -150,7 +153,7 @@
 					if(value < Number.MAX_SAFE_INTEGER){
 						value = Number.MAX_SAFE_INTEGER;
 					}
-					return this.Token.methods.approve(routerAddress, value+"").send({from:from});
+					return this.Token.methods.approve(routerAddress(), value+"").send({from:from});
 				}
 			}
 			
@@ -160,7 +163,7 @@
 						cb(null, Number.MAX_VALUE);
 					}
 				}else{
-					this.Token.methods.allowance(from, routerAddress).call((error, result)=>{
+					this.Token.methods.allowance(from, routerAddress()).call((error, result)=>{
 						if(cb){
 							cb(error, Number(result));
 						}
@@ -170,16 +173,16 @@
 			}
 			
 			this.approveNFT = (from, id)=>{
-				return this.NFT.methods.approve(routerAddress, id).send({from:from});
+				return this.getNFT().methods.approve(routerAddress(), id).send({from:from});
 			}
 			
 			this.isApproveNFT = (from, cb)=>{
 				console.log("isApproveNFT");
-				this.NFT.methods.getApproved(from).call((error, result)=>{
+				this.getNFT().methods.getApproved(from).call((error, result)=>{
 					console.log("getApproved:", error, result);
 					if(cb){
 						if(!error){
-							cb(error, result.toString().toLowerCase() == routerAddress.toString().toLowerCase());
+							cb(error, result.toString().toLowerCase() == routerAddress().toString().toLowerCase());
 						}else{
 							cb(error, result);
 						}
@@ -188,11 +191,11 @@
 			}
 			
 			this.setApprovalForAll = (owner)=>{
-				return this.NFT.methods.setApprovalForAll(routerAddress, true).send({from: owner});
+				return this.getNFT().methods.setApprovalForAll(routerAddress(), true).send({from: owner});
 			}
 			
 			this.isApprovedAllNFT = (owner, cb)=>{
-				this.NFT.methods.isApprovedForAll(owner, routerAddress).call((error, result)=>{
+				this.getNFT().methods.isApprovedForAll(owner, routerAddress()).call((error, result)=>{
 					console.log("isApprovedForAll:", error, result);
 					if(cb){
 						if(!error){
@@ -209,9 +212,9 @@
 					let BN = this.provider.utils.BN;
 					let v = new BN(Number(price)).toString();
 					console.log("v:", v, Number(price));
-					return this.Router.methods.buy(id).send({from: from, value: v});
+					return this.getRouter().methods.buy(id).send({from: from, value: v});
 				}else{
-					return this.Router.methods.buy(id).send({from: from});
+					return this.getRouter().methods.buy(id).send({from: from});
 				}
 			}
 			
@@ -243,6 +246,8 @@
 			}
 			
 			this.ready = (cb)=>{
+				
+				
 				if(this.TokenDecimals != null && this.TokenSymbol != null){
 					if(cb){
 						cb(true);
@@ -250,8 +255,7 @@
 					return;
 				}
 				
-				console.log("this.Router.methods:", this.Router.methods);
-				this.Router.methods.brokerAddress().call((error, tokenAddress)=>{
+				this.getRouter().methods.brokerAddress().call((error, tokenAddress)=>{
 					if(!error){
 						
 						let is = isSameAddress(tokenAddress, "0x0000000000000000000000000000000000000000");
@@ -300,7 +304,7 @@
 						}else{
 							this.isMainToken = true;
 							this.TokenDecimals = 0;
-							this.TokenSymbol = mainToken;
+							this.TokenSymbol = symbol();
 							if(cb){
 								cb(true);
 							}

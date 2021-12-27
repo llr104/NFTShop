@@ -134,7 +134,7 @@
 	import navigation from "../../components/navigation/navigation.vue";
 	import transactionItem from "../../components/transaction/transaction-item.vue";
 	import transactionList from "../../components/transaction/transaction-list.vue";
-	import {nftAddress, fromBlock} from '../../script/eth.js';
+	import {fromBlock, nftAddress} from '../../script/chains.js';
 	import {openTxHash, openAddress} from '../../script/openScan.js'
 	var tokens = require('../../script/tokens.js');
 	var storage = require("../../script/storage.js");
@@ -153,8 +153,8 @@
 		
 		data() {
 			return {
+				nftAddress: "",
 				isFound:false,
-				nftAddress:nftAddress,
 				myAddress:"",
 				isApprove: false,
 				downSaling:false,
@@ -179,6 +179,7 @@
 			this.addressShow = addressShow;
 			this.toTokenValue = tokens.toTokenValue;
 			this.isSameAddress = isSameAddress;
+			this.nftAddress = nftAddress();
 			
 			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
@@ -279,7 +280,7 @@
 						return;
 					}
 					last = Number(last);
-					for (var from = fromBlock; from <= last; from+=5000) {
+					for (var from = fromBlock(); from <= last; from+=5000) {
 						let to = Math.min(last, from+5000);
 						
 						nft.getPastEvents(
@@ -335,7 +336,7 @@
 			
 			clickContactAddress:function(){
 				console.log("clickContactAddress");
-				openAddress(this.nftAddress);
+				openAddress(nftAddress());
 				
 			},
 			

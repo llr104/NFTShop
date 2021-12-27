@@ -1,10 +1,6 @@
 var Web3 = require('./web3.min.js');
-var nftAddress = "0xd27eFBFad51B29D30Ef90e2265ed838724b8fF4A";
-var routerAddress = "0x4804fF7AB5765BC8FCae6d3cD6c8E3ae7367661b";
-var scanUrl = "https://ropsten.etherscan.io";
-var mainToken = "ETH"
-var supportNetwork = [3, 128, 256];
-var fromBlock = "11085000";
+
+import {SupportedChainId} from './chains.js'
 
 
 async function asyncFun() {
@@ -20,26 +16,27 @@ function connectWallet(isFirst=false){
 	
 	if (window.ethereum) {
 		asyncFun();
-		
+	
 		window.ethereum.on("accountsChanged", (acounts)=> {
 			if(acounts.length>0){
 				uni.$emit("accountChanged", acounts[0]);
 			}
 		});
 		
-		window.ethereum.on("networkChanged", (nId)=>{
-			console.log("nId:", nId, supportNetwork.indexOf(Number(nId))>=0);
-			uni.showModal({
-				title:"错误",
-				content:"不支持该链，请选择正确的链",
-				showCancel:false,
-			}); 
+		window.ethereum.on("chainChanged", (nId)=>{
 			
+			if(SupportedChainId.indexOf(Number(nId)) == -1){
+				uni.showModal({
+					title:"错误",
+					content:"不支持该链，请选择正确的链",
+					showCancel:false,
+				}); 
+			}
+		
 		});
 		
 		setTimeout(()=>{
-			let isSupport = supportNetwork.indexOf(Number(ethereum.networkVersion)) >= 0;
-			console.log("isSupport:", isSupport, ethereum.networkVersion);
+			let isSupport = SupportedChainId.indexOf(Number(ethereum.networkVersion)) >= 0;
 			if(!isSupport){
 				
 				uni.showModal({
@@ -96,10 +93,5 @@ connectWallet(true);
 
 module.exports = {
 	"provider": provider,
-	"nftAddress": nftAddress,
-	"routerAddress": routerAddress,
-	"scanUrl": scanUrl,
-	"mainToken": mainToken,
 	"connectWallet": connectWallet,
-	"fromBlock": Number(fromBlock),
 };

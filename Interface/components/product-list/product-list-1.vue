@@ -1,21 +1,24 @@
 <template>
-	<view class="product-list-1">
-	    <view class="product" v-for="(product,index) in productList" :key="index" @click="clickProduct(product)">
-	        <view class="image-view">
-	            <image v-if="renderImage" class="product-image" :src="product.uri"></image>
-	        </view>
-			
-			<view class="product-text">
-				<view class="product-title">{{product.name}}</view>
-				<view class="product-onwer">{{addressShow(product.ownerAddress)}}</view>
-				<view class="product-price" v-if="product.price">{{product.showPrice}}&nbsp;{{unitSymbol}}</view>
-			</view>
-			 <view class="right-row"></view>
-	    </view>
+	<view class="root">
+		<view class="product-list-1">
+		    <view class="product" v-for="(product,index) in productList" :key="index" @click="clickProduct(product)">
+		        <view class="image-view">
+		            <image v-if="renderImage" class="product-image" :src="product.uri"></image>
+		        </view>
+				
+				<view class="product-text">
+					<view class="product-title">{{product.name}}</view>
+					<view class="product-onwer">{{addressShow(product.ownerAddress)}}</view>
+					<view class="product-price" v-if="product.price">{{product.showPrice}}&nbsp;{{unitSymbol}}</view>
+				</view>
+				 <view class="right-row"></view>
+		    </view>
+		</view>
 		<view v-if="isEnd && this.page != 0" class="end">
 			<text>---没有更多了---</text>
 		</view>
 	</view>
+	
 </template>
 
 <script>
@@ -108,10 +111,14 @@
 </script>
 
 <style>
- view {
+	view {
         font-size: 28rpx;
     }
-
+	
+	.end {
+		text-align: center;
+	}
+	
 	.product-list-1 {
         display: flex;
         width: 100%;

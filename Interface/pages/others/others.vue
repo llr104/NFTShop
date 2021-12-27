@@ -17,7 +17,7 @@
 	import vtab from "../../components/v-tabs/v-tabs.vue";
 	import productList from "../../components/product-list/product-list.vue";
 	import productList1 from "../../components/product-list/product-list-1.vue";
-	
+	import {fromBlock} from '../../script/chains.js';
 	
 	var tokens = require('../../script/tokens.js');
 	let nft = tokens.getNFT();
@@ -40,27 +40,9 @@
 			};
 		},
 		
-		onLoad() {
+		onLoad(options) {
+			this.address = options.address;
 			
-			eth.getAccounts((error, result)=>{
-				if(!error && result.length != 0){
-					this.address = result[0];
-				}
-			});
-			
-			uni.$on("accountChanged", (acount)=> {
-				this.address = acount;
-				
-				if(this.$refs.pl1){
-					this.$refs.pl1.changeFilter(this.address);
-				}
-				if(this.$refs.pl2){
-					this.$refs.pl2.loadIds([]);
-					this.saleHistory();
-				}
-			});
-			
-
 			tokens.ready(()=>{
 				this.tokenSymbol = tokens.getTokenSymbol(); 
 			})
@@ -95,24 +77,32 @@
 			},
 			
 			saleHistory(){
-				nft.getPastEvents(
-				  'SetOnSale',
-				  {
-					filter:{
-						_from:this.address,
-						_op:"1",
-					},
-				    fromBlock: 10939147,
-				    toBlock: 10939999
-				  },(error, events)=>{
+			
+				eth.getBlockNumber().then((last)=>{
+					last = Number(last);
+					for (var from = fromBlock(); from <= last; from+=5000) {
+						let to = Math.min(last, from+5000);
+				
+						nft.getPastEvents(
+						  'SetOnSale',
+						  {
+							filter:{
+								_from: this.address,
+								_op: "1",
+							},
+						    fromBlock: from,
+						    toBlock: to
+						  },(error, events)=>{
 					
-					if(!error){
-						let txEvents = events.reverse();
-						let ids = this.cal(txEvents);
-						
-						if(this.$refs.pl2){
-							this.$refs.pl2.loadIds(ids);
-						}
+							if(!error){
+								let txEvents = events.reverse();
+								let ids = this.cal(txEvents);
+								
+								if(this.$refs.pl2){
+									this.$refs.pl2.loadIds(ids);
+								}
+							}
+						});
 					}
 				});
 			},
@@ -122,15 +112,17 @@
 					return [];
 				}
 				
-				let ret = [];
+				let maps = new Map();
 				for (var i = 0; i < txEvents.length; i++) {
 					let from = txEvents[i].returnValues._from;
 					let op = txEvents[i].returnValues._op;
 					if(op == "1" && isSameAddress(this.address, from)){
-						ret.push(txEvents[i].returnValues._tokenId);
+						let id = txEvents[i].returnValues._tokenId;
+						maps.set(id ,id);
+					
 					}
 				}
-				return ret;
+				return [...maps.values()];
 			},
 			
 			onClickProduct(product){
