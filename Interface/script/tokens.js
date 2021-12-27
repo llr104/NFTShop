@@ -209,9 +209,17 @@
 			
 			this.buy = (id, from, price) =>{
 				if(this.isMainToken){
+					
+					let v = "0";
 					let BN = this.provider.utils.BN;
-					let v = new BN(Number(price)).toString();
-					console.log("v:", v, Number(price));
+					try{
+						v = new BN(price).toString();
+					}catch(err){
+						let gwei = 1000000000;
+						let g = Number(price)/gwei;
+						v = new BN(g).toString()+"000000000";
+					}
+					
 					return this.getRouter().methods.buy(id).send({from: from, value: v});
 				}else{
 					return this.getRouter().methods.buy(id).send({from: from});
@@ -229,7 +237,7 @@
 			this.fromTokenValue = (value) =>{
 				if(this.isMainToken){
 					
-					let v = "";
+					let v = "0";
 					let BN = this.provider.utils.BN;
 					try{
 						v = new BN(value).toString();
