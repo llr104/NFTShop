@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<navigation></navigation>
-		<view v-if="isFound">
+		<view class="c" v-if="isFound">
 			<image class="product-image" :src="product.uri" mode="widthFix"></image>
 			<uni-title class="product-title" :title=product.name></uni-title>
 			<view class="center-card">
@@ -419,6 +419,10 @@
 </script>
 
 <style lang="scss">
+	.c {
+		padding: 20rpx 20rpx 0 20rpx;
+	}
+	
 	.product-image {
 		width: 100%;
 	}
@@ -442,12 +446,10 @@
 		.one {
 			position: relative;
 			.one-1{
-				margin-left: 20rpx;
 				color: #8c9fad;
 			}
 			
 			.one-2{
-				margin-left: 20rpx;
 				color: #000000;
 			}
 			
@@ -490,12 +492,12 @@
 	}
 	
 	.subTitle {
-		margin-left: 30rpx;
+		margin-left: 10rpx;
 		margin-top: 20rpx;
 	}
 	
 	.product-des {
-		margin: -20rpx 30rpx 20rpx 30rpx;
+		margin: 0rpx 30rpx 20rpx 30rpx;
 		word-break: break-all;
 		display: -webkit-box;
 		overflow: hidden;
