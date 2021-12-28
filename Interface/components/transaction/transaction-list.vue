@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<uni-list >
+		{{title}}
+		<uni-list>
 			
 			<transaction-item v-for="(item,index) in txShowEvents" :key="index"
 			:border="true" 
@@ -39,6 +40,13 @@
 		      return "";
 		    }
 		  },
+		  
+		  title: {
+		    type: String,
+		    default() {
+		      return "";
+		    }
+		  },
 		},
 		
 		components:{
@@ -57,6 +65,10 @@
 			this.txShowEvents = this.after(this.txEvents); 
 		},
 		
+		updated() {
+			console.log("tx updated:", this.txShowEvents);
+		},
+		
 	
 		methods:{
 			clickLink:function(txHash) {
@@ -67,7 +79,7 @@
 			reload(txEvents, cnt){
 				
 				let ret = this.after(txEvents);
-				if(cnt>0){
+				if(cnt > 0 && cnt < ret.length){
 					this.txShowEvents = ret.splice(-cnt, -1);
 				}else{
 					this.txShowEvents = ret;
