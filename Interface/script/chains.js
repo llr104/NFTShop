@@ -14,7 +14,7 @@ var Chains = {
 	[Supported.ROPSTEN]:{
 		nftAddress: "0xd27eFBFad51B29D30Ef90e2265ed838724b8fF4A",
 		routerAddress: "0x4804fF7AB5765BC8FCae6d3cD6c8E3ae7367661b",
-		scanUrl: "https://testnet.hecoinfo.com",
+		scanUrl: "https://ropsten.etherscan.io",
 		symbol: "ETH",
 		fromBlock: 11085000
 	},
@@ -22,7 +22,7 @@ var Chains = {
 	[Supported.HECOMAIN]:{
 		nftAddress: "0xd27eFBFad51B29D30Ef90e2265ed838724b8fF4A",
 		routerAddress: "0x4804fF7AB5765BC8FCae6d3cD6c8E3ae7367661b",
-		scanUrl: "https://testnet.hecoinfo.com",
+		scanUrl: "https://hecoinfo.com",
 		symbol: "HT",
 		fromBlock: 11085000
 	},
@@ -36,38 +36,45 @@ var Chains = {
 	}
 }
 
-function nftAddress(){
+var myNId = 0;
+uni.$on("chainChanged", (nId)=>{
+	console.log("myNid:", nId);
+	myNId = Number(nId);
+});
 
-	if(Chains[ethereum.networkVersion]){
-		return Chains[ethereum.networkVersion].nftAddress;
+
+function nftAddress(){
+	
+	if(Chains[myNId]){
+		return Chains[myNId].nftAddress;
 	}
 }
 
 function routerAddress(){
-
-	if(Chains[ethereum.networkVersion]){
-		return Chains[ethereum.networkVersion].routerAddress;
+	
+	if(Chains[myNId]){
+		return Chains[myNId].routerAddress;
 	} 
 }
 
 function scanUrl(){
 
-	if(Chains[ethereum.networkVersion]){
-		return Chains[ethereum.networkVersion].scanUrl;
+	if(Chains[myNId]){
+		return Chains[myNId].scanUrl;
 	} 
 }
 
 function symbol(){
 	
-	if(Chains[ethereum.networkVersion]){
-		return Chains[ethereum.networkVersion].symbol;
+	if(Chains[myNId]){
+		return Chains[myNId].symbol;
 	} 
 }
 
 function fromBlock(){
 
-	if(Chains[ethereum.networkVersion]){
-		return Number(Chains[ethereum.networkVersion].fromBlock);
+	if(Chains[myNId]){
+		return Number(Chains[myNId].fromBlock);
 	} 
 }
 

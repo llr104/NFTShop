@@ -30,7 +30,7 @@
 	
 	var tokens = require('../../script/tokens.js');
 	let eth = tokens.getETH();
-	let router = tokens.getRouter();
+	
 	
 	export default {
 		name:"navigation",
@@ -111,6 +111,7 @@
 			},
 			
 			qryIsManager(){
+				let router = tokens.getRouter();
 				router.methods.Manager(this.address).call((error, result)=>{
 					if(error){
 						this.isManager = false;

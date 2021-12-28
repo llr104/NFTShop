@@ -17,102 +17,105 @@
 				this.provider = provider();
 				this.ETH = this.provider.eth;
 				this.isMainToken = true;
-				
-				this.ETH.net.getId().then((id)=>{
-					this.ready();
-				});
+			
 			}
 			
-			this.show = ()=>{
-				console.log("show:", this.name);
-			}
-		
+	
 			this.queryNFTPage = (page, prePage, address) =>{
-				this.getNFT().methods.tokenPage(page, prePage, address).call((error, result)=>{
-					if(!error){
-						let ids = result;
-						for (let i = 0; i < ids.length; i++) {
-							let id = Number(ids[i]);
-							if(id == 0){
-								break;
+				this.ready(()=>{
+					this.getNFT().methods.tokenPage(page, prePage, address).call((error, result)=>{
+						if(!error){
+							let ids = result;
+							for (let i = 0; i < ids.length; i++) {
+								let id = Number(ids[i]);
+								if(id == 0){
+									break;
+								}
+								this.queryToken(id);
 							}
-							this.queryToken(id);
 						}
-					}
-				})
+					});
+				});
 			}
 			
 			this.queryNFTPageIds = (page, prePage, address, cb) =>{
 				if(!address){
 					address = "0x0000000000000000000000000000000000000000";
 				}
-				this.getNFT().methods.tokenPage(page, prePage, address).call((error, result)=>{
-					let rids = [];
-					if(!error){
-						let ids = result;
-						for (let i = 0; i < ids.length; i++) {
-							let id = Number(ids[i]);
-							if(id == 0){
-								break;
+				
+				this.ready(()=>{
+					this.getNFT().methods.tokenPage(page, prePage, address).call((error, result)=>{
+						let rids = [];
+						if(!error){
+							let ids = result;
+							for (let i = 0; i < ids.length; i++) {
+								let id = Number(ids[i]);
+								if(id == 0){
+									break;
+								}
+								rids.push(id);
 							}
-							rids.push(id);
 						}
-					}
-					cb(error, rids);
-				})
+						cb(error, rids);
+					});
+				});
+				
 			}
 			
 			this.queryToken = (id, cb)=>{
+			
 				id = Number(id);
-				this.getNFT().methods.ownerOf(id).call((error, result)=>{
-					console.log("queryToken ownerOf:", result);
-					if(error){
-						if(cb){
-							cb(error, result);
-						}
-						return;
-					}
-					let ownerAddress = result;
-					this.getNFT().methods.idToIndex(id).call((error, result)=>{
-						// console.log("queryToken idToIndex:", result);
+				this.ready(()=>{
+					this.getNFT().methods.ownerOf(id).call((error, result)=>{
+						console.log("queryToken ownerOf:", result);
 						if(error){
 							if(cb){
 								cb(error, result);
 							}
 							return;
 						}
-	
-						let index = result;
-						this.getNFT().methods.cAttributes(index).call((error, result)=>{
-							if(!error){
-								// console.log("queryToken cAttributes:", result);
-								
-								let token = {};
-								token.id = id;
-								token.describe = result.describe;
-								token.groupId = Number(result.groupId)
-								token.nftType = Number(result.nftType);
-								token.price = Number(result.price);
-								token.showPrice = this.fromTokenValue(result.price);
-								
-								token.uri = result.uri;
-								token.name = result.name;
-								token.ownerAddress = ownerAddress;
-								
-								console.log("token:", token);
+						let ownerAddress = result;
+						this.getNFT().methods.idToIndex(id).call((error, result)=>{
+							// console.log("queryToken idToIndex:", result);
+							if(error){
 								if(cb){
-									cb(error, token);
+									cb(error, result);
 								}
-
-							}else{
-								if(cb){
-									cb(error, null);
-								}
+								return;
 							}
-						});
-					})
+						
+							let index = result;
+							this.getNFT().methods.cAttributes(index).call((error, result)=>{
+								if(!error){
+									// console.log("queryToken cAttributes:", result);
+									
+									let token = {};
+									token.id = id;
+									token.describe = result.describe;
+									token.groupId = Number(result.groupId)
+									token.nftType = Number(result.nftType);
+									token.price = Number(result.price);
+									token.showPrice = this.fromTokenValue(result.price);
+									
+									token.uri = result.uri;
+									token.name = result.name;
+									token.ownerAddress = ownerAddress;
+									
+									console.log("token:", token);
+									if(cb){
+										cb(error, token);
+									}
+					
+								}else{
+									if(cb){
+										cb(error, null);
+									}
+								}
+							});
+						})
+					});
 				});
-				
+			
 			}
 			
 			this.getProvider = ()=>{
@@ -148,8 +151,7 @@
 			
 			this.approveToken = (from, value)=>{
 				if(!this.isMainToken){
-					// console.log("Number.MAX_SAFE_INTEGER:", Number.MAX_SAFE_INTEGER);
-					// console.log("Number.MAX_VALUE:", Number.MAX_VALUE);
+					
 					if(value < Number.MAX_SAFE_INTEGER){
 						value = Number.MAX_SAFE_INTEGER;
 					}
@@ -254,8 +256,6 @@
 			}
 			
 			this.ready = (cb)=>{
-				
-				
 				if(this.TokenDecimals != null && this.TokenSymbol != null){
 					if(cb){
 						cb(true);
@@ -263,63 +263,67 @@
 					return;
 				}
 				
-				this.getRouter().methods.brokerAddress().call((error, tokenAddress)=>{
-					if(!error){
-						
-						let is = isSameAddress(tokenAddress, "0x0000000000000000000000000000000000000000");
-						if(!is){
-							this.Token = new this.ETH.Contract(tokenAbi, tokenAddress);
-							this.isMainToken = false;
-							if(!this.TokenDecimals){
-								this.Token.methods.decimals().call((error, result)=>{
-									if(!error){
-										console.log("decimals:", result);
-										this.TokenDecimals = Number(result);
-									}
-									
-									if(cb){
-										if(error){
-											cb(false);
-											return
-										}
-										
-										if(this.TokenSymbol){
-											cb(true);
-										}
-									}
-								});
-							}
+				this.provider.eth.net.getId().then((nId)=>{
+					uni.$emit("chainChanged", nId);
+					
+					this.getRouter().methods.brokerAddress().call((error, tokenAddress)=>{
+						if(!error){
 							
-							if(!this.TokenSymbol){
-								this.Token.methods.symbol().call((error, result)=>{
-									if(!error){
-										console.log("symbol:", result);
-										this.TokenSymbol = result;
-									}
-									
-									if(cb){
-										if(error){
-											cb(false);
-											return
+							let is = isSameAddress(tokenAddress, "0x0000000000000000000000000000000000000000");
+							if(!is){
+								this.Token = new this.ETH.Contract(tokenAbi, tokenAddress);
+								this.isMainToken = false;
+								if(!this.TokenDecimals){
+									this.Token.methods.decimals().call((error, result)=>{
+										if(!error){
+											console.log("decimals:", result);
+											this.TokenDecimals = Number(result);
 										}
 										
-										if(this.TokenDecimals){
-											cb(true);
+										if(cb){
+											if(error){
+												cb(false);
+												return
+											}
+											
+											if(this.TokenSymbol){
+												cb(true);
+											}
 										}
-									}
-								});
-							}
-						}else{
-							this.isMainToken = true;
-							this.TokenDecimals = 0;
-							this.TokenSymbol = symbol();
-							if(cb){
-								cb(true);
+									});
+								}
+								
+								if(!this.TokenSymbol){
+									this.Token.methods.symbol().call((error, result)=>{
+										if(!error){
+											console.log("symbol:", result);
+											this.TokenSymbol = result;
+										}
+										
+										if(cb){
+											if(error){
+												cb(false);
+												return
+											}
+											
+											if(this.TokenDecimals){
+												cb(true);
+											}
+										}
+									});
+								}
+							}else{
+								this.isMainToken = true;
+								this.TokenDecimals = 0;
+								this.TokenSymbol = symbol();
+								if(cb){
+									cb(true);
+								}
 							}
 						}
-					}
+					});
 				});
-				
+			
 			}
 		}
 		
@@ -333,5 +337,4 @@
 		
 	})()()
 	
-	tokens.show()
 	module.exports = tokens;

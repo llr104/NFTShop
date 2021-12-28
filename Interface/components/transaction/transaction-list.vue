@@ -65,7 +65,7 @@
 			},
 			
 			reload(txEvents, cnt){
-				console.log("reload");
+				
 				let ret = this.after(txEvents);
 				if(cnt>0){
 					this.txShowEvents = ret.splice(-cnt, -1);

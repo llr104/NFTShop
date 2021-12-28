@@ -45,7 +45,6 @@
 	var tokens = require('../../script/tokens.js');
 	var storage = require('../../script/storage.js');
 	
-	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	
 	export default {
@@ -222,7 +221,7 @@
 					});
 					return
 				}
-				
+				let nft = tokens.getNFT();
 				let toPrice = tokens.toTokenValue(price);
 				nft.methods.setTokenPrice(tokenId, toPrice).send({from: this.myAddress}).on('transactionHash', (hash)=>{
 					uni.navigateTo({

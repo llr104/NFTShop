@@ -114,9 +114,7 @@
 	var tokens = require('../../script/tokens.js');
 	var storage = require("../../script/storage.js");
 	
-	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
-	let router = tokens.getRouter();
 	let provider = tokens.getProvider();
 	
 	export default {
@@ -152,7 +150,7 @@
 			this.addressShow = addressShow;
 			this.toTokenValue = tokens.toTokenValue;
 			this.isSameAddress = isSameAddress;
-			this.nftAddress = nftAddress();
+			
 			
 			eth.getAccounts((error, result)=>{
 				if(!error && result.length != 0){
@@ -201,6 +199,7 @@
 				console.log("queryToken:", id);
 				
 				tokens.ready(()=>{
+					this.nftAddress = nftAddress();
 					this.tokenSymbol = tokens.getTokenSymbol();
 					this.tokenDecimals = tokens.getTokenDecimals();
 					tokens.queryToken(id, (error, t)=>{
@@ -235,6 +234,7 @@
 			},
 			
 			qryTX:function(id){
+				let nft = tokens.getNFT();
 				this.txEvents = [];
 				eth.getBlockNumber((error, last)=>{
 					if(error){
@@ -257,7 +257,6 @@
 							if(!error){
 								this.txEvents = this.txEvents.concat(events);
 								if(this.$refs.txlist1){
-									console.log("txlist1");
 									this.$refs.txlist1.reload(this.txEvents, 4);
 								}
 								
@@ -348,7 +347,7 @@
 			downSaleOK:function(){
 				console.log("downSaleOK");
 				this.$refs.downSale_popup.close();
-				
+				let nft = tokens.getNFT();
 				nft.methods.setTokenPrice(this.product.id, 0).send({from: this.myAddress}).on('transactionHash', (hash)=>{
 					this.downSaling = true;
 					storage.setTransactionPennding(this.product.id, hash, storage.opType.DownSaling);
@@ -449,6 +448,7 @@
 			}
 			
 			.one-2{
+				margin-left: 10rpx;
 				color: #000000;
 			}
 			
@@ -577,8 +577,6 @@
 			.upSale,
 			.upSaling,
 			.open,
-			
-				
 			.downSale,
 			.downSaling{
 				float: right;

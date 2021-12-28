@@ -1,5 +1,10 @@
 
 function addressShow(address){
+	
+	if(!address){
+		return "";
+	}
+	
 	var b = address.substring(0,6);
 	var a = address.substring(address.length-4);
 	return b + "****" + a;

@@ -24,7 +24,7 @@ function connectWallet(isFirst=false){
 		});
 		
 		window.ethereum.on("chainChanged", (nId)=>{
-			
+			console.log("chainChanged");
 			if(SupportedChainId.indexOf(Number(nId)) == -1){
 				uni.showModal({
 					title:"错误",
@@ -32,7 +32,7 @@ function connectWallet(isFirst=false){
 					showCancel:false,
 				}); 
 			}
-		
+			uni.$emit("chainChanged", nId);
 		});
 		
 		setTimeout(()=>{
@@ -51,7 +51,11 @@ function connectWallet(isFirst=false){
 		
 	}else{
 		console.log("没有钱包插件");
-		if(!isFirst){
+		let time = 0;
+		if(isFirst){
+			time = 1100;
+		}
+		setTimeout(()=>{
 			if (navigator.userAgent.indexOf('Mobile')>-1) {
 				uni.showModal({
 					title:"错误",
@@ -70,7 +74,7 @@ function connectWallet(isFirst=false){
 				    }
 				});
 			}
-		}
+		}, time);
 	}
 }
 
@@ -88,7 +92,19 @@ function provider(){
 	return new Web3(web3Provider);
 }
 
+console.log("start");
+
+// async function waitNId(){
+// 	let p = provider();
+// 	let nId = await p.eth.net.getId();
+// 	console.log("waitNId:", nId);
+	
+// 	uni.$emit("nId", nId);
+	
+// }
+
 connectWallet(true);
+// waitNId();
 
 
 module.exports = {

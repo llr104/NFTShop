@@ -20,7 +20,6 @@
 	import {fromBlock} from '../../script/chains.js';
 	
 	var tokens = require('../../script/tokens.js');
-	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	
 	export default {
@@ -95,7 +94,7 @@
 			},
 			
 			saleHistory(){
-
+				let nft = tokens.getNFT();
 				eth.getBlockNumber().then((last)=>{
 					last = Number(last);
 					for (var from = fromBlock(); from <= last; from+=5000) {

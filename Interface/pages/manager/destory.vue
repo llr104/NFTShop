@@ -18,7 +18,7 @@
 	
 	import navigation from "../../components/navigation/navigation.vue";
 	var tokens = require('../../script/tokens.js');
-	let nft = tokens.getNFT();
+	
 	let eth = tokens.getETH();
 	
 	export default {
@@ -32,6 +32,7 @@
 		
 		methods:{
 			cllickXH:function(){
+				let nft = tokens.getNFT();
 				console.log("cllickXH:", this.data);
 				if(this.data.tokenId && Number(this.data.tokenId)){
 					eth.getAccounts((error, result)=>{

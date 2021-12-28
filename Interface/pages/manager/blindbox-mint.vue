@@ -105,9 +105,7 @@
 	import vtabs from "../../components/v-tabs/v-tabs.vue";
 	
 	var tokens = require('../../script/tokens.js');
-	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
-	let router = tokens.getRouter();
 	
 	export default {
 		
@@ -159,6 +157,7 @@
 		
 		methods: {
 			cllickBase:function(){
+				let router = tokens.getRouter();
 				if(!this.base.name || !this.base.des || !this.base.uri){
 					uni.showToast({
 						title:"输入数据有误",
@@ -181,7 +180,7 @@
 			},
 			
 			idInput:function(id){
-				
+				let router = tokens.getRouter();
 				if(id && Number(id)){
 					router.methods.getIsMint(Number(id)).call((error, result)=>{
 						if(!error){
@@ -253,6 +252,7 @@
 			
 			clickDel:function(index){
 				console.log("clickDel:", index);
+				let router = tokens.getRouter();
 				uni.showModal({
 					content:"是否确定删除？",
 					 success: (res) =>{
@@ -274,7 +274,7 @@
 			},
 			
 			clickAddComfirm:function(){
-				
+				let router = tokens.getRouter();
 				let add = this.elem.add;
 				if(!add.name || !add.des || !add.uri || !add.cnt){
 					uni.showToast({
@@ -308,6 +308,7 @@
 			},
 			
 			clickModifyComfirm:function(){
+				let router = tokens.getRouter();
 				console.log("clickModifyComfirm:", this.elem.modify);
 				let modify = this.elem.modify;
 				let name = modify.name;
@@ -343,6 +344,7 @@
 			},
 			
 			clickBBResult:function(){
+				let router = tokens.getRouter();
 				console.log("clickBBResult");
 				if(!this.elem.data || !this.elem.data.length){
 					uni.showToast({
@@ -379,6 +381,7 @@
 			},
 			
 			clickBBMint:function(){
+				let router = tokens.getRouter();
 				console.log("锻造");
 				eth.getAccounts((error, account)=>{
 					if(!error && account.length > 0){

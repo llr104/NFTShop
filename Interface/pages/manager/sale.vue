@@ -34,7 +34,6 @@
 	import navigation from "../../components/navigation/navigation.vue";
 	var storage = require("../../script/storage.js");
 	var tokens = require('../../script/tokens.js');
-	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	
 	export default {
@@ -113,7 +112,7 @@
 			},
 			
 			cllickGS:function(){
-			
+				let nft = tokens.getNFT();
 				if(this.tokenId){
 					tokens.ready(()=>{
 						this.tokenSymbol = tokens.getTokenSymbol();

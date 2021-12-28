@@ -73,7 +73,7 @@
 		},
 		
 		onLoad() {
-			console.log("onLoad");
+			
 			tokens.ready(()=>{
 				this.tokenSymbol = tokens.getTokenSymbol(); 
 			});

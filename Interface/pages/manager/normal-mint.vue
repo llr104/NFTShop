@@ -28,7 +28,6 @@
 <script>
 	import navigation from "../../components/navigation/navigation.vue";
 	var tokens = require('../../script/tokens.js');
-	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	
 	export default {
@@ -49,6 +48,7 @@
 		
 		methods:{
 			cllickPTDZ:function(){
+				let nft = tokens.getNFT();
 				console.log("cllickPTDZ:", this.data);
 				uni.showLoading({
 						title:"锻造中",

@@ -34,7 +34,6 @@
 	import navigation from "../../components/navigation/navigation.vue";
 	import {addressShow} from "../../lib/utils";
 	var tokens = require('../../script/tokens.js');
-	let nft = tokens.getNFT();
 	let eth = tokens.getETH();
 	
 	export default {
