@@ -239,12 +239,22 @@
 		"constant": false,
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "_newOwner",
-				"type": "address"
+				"internalType": "uint32",
+				"name": "_bbId",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
+				"name": "_eleIndex",
+				"type": "uint32"
+			},
+			{
+				"internalType": "string",
+				"name": "_uri",
+				"type": "string"
 			}
 		],
-		"name": "transferOwnership",
+		"name": "setUri",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -291,6 +301,21 @@
 			}
 		],
 		"name": "setNFTAddress",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",

@@ -51,4 +51,8 @@ contract NFTBox is NFTMdata, Ownable{
         super._addTokenAttributes(_tokenId,_tvalue);
     }
 
+    function setUri(uint256 _tokenId, string calldata _uri) external onlyManager {
+        super._setUri(_tokenId, _uri);
+    }
+
 }

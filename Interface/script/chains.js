@@ -12,11 +12,11 @@ var SupportedChainId = [
 
 var Chains = {
 	[Supported.ROPSTEN]:{
-		nftAddress: "0xd27eFBFad51B29D30Ef90e2265ed838724b8fF4A",
-		routerAddress: "0x4804fF7AB5765BC8FCae6d3cD6c8E3ae7367661b",
+		nftAddress: "0x820e41B57B21110F16f50F1c26044A2D4eF8A02A",
+		routerAddress: "0x5F0dB59E07bFb052228C3f5A8Be20092738658C0",
 		scanUrl: "https://ropsten.etherscan.io",
 		symbol: "ETH",
-		fromBlock: 11085000
+		fromBlock: 11704947
 	},
 	
 	[Supported.HECOMAIN]:{

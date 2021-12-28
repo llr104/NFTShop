@@ -237,4 +237,10 @@ contract NFTRouter is Ownable {
         return BBRES[_bbId].length != 0;
     }
 
+    function setUri(uint32 _bbId, uint32 _eleIndex, string memory _uri) public  validBBCFG(_bbId) onlyManager{
+        require(_eleIndex < BBELE[_bbId].length, NOT_VALID_BBCFG_ELE);
+        BBELE[_bbId][_eleIndex].uri = _uri;
+    }
+
+
 }

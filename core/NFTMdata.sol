@@ -224,6 +224,11 @@ contract NFTMdata is NFToken, IEnumDef {
         return cAttributes[tokenIndex].price;
     }
 
+    function _setUri(uint256 _tokenId, string memory _uri) internal validNFToken(_tokenId){
+        uint256 tokenIndex = idToIndex[_tokenId];
+        cAttributes[tokenIndex].uri = _uri;
+    }
+
     function isBlindBox(uint256 _tokenId) public view validNFToken(_tokenId) returns(bool){
         uint256 tokenIndex = idToIndex[_tokenId];
         return cAttributes[tokenIndex].nftType == NFTType.BlindBox;
