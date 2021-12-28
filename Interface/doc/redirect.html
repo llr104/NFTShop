@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang=en>
+
+    <head>
+        <meta charset=utf-8>
+        <meta http-equiv=X-UA-Compatible content="IE=edge">
+        <meta name=viewport content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+        <title>pcguide</title>
+        <script type="text/javascript">
+			
+			var viewPath = location.hash
+			console.log("viewPath 111:", viewPath);
+			if (viewPath && viewPath.indexOf("index.html") > -1) {
+				viewPath = '/'
+			}else if (viewPath){
+				viewPath = viewPath.slice(1)
+			} else {
+				viewPath = '/'
+			}
+			console.log("viewPath 222:", viewPath);
+			// viewPath = "https://www.baidu.com";
+		
+            function redirectToLaunch() {
+                if (document.documentElement.clientWidth <= 950) {
+                    location.href = viewPath;
+                }
+            };
+            redirectToLaunch();
+
+            var timer = null;
+            window.addEventListener('resize', function() {
+                timer && clearTimeout(timer);
+                timer = setTimeout(function() {
+                    redirectToLaunch();
+                }, 500);
+            });
+					
+
+			document.addEventListener('DOMContentLoaded', function() {
+					document.getElementById("h5-viwer").src = viewPath
+			}, false);
+
+        </script>
+		<style type="text/css">
+		
+            body {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+
+  
+            .h5-viwer-box {
+                margin: 3vh auto;
+                width: 60vh;
+                height: 90vh;
+                box-sizing: content-box;
+                border: solid 10px #000000;
+                border-radius: 10px;
+                box-shadow: #DDDDDD 10px 10px 20px;
+            }
+
+            .h5-viwer {
+                width: 60vh;
+                height: 90vh;
+                border: 0;
+                padding: 0;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        
+        <div class="h5-viwer-box">
+            <iframe id="h5-viwer" class="h5-viwer" src="/h5/" width="414" height="736" ></iframe>
+        </div>
+	
+    </body>
+
+</html>
