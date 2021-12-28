@@ -57,6 +57,7 @@
     },
     "h5" : {
         "template" : "template.h5.html",
-        "title" : "INFT"
+        "title" : "INFT",
+        "domain" : "https://llr104.github.io/NFTShop/"
     }
 }
