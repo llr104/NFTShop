@@ -37,8 +37,8 @@ var Chains = {
 }
 
 var myNId = 0;
-uni.$on("chainChanged", (nId)=>{
-	console.log("myNid:", nId);
+uni.$on("chainId", (nId)=>{
+	console.log("chainId:", nId);
 	myNId = Number(nId);
 });
 

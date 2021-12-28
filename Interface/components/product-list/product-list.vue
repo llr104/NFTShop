@@ -10,6 +10,7 @@
 					<view class="product-title">{{product.name}}</view>
 					<view class="product-onwer">{{addressShow(product.ownerAddress)}}</view>
 					<view class="product-price" v-if="product.price">{{product.showPrice}}&nbsp;{{unitSymbol}}</view>
+					<view class="product-price" v-else>售罄</view>
 				</view>
 				 <view class="right-row"></view>
 		    </view>
@@ -160,21 +161,19 @@
     }
 	
 	.product-text {
-		margin-left: 20rpx;
+		margin-left: 10rpx;
+		width: 300rpx;
+		font-size: 20rpx;
+		color: #14181f;
+		display: -webkit-box;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		 
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
 	}
 
-    .product-title {
-        width: 300rpx;
-		color: #14181f;
-        word-break: break-all;
-        display: -webkit-box;
-        overflow: hidden;
-        line-height: 1.5;
-        text-overflow: ellipsis;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-    }
-	
+
 	.product-onwer {
 		color: #8c9fad;
 	}

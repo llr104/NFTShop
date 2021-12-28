@@ -17,6 +17,7 @@
 				this.provider = provider();
 				this.ETH = this.provider.eth;
 				this.isMainToken = true;
+				this.zeroAddress = "0x0000000000000000000000000000000000000000";
 			
 			}
 			
@@ -40,7 +41,7 @@
 			
 			this.queryNFTPageIds = (page, prePage, address, cb) =>{
 				if(!address){
-					address = "0x0000000000000000000000000000000000000000";
+					address = this.zeroAddress;
 				}
 				
 				this.ready(()=>{
@@ -256,69 +257,52 @@
 			}
 			
 			this.ready = (cb)=>{
+			
 				if(this.TokenDecimals != null && this.TokenSymbol != null){
 					if(cb){
-						cb(true);
+						cb();
 					}
 					return;
 				}
-				
+			
 				this.provider.eth.net.getId().then((nId)=>{
-					uni.$emit("chainChanged", nId);
-					
-					this.getRouter().methods.brokerAddress().call((error, tokenAddress)=>{
-						if(!error){
-							
-							let is = isSameAddress(tokenAddress, "0x0000000000000000000000000000000000000000");
-							if(!is){
-								this.Token = new this.ETH.Contract(tokenAbi, tokenAddress);
-								this.isMainToken = false;
-								if(!this.TokenDecimals){
-									this.Token.methods.decimals().call((error, result)=>{
-										if(!error){
-											console.log("decimals:", result);
-											this.TokenDecimals = Number(result);
-										}
-										
-										if(cb){
-											if(error){
-												cb(false);
-												return
-											}
-											
-											if(this.TokenSymbol){
-												cb(true);
-											}
-										}
-									});
-								}
+					uni.$emit("chainId", nId);
+			
+					this.getRouter().methods.brokerAddress().call().then((tokenAddress)=>{
+						console.log("tokenAddress:", tokenAddress);
+						let is = isSameAddress(tokenAddress, this.zeroAddress);
+						if(!is){
+							this.Token = new this.ETH.Contract(tokenAbi, tokenAddress);
+							this.isMainToken = false;
+							this.Token.methods.decimals().call().then((decimals)=>{
+								console.log("decimals:", decimals);
+								this.TokenDecimals = Number(decimals);
 								
-								if(!this.TokenSymbol){
-									this.Token.methods.symbol().call((error, result)=>{
-										if(!error){
-											console.log("symbol:", result);
-											this.TokenSymbol = result;
-										}
-										
-										if(cb){
-											if(error){
-												cb(false);
-												return
-											}
-											
-											if(this.TokenDecimals){
-												cb(true);
-											}
-										}
-									});
-								}
-							}else{
-								this.isMainToken = true;
-								this.TokenDecimals = 0;
-								this.TokenSymbol = symbol();
 								if(cb){
-									cb(true);
+									if(this.TokenSymbol){
+										cb();
+									}
 								}
+							});
+							
+							this.Token.methods.symbol().call().then((symbol)=>{
+								console.log("symbol:", symbol);
+								this.TokenSymbol = symbol;
+								
+								if(cb){
+									
+									if(this.TokenDecimals){
+										cb();
+									}
+								}
+							});
+							
+						}else{
+							this.isMainToken = true;
+							this.TokenDecimals = 0;
+							this.TokenSymbol = symbol();
+							if(cb){
+								cb();
 							}
 						}
 					});

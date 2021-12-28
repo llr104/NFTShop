@@ -31,8 +31,10 @@ function connectWallet(isFirst=false){
 					content:"不支持该链，请选择正确的链",
 					showCancel:false,
 				}); 
+			}else{
+				window.location.reload();
 			}
-			uni.$emit("chainChanged", nId);
+			uni.$emit("chainId", nId);
 		});
 		
 		setTimeout(()=>{
@@ -92,20 +94,7 @@ function provider(){
 	return new Web3(web3Provider);
 }
 
-console.log("start");
-
-// async function waitNId(){
-// 	let p = provider();
-// 	let nId = await p.eth.net.getId();
-// 	console.log("waitNId:", nId);
-	
-// 	uni.$emit("nId", nId);
-	
-// }
-
 connectWallet(true);
-// waitNId();
-
 
 module.exports = {
 	"provider": provider,
