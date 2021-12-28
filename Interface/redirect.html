@@ -12,11 +12,11 @@
 			var viewPath = location.hash
 			console.log("viewPath 111:", viewPath);
 			if (viewPath && viewPath.indexOf("index.html") > -1) {
-				viewPath = '/'
+				viewPath = './'
 			}else if (viewPath){
 				viewPath = viewPath.slice(1)
 			} else {
-				viewPath = '/'
+				viewPath = './'
 			}
 			console.log("viewPath 222:", viewPath);
 
