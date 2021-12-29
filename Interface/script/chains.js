@@ -21,8 +21,8 @@ var Chains = {
 	},
 	
 	[Supported.HECOMAIN]:{
-		nftAddress: "0xd27eFBFad51B29D30Ef90e2265ed838724b8fF4A",
-		routerAddress: "0x4804fF7AB5765BC8FCae6d3cD6c8E3ae7367661b",
+		nftAddress: "0x8E332037F351dEf327a1925fe96d8dFef521d46a",
+		routerAddress: "0xa6bD375359d4d622b92d5aA684A8d67b66B4bf4c",
 		scanUrl: "https://hecoinfo.com",
 		symbol: "HT",
 		fromBlock: 11085000,
