@@ -85,6 +85,8 @@
 				</view>
 				<view class="space">
 				</view>
+				<view v-if="!product.price" class="space">
+				</view>
 				
 			</view>
 			
@@ -702,7 +704,7 @@
 		
 		.space {
 			width: 100%;
-			height: 200rpx;
+			height: 100rpx;
 		}
 		
 		.bottom-fixed {
