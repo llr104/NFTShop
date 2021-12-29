@@ -85,10 +85,29 @@ function isSupport(nId){
 	return SupportedChainId.indexOf(Number(nId))>=0;
 }
 
+function checkChain(nId){
+	let str = ""
+	for (let c in Chains) {
+		str += Chains[c].name + " ";
+	}
+	
+	if(!isSupport(nId)){
+		uni.showModal({
+			title:"错误",
+			content:"目前只部署在"+str+"链上，请选择正确的链再试",
+			showCancel:false,
+		});
+		return false;
+	}else{
+		return true;
+	}
+}
+
 
 module.exports = {
 	Chains: Chains,
 	isSupport: isSupport,
+	checkChain: checkChain,
 	nftAddress: nftAddress,
 	routerAddress: routerAddress,
 	scanUrl: scanUrl,

@@ -1,6 +1,6 @@
 var Web3 = require('./web3.min.js');
 
-import {isSupport, Chains} from './chains.js'
+import {isSupport, checkChain} from './chains.js'
 
 
 async function asyncFun() {
@@ -11,23 +11,7 @@ async function asyncFun() {
 	}
 }
 
-function checkChain(nId){
-	let str = ""
-	for (let c in Chains) {
-		str += Chains[c].name + " ";
-	}
-	
-	if(!isSupport(nId)){
-		uni.showModal({
-			title:"错误",
-			content:"目前只部署在"+str+"链上，请选择正确的链再试",
-			showCancel:false,
-		});
-		return false;
-	}else{
-		return true;
-	}
-}
+
 
 function connectWallet(isFirst=false){
 	
@@ -49,11 +33,6 @@ function connectWallet(isFirst=false){
 			uni.$emit("chainId", nId);
 		});
 		
-		setTimeout(()=>{
-			checkChain(Number(ethereum.networkVersion));
-		}, 1000);
-		
-	
 	}else{
 		console.log("没有钱包插件");
 		let time = 0;
