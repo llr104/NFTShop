@@ -1,5 +1,5 @@
 <script>
-	import {checkChain} from './script/chains.js';
+	
 	export default {
 		onLaunch: function() {
 			console.warn('当前组件仅支持 uni_modules 目录结构 ，请升级 HBuilderX 到 3.1.0 版本以上！')
@@ -8,14 +8,13 @@
 		},
 		onShow: function() {
 			console.log('App Show');
+			let chains = require('./script/chains.js');
+			let tokens = require('./script/tokens.js');
+			tokens.getNetId().then((nId)=>{
+				console.log("onShow getNetId:", nId);
+				chains.checkChain(Number(nId));
+			});
 			
-			setTimeout(()=>{
-					
-				if(window.ethereum){
-					checkChain(Number(ethereum.networkVersion));
-				}
-
-			}, 1000);
 		},
 		onHide: function() {
 			console.log('App Hide');

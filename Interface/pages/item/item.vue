@@ -2,7 +2,7 @@
 	<view>
 		<navigation></navigation>
 		<view class="c" v-if="isFound">
-			<image class="product-image" :src="product.uri" mode="widthFix"></image>
+			<image class="product-image" :src="product.uri" mode="widthFix" @click="clickImg"></image>
 			<uni-title class="product-title" :title=product.name></uni-title>
 			<view class="center-card">
 				<view class="one one-margin" @click="clickContactAddress">
@@ -411,6 +411,13 @@
 				}); 
 			
 			},
+			
+			clickImg:function(){
+				uni.previewImage({
+					urls:[this.product.uri],
+				});
+				
+			}
 			
 		}
 	}

@@ -256,6 +256,10 @@
 				}
 			}
 			
+			this.getNetId = ()=>{
+				return this.provider.eth.net.getId();
+			}
+			
 			this.ready = (cb)=>{
 				
 				if(this.TokenDecimals != null && this.TokenSymbol != null){
