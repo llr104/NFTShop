@@ -1,5 +1,5 @@
 	import {provider} from './eth.js';
-	import {nftAddress, routerAddress, symbol} from './chains.js';
+	import {nftAddress, routerAddress, symbol, isSupport} from './chains.js';
 	
 	import {isSameAddress} from '../lib/utils.js';
 	
@@ -257,7 +257,7 @@
 			}
 			
 			this.ready = (cb)=>{
-			
+				
 				if(this.TokenDecimals != null && this.TokenSymbol != null){
 					if(cb){
 						cb();
@@ -267,7 +267,10 @@
 			
 				this.provider.eth.net.getId().then((nId)=>{
 					uni.$emit("chainId", nId);
-			
+						
+					if(!isSupport(nId)){
+						return;
+					}
 					this.getRouter().methods.brokerAddress().call().then((tokenAddress)=>{
 						console.log("tokenAddress:", tokenAddress);
 						let is = isSameAddress(tokenAddress, this.zeroAddress);

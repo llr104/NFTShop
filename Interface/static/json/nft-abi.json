@@ -621,6 +621,11 @@
 			},
 			{
 				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
 				"name": "_BBCfgId",
 				"type": "uint256"
 			}

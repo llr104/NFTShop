@@ -82,7 +82,7 @@ contract NFTMdata is NFToken, IEnumDef {
     }
 
     function _mint(address _to, string memory _name, string memory _uri, 
-    string memory _des, NFTType _type,  uint32 _count, int256 _groupId, uint256 _BBCfgId) internal{
+    string memory _des, NFTType _type,  uint32 _count, int256 _groupId, uint256 _price, uint256 _BBCfgId) internal{
 
         uint256 gid = 0;
         if(_groupId < 0){
@@ -114,13 +114,14 @@ contract NFTMdata is NFToken, IEnumDef {
             attr.uri = _uri;   
             attr.nftType = _type;
             attr.name = _name;
+            attr.price = _price;
             attr.describe = _des;
             cAttributes.push(attr);
             if(_type == NFTType.BlindBox){
                 _addTokenAttributes(_tokenId, _BBCfgId);
             }
 
-            emit SetOnSale(msg.sender, _to, _tokenId, 0, OPType.Mint);
+            emit SetOnSale(msg.sender, _to, _tokenId, _price, OPType.Mint);
         }
     }
 

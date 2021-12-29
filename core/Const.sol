@@ -18,6 +18,7 @@ contract Const{
     string internal constant BB_HAS_RES = "01011";
     string internal constant BB_NO_RES = "01012";
     string internal constant BB_RES_NOT_MATCH = "01013";
+    string internal constant BB_MINT_NOT_MATCH = "01014";
     
     string internal constant ZERO_ADDRESS = "003001";
     string internal constant NOT_VALID_NFT = "003002";

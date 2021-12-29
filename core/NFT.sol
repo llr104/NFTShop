@@ -12,8 +12,8 @@ contract NFTBox is NFTMdata, Ownable{
 
 
     function mint(address _to, string calldata _name, string calldata _uri, string calldata _des, 
-    IEnumDef.NFTType _type,  uint32 _count, int256 _groupId, uint256 _BBCfgId) external onlyManager{
-        super._mint(_to, _name, _uri, _des, _type, _count, _groupId, _BBCfgId);
+    IEnumDef.NFTType _type,  uint32 _count, int256 _groupId, uint256 _price, uint256 _BBCfgId) external onlyManager{
+        super._mint(_to, _name, _uri, _des, _type, _count, _groupId, _price, _BBCfgId);
     }
     
     function burn(uint256 _tokenId) external onlyManager {

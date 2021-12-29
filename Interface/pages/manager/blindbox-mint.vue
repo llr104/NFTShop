@@ -17,6 +17,9 @@
 				<uni-forms-item required name="uri" label="盲盒 URI">
 					<uni-easyinput type="text" v-model="base.uri" placeholder="请输入盲盒 URI" />
 				</uni-forms-item>
+				<uni-forms-item required name="price" label="盲盒价格">
+					<uni-easyinput type="text" v-model="base.price" placeholder="请输入盲盒价格" />
+				</uni-forms-item>
 			</uni-forms>
 			<button class="basebtn" v-if="baseloading==false" @click="cllickBase">提交基础配置</button>
 			<button class="baseloading" loading="true" v-if="baseloading">提交基础配置中...</button>
@@ -69,6 +72,7 @@
 							<uni-forms-item required name="cnt" label="盲盒数量">
 								<uni-easyinput type="number" v-model="elem.add.cnt" placeholder="请输入盲盒数量" />
 							</uni-forms-item>
+							
 						</uni-forms>
 						<button type="default" @click="clickAddComfirm">确认提交</button>
 					</view>
@@ -88,6 +92,7 @@
 							<uni-forms-item required name="cnt" label="盲盒数量">
 								<uni-easyinput type="number" v-model="elem.modify.cnt" placeholder="请输入盲盒数量" />
 							</uni-forms-item>
+							
 						</uni-forms>
 						<button type="default" @click="clickModifyComfirm">确认提交</button>
 					</view>
@@ -122,6 +127,7 @@
 					name:"盲盒1",
 					des:"这是盲盒1",
 					uri:"https://www.ibox.fan/file/oss/nft/image/nft-goods/503c96a67b154a2caa3f16165e59febb.png?style=st6",
+					price:0,
 				},
 				
 				elem:{
@@ -154,6 +160,10 @@
 			}
 		},
 		
+		onLoad() {
+			tokens.ready();
+		},
+		
 		
 		methods: {
 			cllickBase:function(){
@@ -169,7 +179,8 @@
 				this.baseloading = true;
 				eth.getAccounts((error, result)=>{
 					if(!error && result.length > 0){
-						router.methods.makeBlinkBoxCfg(this.base.name, this.base.des, this.base.uri).send({from: result[0]}).on('transactionHash', (hash)=>{
+						let price = tokens.toTokenValue(this.base.price);
+						router.methods.makeBlinkBoxCfg(this.base.name, this.base.des, this.base.uri, price).send({from: result[0]}).on('transactionHash', (hash)=>{
 					}).on('receipt', (receipt)=>{
 						this.baseloading = false;
 					}).on('error', (error)=>{

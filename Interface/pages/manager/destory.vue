@@ -30,6 +30,10 @@
 			};
 		},
 		
+		onLoad() {
+			tokens.ready();
+		},
+		
 		methods:{
 			cllickXH:function(){
 				let nft = tokens.getNFT();

@@ -47,6 +47,10 @@
 			};
 		},
 		
+		onLoad() {
+			tokens.ready();
+		},
+		
 		methods:{
 			gsTokenIdInput:function(text){
 				this.approving = false;

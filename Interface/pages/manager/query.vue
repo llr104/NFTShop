@@ -48,7 +48,9 @@
 		
 		onLoad() {
 			this.addressShow = addressShow;
+			tokens.ready();
 		},
+	
 		
 		methods:{
 			cllickQuery:function(){

@@ -111,13 +111,15 @@
 			},
 			
 			qryIsManager(){
-				let router = tokens.getRouter();
-				router.methods.Manager(this.address).call((error, result)=>{
-					if(error){
-						this.isManager = false;
-					}else{
-						this.isManager = result;
-					}
+				tokens.ready(()=>{
+					let router = tokens.getRouter();
+					router.methods.Manager(this.address).call((error, result)=>{
+						if(error){
+							this.isManager = false;
+						}else{
+							this.isManager = result;
+						}
+					});
 				});
 			}
 		}

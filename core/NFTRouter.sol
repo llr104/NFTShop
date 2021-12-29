@@ -9,7 +9,7 @@ interface INFT{
     function getTokenPrice(uint256 _tokenId) external view  returns(uint256);
     function sale(address _to, uint256 _tokenId) external;
     function mint(address _to, string calldata _name, string calldata _uri, string calldata _des, 
-    IEnumDef.NFTType _type,  uint32 _count, int256 _groupId, uint256 _BBCfgId) external;
+    IEnumDef.NFTType _type,  uint32 _count, int256 _groupId, uint256 _price, uint256 _BBCfgId) external;
     function burn(uint256 _tokenId) external;
     function idToIndex(uint256 _tokenId) external returns(uint256);
     function idToOwner(uint256 _tokenId) external returns(address);
@@ -38,12 +38,15 @@ contract NFTRouter is Ownable {
         string  des;
         string  uri;
         uint256 groupId;
+        uint256 price;
     }
 
     mapping(uint256=>blinkboxCfg) public BBCFG;
     mapping(uint256=>blinkboxEle[]) public BBELE;
     mapping(uint256=>uint32[]) private BBRES;
     mapping(uint256=>uint32) public BBRESIndex;
+    mapping(uint256=>uint32) public BBMintCurrentCnt;
+
 
     modifier validBBCFG(uint32 _bbId){
         require(_bbId <= blinkboxId && _bbId > 0, NOT_VALID_BBCFG);
@@ -69,6 +72,15 @@ contract NFTRouter is Ownable {
         require(BBRES[_bbId].length != 0, BB_NO_RES);
         _;
     }
+
+    modifier BBCanMintFull(uint32 _bbId){
+        require(_bbId <= blinkboxId && _bbId > 0, NOT_VALID_BBCFG);
+        require(BBELE[_bbId].length > 0, BB_ELEM_IS_EMPTY);
+        require(BBCFG[_bbId].groupId == 0, NOT_VALID_BB_IS_MINT);
+        require(BBRES[_bbId].length != 0, BB_NO_RES);
+        _;
+    }
+
 
 
     constructor(address _nftAddress) public{
@@ -109,7 +121,7 @@ contract NFTRouter is Ownable {
     
     }
 
-    function mintBlinkBox(uint32 _bbId) public onlyManager validBBCFG(_bbId) BBIsNotMint(_bbId) BBElemIsEmpty(_bbId) HasRES(_bbId){
+    function mintBlinkBox(uint32 _bbId) public onlyManager BBCanMintFull(_bbId){
        
         uint32 cnt = 0;
         for (uint32 i = 0; i < BBELE[_bbId].length; i++) {
@@ -117,10 +129,45 @@ contract NFTRouter is Ownable {
             cnt += ele.cnt;
         }
 
+     
         blinkboxCfg memory cfg = BBCFG[_bbId];
-        INFT(nftAddress).mint(msg.sender, cfg.name, cfg.uri, cfg.des, IEnumDef.NFTType.BlindBox, cnt, -1, _bbId);
+        INFT(nftAddress).mint(msg.sender, cfg.name, cfg.uri, cfg.des, IEnumDef.NFTType.BlindBox, cnt, -1, cfg.price, _bbId);
 
         BBCFG[_bbId].groupId = INFT(nftAddress).groupId();
+        BBMintCurrentCnt[_bbId] = cnt;
+        
+    }
+
+    function mintBlinkBoxIndex(uint32 _bbId, uint32 _mintCnt) public onlyManager{
+       
+        uint32 cnt = 0;
+        for (uint32 i = 0; i < BBELE[_bbId].length; i++) {
+            blinkboxEle memory ele = BBELE[_bbId][i];
+            cnt += ele.cnt;
+        }
+
+        uint32 ccnt = BBMintCurrentCnt[_bbId];
+        require(ccnt < cnt, BB_MINT_NOT_MATCH);
+        if(_mintCnt > cnt - ccnt){
+            _mintCnt = cnt - ccnt;
+        }
+
+
+
+        blinkboxCfg memory cfg = BBCFG[_bbId];
+        int256 groupId = int256(BBCFG[_bbId].groupId);
+        if(ccnt == 0){
+            groupId = -1;
+        }
+        
+
+        INFT(nftAddress).mint(msg.sender, cfg.name, cfg.uri, cfg.des, IEnumDef.NFTType.BlindBox, _mintCnt, -1, cfg.price, _bbId);
+       
+        if(ccnt == 0){
+            BBCFG[_bbId].groupId = INFT(nftAddress).groupId();
+        }
+        
+        BBMintCurrentCnt[_bbId] += _mintCnt;
         
     }
 
@@ -132,25 +179,25 @@ contract NFTRouter is Ownable {
         address _owner = INFT(nftAddress).idToOwner(_tokenId);
         require(_owner == msg.sender, NOT_OWNER);
 
-        
         uint256 bbId = INFT(nftAddress).getAttributesValuebyIndex(_tokenId, 0);
         uint32 index = BBRESIndex[bbId];
         uint256 eleIndex = BBRES[bbId][index];
         blinkboxCfg memory cfg = BBCFG[bbId];
         blinkboxEle memory ele = BBELE[bbId][eleIndex];
         
-        INFT(nftAddress).mint(_owner, ele.name, ele.uri, ele.des, IEnumDef.NFTType.Normal, 1, int256(cfg.groupId), 0);
+        INFT(nftAddress).mint(_owner, ele.name, ele.uri, ele.des, IEnumDef.NFTType.Normal, 1, int256(cfg.groupId), 0, 0);
 
         BBRESIndex[bbId] = index+1;
         INFT(nftAddress).burn(_tokenId);
     }
     
-    function makeBlinkBoxCfg(string memory _name, string memory _des, string  memory _uri) public onlyManager returns(uint256){
+    function makeBlinkBoxCfg(string memory _name, string memory _des, string  memory _uri, uint256 _price) public onlyManager returns(uint256){
         blinkboxId++;
         blinkboxCfg memory cfg;
         cfg.name = _name;
         cfg.des = _des;
         cfg.uri = _uri;
+        cfg.price = _price;
         BBCFG[blinkboxId] = cfg;
         return blinkboxId;
     }

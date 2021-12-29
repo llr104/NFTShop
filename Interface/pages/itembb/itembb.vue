@@ -36,8 +36,12 @@
 					<view class="cnt">
 						数量{{e.cnt}}
 					</view>
+					
 					<view class="des">
-						{{e.des}}
+						内容描述
+						<view class="">
+							{{e.des}}
+						</view>
 					</view>
 				</view>
 			</view>

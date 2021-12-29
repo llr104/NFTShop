@@ -12,11 +12,12 @@ var SupportedChainId = [
 
 var Chains = {
 	[Supported.ROPSTEN]:{
-		nftAddress: "0x820e41B57B21110F16f50F1c26044A2D4eF8A02A",
-		routerAddress: "0x5F0dB59E07bFb052228C3f5A8Be20092738658C0",
+		nftAddress: "0x075F6e291cAb2D9405D643965bD40f80882cA49D",
+		routerAddress: "0x10EE20A42876888400d582F9B5f822aD58bFB742",
 		scanUrl: "https://ropsten.etherscan.io",
 		symbol: "ETH",
-		fromBlock: 11704947
+		fromBlock: 11704947,
+		name:"ropsten"
 	},
 	
 	[Supported.HECOMAIN]:{
@@ -24,15 +25,17 @@ var Chains = {
 		routerAddress: "0x4804fF7AB5765BC8FCae6d3cD6c8E3ae7367661b",
 		scanUrl: "https://hecoinfo.com",
 		symbol: "HT",
-		fromBlock: 11085000
+		fromBlock: 11085000,
+		name:"heco"
 	},
 	
 	[Supported.HECOTEST]:{
-		nftAddress: "0xd27eFBFad51B29D30Ef90e2265ed838724b8fF4A",
-		routerAddress: "0x4804fF7AB5765BC8FCae6d3cD6c8E3ae7367661b",
+		nftAddress: "0x075F6e291cAb2D9405D643965bD40f80882cA49D",
+		routerAddress: "0x10EE20A42876888400d582F9B5f822aD58bFB742",
 		scanUrl: "https://testnet.hecoinfo.com",
 		symbol: "HT",
-		fromBlock: 11085000
+		fromBlock: 11085000,
+		name:"hecoTest"
 	}
 }
 
@@ -78,10 +81,14 @@ function fromBlock(){
 	} 
 }
 
+function isSupport(nId){
+	return SupportedChainId.indexOf(Number(nId))>=0;
+}
+
 
 module.exports = {
 	Chains: Chains,
-	SupportedChainId: SupportedChainId,
+	isSupport: isSupport,
 	nftAddress: nftAddress,
 	routerAddress: routerAddress,
 	scanUrl: scanUrl,
