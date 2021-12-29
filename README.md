@@ -1,6 +1,7 @@
 # NFT Shop
 
 ## NFT Shop made with backend by solidify smart contract and frontend use Uniapp(base Vue)
+## deploy at heco chain, repsten chain and heco test chain
 
 ## Content of this:
 - Mint NFT
