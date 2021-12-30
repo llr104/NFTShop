@@ -94,8 +94,8 @@ contract NFTMdata is NFToken, IEnumDef {
             groupId++;
             gid = groupId;
 
-        }else if(_groupId > 0){
-            if (_groupId> int256(groupId)){
+        }else {
+            if (_groupId > int256(groupId)){
                 groupId = uint256(_groupId);
             }
             gid = uint256(_groupId);
