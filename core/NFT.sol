@@ -43,6 +43,10 @@ contract NFTBox is NFTMdata, Ownable{
         }
     }
 
+    function getTokenPrice(uint256 _tokenId) external view  returns(uint256){
+        super._getTokenPrice(_tokenId);
+    }
+
     function setAttribute(uint256 _tokenId, uint256 _index, uint256 _tvalue) external onlyManager{
         super._setTokenAttributes(_tokenId, _index, _tvalue);
     }
@@ -51,8 +55,9 @@ contract NFTBox is NFTMdata, Ownable{
         super._addTokenAttributes(_tokenId,_tvalue);
     }
 
-    function setUri(uint256 _tokenId, string calldata _uri) external onlyManager {
-        super._setUri(_tokenId, _uri);
+    function setUri(uint256 _groupId, string calldata _uri) external onlyManager {
+        super._setUri(_groupId, _uri);
     }
+
 
 }

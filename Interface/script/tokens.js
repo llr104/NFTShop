@@ -17,6 +17,7 @@
 				this.provider = provider();
 				this.ETH = this.provider.eth;
 				this.isMainToken = true;
+				this.groups = new Map();
 				this.zeroAddress = "0x0000000000000000000000000000000000000000";
 			
 			}
@@ -63,55 +64,63 @@
 				
 			}
 			
+			this.queryGroup = (gId, cb)=>{
+				gId = Number(gId);
+				let g = this.groups.get(gId);
+				if(g){
+					if(cb){
+						cb(null, g);
+					}
+					return;
+				}
+				
+				this.getNFT().methods.gAttributes(gId).call((error, group) =>{
+					console.log("queryGroup:", error, group);
+					if(!error){
+						this.groups.set(gId, group);
+					}
+					
+					if(cb){
+						cb(error, group);
+					}
+				});
+			}
+			
 			this.queryToken = (id, cb)=>{
 			
 				id = Number(id);
 				this.ready(()=>{
-					this.getNFT().methods.ownerOf(id).call((error, result)=>{
-						console.log("queryToken ownerOf:", result);
+					this.getNFT().methods.ownerOf(id).call((error, address)=>{
+						console.log("queryToken ownerOf:", address);
 						if(error){
 							if(cb){
-								cb(error, result);
+								cb(error, address);
 							}
 							return;
 						}
-						let ownerAddress = result;
-						this.getNFT().methods.idToIndex(id).call((error, result)=>{
-							// console.log("queryToken idToIndex:", result);
-							if(error){
-								if(cb){
-									cb(error, result);
-								}
-								return;
-							}
-						
-							let index = result;
-							this.getNFT().methods.cAttributes(index).call((error, result)=>{
-								if(!error){
-									// console.log("queryToken cAttributes:", result);
-									
+						let ownerAddress = address;
+						this.getNFT().methods.idToIndex(id).call().then((index)=>{
+							
+							this.getNFT().methods.cAttributes(index).call().then((nft)=>{
+								
+								this.queryGroup(nft.groupId, (error, group)=>{
 									let token = {};
 									token.id = id;
-									token.describe = result.describe;
-									token.groupId = Number(result.groupId)
-									token.nftType = Number(result.nftType);
-									token.price = Number(result.price);
-									token.showPrice = this.fromTokenValue(result.price);
-									
-									token.uri = result.uri;
-									token.name = result.name;
+									token.groupId = Number(nft.groupId)
+									token.price = Number(nft.price);
+									token.showPrice = this.fromTokenValue(nft.price);
+									token.uri = group.uri;
+									token.name = group.name;
+									token.describe = group.describe;
+									token.nftType = Number(group.nftType);
 									token.ownerAddress = ownerAddress;
 									
 									console.log("token:", token);
 									if(cb){
-										cb(error, token);
+										cb(null, token);
 									}
-					
-								}else{
-									if(cb){
-										cb(error, null);
-									}
-								}
+								});
+								
 							});
 						})
 					});

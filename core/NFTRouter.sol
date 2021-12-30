@@ -30,6 +30,7 @@ contract NFTRouter is Ownable {
         string  des;
         string  uri;
         uint32  cnt;
+        uint256 groupId;
     }
     
     
@@ -131,7 +132,7 @@ contract NFTRouter is Ownable {
 
      
         blinkboxCfg memory cfg = BBCFG[_bbId];
-        INFT(nftAddress).mint(msg.sender, cfg.name, cfg.uri, cfg.des, IEnumDef.NFTType.BlindBox, cnt, -1, cfg.price, _bbId);
+        INFT(nftAddress).mint(msg.sender, cfg.name, cfg.uri, cfg.des, IEnumDef.NFTType.BlindBox, cnt, 0, cfg.price, _bbId);
 
         BBCFG[_bbId].groupId = INFT(nftAddress).groupId();
         BBMintCurrentCnt[_bbId] = cnt;
@@ -161,7 +162,7 @@ contract NFTRouter is Ownable {
         }
         
 
-        INFT(nftAddress).mint(msg.sender, cfg.name, cfg.uri, cfg.des, IEnumDef.NFTType.BlindBox, _mintCnt, -1, cfg.price, _bbId);
+        INFT(nftAddress).mint(msg.sender, cfg.name, cfg.uri, cfg.des, IEnumDef.NFTType.BlindBox, _mintCnt, 0, cfg.price, _bbId);
        
         if(ccnt == 0){
             BBCFG[_bbId].groupId = INFT(nftAddress).groupId();
@@ -182,10 +183,15 @@ contract NFTRouter is Ownable {
         uint256 bbId = INFT(nftAddress).getAttributesValuebyIndex(_tokenId, 0);
         uint32 index = BBRESIndex[bbId];
         uint256 eleIndex = BBRES[bbId][index];
-        blinkboxCfg memory cfg = BBCFG[bbId];
         blinkboxEle memory ele = BBELE[bbId][eleIndex];
         
-        INFT(nftAddress).mint(_owner, ele.name, ele.uri, ele.des, IEnumDef.NFTType.Normal, 1, int256(cfg.groupId), 0, 0);
+      
+        if(ele.groupId > 0){
+            INFT(nftAddress).mint(_owner, ele.name, ele.uri, ele.des, IEnumDef.NFTType.Normal, 1, int256(ele.groupId), 0, 0);
+        }else{
+            INFT(nftAddress).mint(_owner, ele.name, ele.uri, ele.des, IEnumDef.NFTType.Normal, 1, 0, 0, 0);
+            BBELE[bbId][eleIndex].groupId = INFT(nftAddress).groupId();
+        }
 
         BBRESIndex[bbId] = index+1;
         INFT(nftAddress).burn(_tokenId);
@@ -260,7 +266,8 @@ contract NFTRouter is Ownable {
         _uri = c.uri;
     }
 
-    function getBlinkBoxEleCfg(uint32 _bbId, uint32 _eleIndex) public view validBBCFG(_bbId) returns(string memory _name, string memory _des, string  memory _uri, uint256 _cnt){
+    function getBlinkBoxEleCfg(uint32 _bbId, uint32 _eleIndex) public view validBBCFG(_bbId) 
+    returns(string memory _name, string memory _des, string  memory _uri, uint256 _cnt, uint256 _groupId){
         
         require(_eleIndex < BBELE[_bbId].length, NOT_VALID_BBCFG_ELE);
         blinkboxEle memory e = BBELE[_bbId][_eleIndex];
@@ -268,6 +275,7 @@ contract NFTRouter is Ownable {
         _des = e.des;
         _uri = e.uri;
         _cnt = e.cnt;
+        _groupId = e.groupId;
     }
 
 

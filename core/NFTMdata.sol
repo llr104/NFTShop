@@ -10,9 +10,6 @@ contract NFTMdata is NFToken, IEnumDef {
 
     string internal nftName;
     string internal nftSymbol;
-
-
-    uint256 constant NO_GROUP = 0;
     uint256 public groupId;
 
     uint256[] public tokens;
@@ -22,16 +19,24 @@ contract NFTMdata is NFToken, IEnumDef {
     mapping(uint256 => uint256) public idToOwnerIndex;
     mapping(uint256 => uint256[]) public groupToIds;    //组id对应的tokenIds
     mapping(uint256 => uint256) public groupToIndex;
+    mapping(uint256 => gAttributesStruct) public gAttributes;
 
-   
-    struct cAttributesStruct{
+    struct gAttributesStruct{
         NFTType     nftType;
-        uint256     groupId;    //组id
         string      uri;
         string      describe;   //描述
-        uint256     price;      //价格
-        string      name;    
+        string      name;
+    }
+
+    struct cAttributesStruct{
+        uint256     groupId;    //组id
+        uint256     price;      //价格    
         uint256[]   atterbutes; //一些属性
+    }
+
+    modifier validGroup(uint256 _tokenId){
+        require(idToOwner[_tokenId] != address(0), NOT_VALID_GROUP);
+        _;
     }
   
     function name() external view returns (string memory _name){
@@ -85,7 +90,7 @@ contract NFTMdata is NFToken, IEnumDef {
     string memory _des, NFTType _type,  uint32 _count, int256 _groupId, uint256 _price, uint256 _BBCfgId) internal{
 
         uint256 gid = 0;
-        if(_groupId < 0){
+        if(_groupId <= 0){
             groupId++;
             gid = groupId;
 
@@ -96,6 +101,12 @@ contract NFTMdata is NFToken, IEnumDef {
             gid = uint256(_groupId);
         }
 
+        gAttributesStruct memory gattr;
+        gattr.uri = _uri;   
+        gattr.nftType = _type;
+        gattr.name = _name;
+        gattr.describe = _des;
+
         for (uint256 i = 0; i < _count; i++) {
             uint256 _tokenId = super._mint(_to);
            
@@ -103,25 +114,18 @@ contract NFTMdata is NFToken, IEnumDef {
             idToIndex[_tokenId] = tokens.length - 1;
             
             cAttributesStruct memory attr;
-            if(_groupId == 0){
-               attr.groupId = NO_GROUP; 
-            }else{
-                attr.groupId = gid;
-                groupToIds[_tokenId].push(_tokenId);
-                groupToIndex[_tokenId] = groupToIds[_tokenId].length - 1;
-            }
+            attr.groupId = gid;
+            groupToIds[gid].push(_tokenId);
+            groupToIndex[_tokenId] = groupToIds[gid].length - 1;
             
-            attr.uri = _uri;   
-            attr.nftType = _type;
-            attr.name = _name;
             attr.price = _price;
-            attr.describe = _des;
             cAttributes.push(attr);
             if(_type == NFTType.BlindBox){
                 _addTokenAttributes(_tokenId, _BBCfgId);
             }
 
-            emit SetOnSale(msg.sender, _to, _tokenId, _price, OPType.Mint);
+            emit SetOnSale(msg.sender, _to, _tokenId, 0, OPType.Mint);
+            emit SetOnSale(msg.sender, _to, _tokenId, _price, OPType.Up);
         }
     }
 
@@ -139,18 +143,16 @@ contract NFTMdata is NFToken, IEnumDef {
         idToIndex[lastToken] = tokenIndex;
         idToIndex[_tokenId] = 0;
 
-        
-        if(cAttributes[tokenIndex].groupId != NO_GROUP){
-            uint256 lIndex = groupToIds[_tokenId].length - 1;
-            uint256 index = groupToIndex[_tokenId];
+        uint256 gid = cAttributes[tokenIndex].groupId;
+        uint256 lIndex = groupToIds[gid].length - 1;
+        uint256 index = groupToIndex[_tokenId];
 
-            uint256 lt = groupToIds[_tokenId][lIndex];
-            groupToIds[_tokenId][index] = lt;
-            groupToIds[_tokenId].pop();
+        uint256 lt = groupToIds[gid][lIndex];
+        groupToIds[gid][index] = lt;
+        groupToIds[gid].pop();
 
-            groupToIndex[lt] = index;
-            groupToIndex[_tokenId] = 0;
-        }
+        groupToIndex[lt] = index;
+        groupToIndex[_tokenId] = 0;
 
         cAttributesStruct memory lastAttr = cAttributes[lastTokenIndex];
         cAttributes[tokenIndex] = lastAttr;
@@ -187,19 +189,18 @@ contract NFTMdata is NFToken, IEnumDef {
         return ownerToIds[_owner].length;
     }
 
-    function _setTokenDescribe(uint256 _tokenId, string memory _des) internal validNFToken(_tokenId){
-        uint256 tokenIndex = idToIndex[_tokenId];
-        cAttributes[tokenIndex].describe = _des;
-    }
-
     function _setTokenPrice(uint256 _tokenId, uint256 _price) internal validNFToken(_tokenId){
         uint256 tokenIndex = idToIndex[_tokenId];
         if(_price != cAttributes[tokenIndex].price){
              cAttributes[tokenIndex].price = _price;
         }
     }
-
     
+    function _getTokenPrice(uint256 _tokenId) internal view validNFToken(_tokenId) returns(uint256){
+        uint256 tokenIndex = idToIndex[_tokenId];
+        return cAttributes[tokenIndex].price;
+    }
+
     function _setTokenAttributes(uint256 _tokenId, uint256 _index,uint256 _tvalue) internal validNFToken(_tokenId){
         uint256 tokenIndex = idToIndex[_tokenId];
         cAttributes[tokenIndex].atterbutes[_index] = _tvalue;
@@ -220,19 +221,19 @@ contract NFTMdata is NFToken, IEnumDef {
         return cAttributes[tokenIndex].atterbutes[_index];
     }
 
-    function getTokenPrice(uint256 _tokenId) external view validNFToken(_tokenId) returns(uint256){
-        uint256 tokenIndex = idToIndex[_tokenId];
-        return cAttributes[tokenIndex].price;
-    }
-
-    function _setUri(uint256 _tokenId, string memory _uri) internal validNFToken(_tokenId){
-        uint256 tokenIndex = idToIndex[_tokenId];
-        cAttributes[tokenIndex].uri = _uri;
-    }
 
     function isBlindBox(uint256 _tokenId) public view validNFToken(_tokenId) returns(bool){
         uint256 tokenIndex = idToIndex[_tokenId];
-        return cAttributes[tokenIndex].nftType == NFTType.BlindBox;
+        uint256 gid = cAttributes[tokenIndex].groupId;
+        return gAttributes[gid].nftType == NFTType.BlindBox;
+    }
+
+    function _setTokenDescribe(uint256 _groupId, string memory _des) internal validGroup(_groupId){
+        gAttributes[_groupId].describe = _des;
+    }
+
+    function _setUri(uint256 _groupId, string memory _uri) internal validGroup(_groupId){
+        gAttributes[_groupId].uri = _uri;
     }
     
 }

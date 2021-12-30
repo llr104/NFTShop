@@ -396,8 +396,12 @@
 				console.log("锻造");
 				eth.getAccounts((error, account)=>{
 					if(!error && account.length > 0){
-						router.methods.mintBlinkBox(this.elem.id).send({from: account[0]}, (error, result)=>{
-							console.log("mintBlinkBox:", error, result);
+							router.methods.mintBlinkBox(this.elem.id).send({from: account[0]}).on('transactionHash', (hash)=>{
+							this.elem.isMint = true;
+						}).on('receipt', (receipt)=>{
+							this.elem.isMint = true;
+						}).on('error', (error)=>{
+							this.elem.isMint = false;
 						});
 					}
 				});

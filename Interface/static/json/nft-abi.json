@@ -271,34 +271,14 @@
 		"name": "cAttributes",
 		"outputs": [
 			{
-				"internalType": "enum IEnumDef.NFTType",
-				"name": "nftType",
-				"type": "uint8"
-			},
-			{
 				"internalType": "uint256",
 				"name": "groupId",
 				"type": "uint256"
 			},
 			{
-				"internalType": "string",
-				"name": "uri",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "describe",
-				"type": "string"
-			},
-			{
 				"internalType": "uint256",
 				"name": "price",
 				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
 			}
 		],
 		"payable": false,
@@ -318,6 +298,42 @@
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "gAttributes",
+		"outputs": [
+			{
+				"internalType": "enum IEnumDef.NFTType",
+				"name": "nftType",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "uri",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "describe",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -899,7 +915,7 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "_tokenId",
+				"name": "_groupId",
 				"type": "uint256"
 			},
 			{

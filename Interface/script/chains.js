@@ -30,8 +30,8 @@ var Chains = {
 	},
 	
 	[Supported.HECOTEST]:{
-		nftAddress: "0x075F6e291cAb2D9405D643965bD40f80882cA49D",
-		routerAddress: "0x10EE20A42876888400d582F9B5f822aD58bFB742",
+		nftAddress: "0x86f2c4964bD93b21Ee0303FA7b27130bE772BaF8",
+		routerAddress: "0xeC8FBfF71Fc25AFCc2E747F330bF9e1A58aB8777",
 		scanUrl: "https://testnet.hecoinfo.com",
 		symbol: "HT",
 		fromBlock: 11085000,
