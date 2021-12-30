@@ -88,7 +88,9 @@
 			
 			after(txEvents){
 				for (var i = 0; i < txEvents.length; i++) {
-					this.maps.set(txEvents[i].transactionHash, txEvents[i]); 
+					let e = txEvents[i];
+					let key = e.transactionHash + e.returnValues._op
+					this.maps.set(key, txEvents[i]); 
 				}
 		
 				return this.sort([...this.maps.values()]);
@@ -97,7 +99,12 @@
 			
 			sort(txEvents){
 				txEvents.sort((a, b)=>{
-					return b.blockNumber - a.blockNumber;
+					if(b.blockNumber != a.blockNumber){
+						return b.blockNumber - a.blockNumber;
+					}else{
+						return b.returnValues._op - a.returnValues._op;
+					}
+					
 				});
 				return txEvents;
 			}
